@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1321</width>
-    <height>783</height>
+    <height>779</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -667,7 +667,7 @@ border: none;</string>
         <property name="frameShadow">
          <enum>QFrame::Raised</enum>
         </property>
-        <layout class="QVBoxLayout" name="verticalLayout_21" stretch="0,0,0,2,0,0,0,0,0,0,0,1">
+        <layout class="QVBoxLayout" name="verticalLayout_21" stretch="0,0,0,2,0,0,0,0,0,0,0,0,1">
          <item>
           <widget class="QLabel" name="label_15">
            <property name="font">
@@ -850,6 +850,17 @@ font-weight:10000px;</string>
           </widget>
          </item>
          <item>
+          <widget class="QPushButton" name="pushButton">
+           <property name="styleSheet">
+            <string notr="true">color:white;
+font-weight:10000px;</string>
+           </property>
+           <property name="text">
+            <string>Mix</string>
+           </property>
+          </widget>
+         </item>
+         <item>
           <spacer name="verticalSpacer">
            <property name="orientation">
             <enum>Qt::Vertical</enum>
@@ -975,6 +986,21 @@ margin: 0 0 ;</string>
            <item>
             <layout class="QVBoxLayout" name="verticalLayout_17">
              <item>
+              <widget class="QComboBox" name="combo11">
+               <property name="styleSheet">
+                <string notr="true">QComboBox {
+    font-family: &quot;Overpass&quot;;
+    font-weight: 600; /* Semibold */
+    font-size: 10pt; /* Adjust the font size as needed */
+    color: white; /* Set the text color to white */
+    border: 1px solid white; /* Set the border to 1px solid white */
+background: rgba(74, 74, 74, 0);
+	border-radius: 10px;
+}</string>
+               </property>
+              </widget>
+             </item>
+             <item>
               <widget class="QSlider" name="verticalSlider">
                <property name="layoutDirection">
                 <enum>Qt::LeftToRight</enum>
@@ -984,59 +1010,29 @@ margin: 0 0 ;</string>
                </property>
               </widget>
              </item>
-             <item>
-              <widget class="QLabel" name="label_16">
-               <property name="font">
-                <font>
-                 <family>Oswald SemiBold</family>
-                 <pointsize>11</pointsize>
-                 <bold>true</bold>
-                </font>
-               </property>
-               <property name="layoutDirection">
-                <enum>Qt::LeftToRight</enum>
-               </property>
-               <property name="styleSheet">
-                <string notr="true">color:white;
-font-weight:10000px;</string>
-               </property>
-               <property name="text">
-                <string>Image 1 </string>
-               </property>
-               <property name="textFormat">
-                <enum>Qt::PlainText</enum>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignJustify|Qt::AlignVCenter</set>
-               </property>
-              </widget>
-             </item>
             </layout>
            </item>
            <item>
             <layout class="QVBoxLayout" name="verticalLayout_18">
              <item>
-              <widget class="QSlider" name="verticalSlider_2">
-               <property name="orientation">
-                <enum>Qt::Vertical</enum>
+              <widget class="QComboBox" name="combo12">
+               <property name="styleSheet">
+                <string notr="true">QComboBox {
+    font-family: &quot;Overpass&quot;;
+    font-weight: 600; /* Semibold */
+    font-size: 10pt; /* Adjust the font size as needed */
+    color: white; /* Set the text color to white */
+    border: 1px solid white; /* Set the border to 1px solid white */
+background: rgba(74, 74, 74, 0);
+	border-radius: 10px;
+}</string>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QLabel" name="label_17">
-               <property name="font">
-                <font>
-                 <family>Oswald SemiBold</family>
-                 <pointsize>11</pointsize>
-                 <bold>true</bold>
-                </font>
-               </property>
-               <property name="styleSheet">
-                <string notr="true">color:white;
-font-weight:10000px;</string>
-               </property>
-               <property name="text">
-                <string>Image 2</string>
+              <widget class="QSlider" name="verticalSlider_2">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
                </property>
               </widget>
              </item>
@@ -1045,27 +1041,24 @@ font-weight:10000px;</string>
            <item>
             <layout class="QVBoxLayout" name="verticalLayout_19">
              <item>
-              <widget class="QSlider" name="verticalSlider_3">
-               <property name="orientation">
-                <enum>Qt::Vertical</enum>
+              <widget class="QComboBox" name="combo13">
+               <property name="styleSheet">
+                <string notr="true">QComboBox {
+    font-family: &quot;Overpass&quot;;
+    font-weight: 600; /* Semibold */
+    font-size: 10pt; /* Adjust the font size as needed */
+    color: white; /* Set the text color to white */
+    border: 1px solid white; /* Set the border to 1px solid white */
+background: rgba(74, 74, 74, 0);
+	border-radius: 10px;
+}</string>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QLabel" name="label_18">
-               <property name="font">
-                <font>
-                 <family>Oswald SemiBold</family>
-                 <pointsize>11</pointsize>
-                 <bold>true</bold>
-                </font>
-               </property>
-               <property name="styleSheet">
-                <string notr="true">color:white;
-font-weight:10000px;</string>
-               </property>
-               <property name="text">
-                <string>Image 3 </string>
+              <widget class="QSlider" name="verticalSlider_3">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
                </property>
               </widget>
              </item>
@@ -1074,27 +1067,24 @@ font-weight:10000px;</string>
            <item>
             <layout class="QVBoxLayout" name="verticalLayout_20">
              <item>
-              <widget class="QSlider" name="verticalSlider_4">
-               <property name="orientation">
-                <enum>Qt::Vertical</enum>
+              <widget class="QComboBox" name="combo14">
+               <property name="styleSheet">
+                <string notr="true">QComboBox {
+    font-family: &quot;Overpass&quot;;
+    font-weight: 600; /* Semibold */
+    font-size: 10pt; /* Adjust the font size as needed */
+    color: white; /* Set the text color to white */
+    border: 1px solid white; /* Set the border to 1px solid white */
+background: rgba(74, 74, 74, 0);
+	border-radius: 10px;
+}</string>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QLabel" name="label_19">
-               <property name="font">
-                <font>
-                 <family>Oswald SemiBold</family>
-                 <pointsize>11</pointsize>
-                 <bold>true</bold>
-                </font>
-               </property>
-               <property name="styleSheet">
-                <string notr="true">color:white;
-font-weight:10000px;</string>
-               </property>
-               <property name="text">
-                <string>Image 4 </string>
+              <widget class="QSlider" name="verticalSlider_4">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
                </property>
               </widget>
              </item>

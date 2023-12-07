@@ -16,11 +16,13 @@ import numpy as np
 from scipy.fft import fft2, ifft2, fftshift
 
 class ImageViewport(QWidget):
-    def __init__(self, parent=None):
+    def __init__(self,main_window, parent=None):
         super().__init__(parent)
         self.image = None
+        self.image_op = None
+        self.image_ind = None
         self.ft_components = {}  # Store calculated FT components
-
+        self.main_window = main_window
         self.image_label = QLabel()
         self.image_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
@@ -40,8 +42,18 @@ class ImageViewport(QWidget):
                 self.set_image_from_qimage(image.convertToFormat(QImage.Format.Format_Grayscale8))
         except Exception as e:
             print(f"Error opening image: {e}")
+    
+    #save the image index in case we need it, Optional
+    def set_image_ind(self,index):
+        self.image_ind = index
+        
 
-
+    def set_image_op(self,index,operation):
+        #set the operation in this class, and also in the Dict in the main window(Optionl)
+        self.image_op = operation
+        self.main_window.operations[str(index)] = operation
+        
+        
 
     def set_image_from_qimage(self, image):
         self.image = image
@@ -115,7 +127,7 @@ class MainWindow(QWidget):
 
         # Create four viewports
         for _ in range(4):
-            viewport = ImageViewport()
+            viewport = ImageViewport(self)
             self.viewports.append(viewport)
 
         layout = QHBoxLayout()

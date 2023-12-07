@@ -29,19 +29,46 @@ class MainWindow(QtWidgets.QMainWindow):
         # Load the UI Page
         self.ui = uic.loadUi('Mainwindow.ui', self)
         self.setWindowTitle("FT Mixer")
+        self.image_ports = []
         self.load_ui_elements()
+
+
+    def create_image_viewport(self, parent, mouse_double_click_event_handler):
+        image_port = ImageViewport()
+        image_layout = QVBoxLayout(parent)
+        image_layout.addWidget(image_port)
+        image_port.mouseDoubleClickEvent = mouse_double_click_event_handler
+        return image_port
+
 
     def load_ui_elements(self):
         ui_view_ports = [self.ui.original1, self.ui.original2, self.ui.original3, self.ui.original4]
+        ui_combo_boxes = [self.ui.combo1, self.ui.combo2, self.ui.combo3, self.ui.combo4]
         # Create an empty list to store ImageViewport instances
-        image_ports = []
-        for viewport in ui_view_ports:
-            image_port = ImageViewport()
-            image_layout = QVBoxLayout(viewport)
-            image_layout.addWidget(image_port)
+        
+        # Create ImageViewport instances using the function
+        self.image_ports.extend([
+            self.create_image_viewport(ui_view_ports[0], lambda event: self.browse_image(event, 0)),
+            self.create_image_viewport(ui_view_ports[1], lambda event: self.browse_image(event, 1)),
+            self.create_image_viewport(ui_view_ports[2], lambda event: self.browse_image(event, 2)),
+            self.create_image_viewport(ui_view_ports[3], lambda event: self.browse_image(event, 3))
+        ])
+        
+        for combo_box in ui_combo_boxes:
+            combo_box.addItems(["Magnitude", "Phase", "Real", "Imaginary"])
 
-            # Append the ImageViewport instance to the list
-            image_ports.append(image_port)
+
+    def browse_image(self, event, index):
+        file_filter = "Raw Data (*.png *.jpg *.jpeg)"
+        image_path, _ = QtWidgets.QFileDialog.getOpenFileName(
+            None, 'Open Signal File', './', filter=file_filter)
+        
+        if image_path:
+            if 0 <= index < len(self.image_ports):
+                # Set the image only for the ImageViewport at the specified index
+                self.image_ports[index].set_image(image_path)
+
+
 
 
 def main():

@@ -145,7 +145,9 @@ font-weight:10000px;
                    <item>
                     <widget class="QWidget" name="original1" native="true">
                      <property name="styleSheet">
-                      <string notr="true"/>
+                      <string notr="true">QWidget {
+ border: 3px solid rgb(17,17,17);
+}</string>
                      </property>
                     </widget>
                    </item>
@@ -174,7 +176,7 @@ font-weight:10000px;</string>
                    <item>
                     <widget class="QWidget" name="widget_2" native="true">
                      <property name="styleSheet">
-                      <string notr="true"/>
+                      <string notr="true">border: 3px solid rgb(17,17,17);</string>
                      </property>
                     </widget>
                    </item>
@@ -302,7 +304,7 @@ font-weight:10000px;</string>
                    <item>
                     <widget class="QWidget" name="original2" native="true">
                      <property name="styleSheet">
-                      <string notr="true">background-color: rgb(0, 0, 0);</string>
+                      <string notr="true">border: 3px solid rgb(17,17,17);</string>
                      </property>
                     </widget>
                    </item>
@@ -331,7 +333,7 @@ font-weight:10000px;</string>
                    <item>
                     <widget class="QWidget" name="widget_4" native="true">
                      <property name="styleSheet">
-                      <string notr="true">background-color: rgb(0, 0, 0);</string>
+                      <string notr="true">border: 3px solid rgb(17,17,17);</string>
                      </property>
                     </widget>
                    </item>
@@ -457,7 +459,7 @@ font-weight:10000px;</string>
                    <item>
                     <widget class="QWidget" name="original3" native="true">
                      <property name="styleSheet">
-                      <string notr="true">background-color: rgb(0, 0, 0);</string>
+                      <string notr="true">border: 3px solid rgb(17,17,17);</string>
                      </property>
                     </widget>
                    </item>
@@ -486,7 +488,7 @@ font-weight:10000px;</string>
                    <item>
                     <widget class="QWidget" name="widget_6" native="true">
                      <property name="styleSheet">
-                      <string notr="true">background-color: rgb(0, 0, 0);</string>
+                      <string notr="true">border: 3px solid rgb(17,17,17);</string>
                      </property>
                     </widget>
                    </item>
@@ -608,7 +610,7 @@ font-weight:10000px;</string>
                    <item>
                     <widget class="QWidget" name="original4" native="true">
                      <property name="styleSheet">
-                      <string notr="true">background-color: rgb(0, 0, 0);</string>
+                      <string notr="true">border: 3px solid rgb(17,17,17);</string>
                      </property>
                     </widget>
                    </item>
@@ -637,7 +639,7 @@ font-weight:10000px;</string>
                    <item>
                     <widget class="QWidget" name="widget_8" native="true">
                      <property name="styleSheet">
-                      <string notr="true">background-color: rgb(0, 0, 0);</string>
+                      <string notr="true">border: 3px solid rgb(17,17,17);</string>
                      </property>
                     </widget>
                    </item>

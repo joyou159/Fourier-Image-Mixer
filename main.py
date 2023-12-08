@@ -37,6 +37,15 @@ class MainWindow(QtWidgets.QMainWindow):
         
         self.operations = {"0": '', "1": '', '2': '', '3': ''}
         self.load_ui_elements()
+        self.showFullScreen()
+        self.ui.keyPressEvent = self.keyPressEvent
+
+    def keyPressEvent(self, event):
+        # Handle key events, for example, pressing ESC to exit full screen
+        if event.key() == Qt.Key.Key_Escape:
+            self.showNormal()  # Show the window in normal size
+        else:
+            super().keyPressEvent(event)
 
     def create_image_viewport(self, parent, mouse_double_click_event_handler):
         image_port = ImageViewport(self)
@@ -64,20 +73,28 @@ class MainWindow(QtWidgets.QMainWindow):
             combo_box.addItems(['image1', 'image2', 'image3', 'image4'])
 
 
-    def browse_image(self, event, index):
-        file_filter = "Raw Data (*.png *.jpg *.jpeg)"
+    def browse_image(self, event, index: int) -> None:
+        """
+        Browse for an image file and set it for the ImageViewport at the specified index.
+        
+        Args:
+            event: The event that triggered the image browsing.
+            index: The index of the ImageViewport to set the image for.
+        """
+        file_filter = "Raw Data (*.png *.jpg *.jpeg *.jfif)"
         image_path, _ = QtWidgets.QFileDialog.getOpenFileName(
             None, 'Open Signal File', './', filter=file_filter)
-
-        if image_path:
-            if 0 <= index < len(self.image_ports):
-                # Set the image only for the ImageViewport at the specified index
-                image = self.image_ports[index]
-                # image.update_image_parameters(index)
-                self.ui_image_combo_boxes[index].addItems(["FT Magnitude", "FT Phase", "FT Real", "FT Imaginary"])
-                
-                image.update_image_parameters(index,image_path)
-                
+        
+        if image_path and 0 <= index < len(self.image_ports):
+            self.image_ports[index].set_image(image_path)
+            # Set the image only for the ImageViewport at the specified index
+            image_port = self.image_ports[index]
+            # image.update_image_parameters(index)
+            self.ui_image_combo_boxes[index].addItems(["FT Magnitude", "FT Phase", "FT Real", "FT Imaginary"])
+            
+            image_port.update_image_parameters(index,image_path)
+            image_port.calculate_ft_components(image_path)  
+            
     def get_operations(self):
         return self.operations
 

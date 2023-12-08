@@ -95,41 +95,36 @@ class ImageViewport(QWidget):
     # Placeholder for FT calculations
     def calculate_ft_components(self, image_path):
         if image_path is not None:
-            # Use QImageReader with the file path
-            image_reader = QImageReader(image_path)
-            image_reader.setAutoTransform(True)
-            image = image_reader.read()
+            # Compute the 2D Fourier Transform
+            fft = np.fft.fft2(self.image)
 
-            # Convert the QImage to a NumPy array
-            image_array = np.array(image.convertToFormat(QImage.Format.Format_Grayscale8))
+            # Shift the zero-frequency component to the center
+            fft_shifted = np.fft.fftshift(fft)
 
-            # Ensure the image_array is of type float
-            image_array = image_array.astype(float)
+            # Compute the magnitude of the spectrum
+            mag = np.abs(fft)
 
-            # Calculate 2D Fourier Transform
-            ft_image = fft2(image_array)
+            # Compute the phase of the spectrum
+            phase = np.angle(self.fft)
 
-            # Shift zero frequency components to the center
-            ft_image_shifted = fftshift(ft_image)
+            # real ft components
+            real = self.fft.real
 
-            # Calculate magnitude, phase, real, and imaginary components
-            ft_magnitude = np.abs(ft_image_shifted)
-            ft_phase = np.angle(ft_image_shifted)
-            ft_real = np.real(ft_image_shifted)
-            ft_imaginary = np.imag(ft_image_shifted)
+            #imaginary ft components
+            imaginary = self.fft.imag
 
             # Store the calculated components
             self.ft_components["FT Magnitude"] = QImage(
-                ft_magnitude.data, ft_magnitude.shape[1], ft_magnitude.shape[0], QImage.Format.Format_Grayscale8)
+                mag.data, mag.shape[1], mag.shape[0], QImage.Format.Format_Grayscale8)
 
             self.ft_components["FT Phase"] = QImage(
-                ft_phase.data, ft_phase.shape[1], ft_phase.shape[0], QImage.Format.Format_Grayscale8)
+                phase.data, phase.shape[1], phase.shape[0], QImage.Format.Format_Grayscale8)
 
             self.ft_components["FT Real"] = QImage(
-                ft_real.data, ft_real.shape[1], ft_real.shape[0], QImage.Format.Format_Grayscale8)
+                real.data, real.shape[1], real.shape[0], QImage.Format.Format_Grayscale8)
 
             self.ft_components["FT Imaginary"] = QImage(
-                ft_imaginary.data, ft_imaginary.shape[1], ft_imaginary.shape[0], QImage.Format.Format_Grayscale8)
+                imaginary.data, imaginary.shape[1], imaginary.shape[0], QImage.Format.Format_Grayscale8)
 
 
 

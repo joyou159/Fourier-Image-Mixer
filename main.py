@@ -75,7 +75,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.handle_image_combo_boxes_selection)
 
         for combo_box in self.ui_image_combo_boxes:
-            combo_box.addItems(["FT Magnitude", "[FT Phase", "FT Real", "FT Imaginary"])
+            combo_box.addItems(["FT Magnitude", "FT Phase", "FT Real", "FT Imaginary"])
 
         for combo_box in self.ui_mixing_combo_boxes:
             combo_box.addItems(['image1', 'image2', 'image3', 'image4'])

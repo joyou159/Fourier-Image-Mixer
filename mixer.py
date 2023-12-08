@@ -21,23 +21,33 @@ class ImageMixer(QWidget):
         self.mix_image = None
         self.main_window = main_window
     def check_op_validity(self):
-        #mag / phase pair
-        pair1 = 0
-        #real / imag pair
-        pair2 = 0
+        valid_pairs = [("FT Magnitude","FT Phase"),("FT Phase","FT Magnitude"),("FT Real", "FT Imaginary"),("FT Imaginary","FT Real")]
+        op_sequence = []
         operations = self.main_window.get_operations()
-        for key, type in operations.items():
-            if type == "phase" or type == "magnitude":
-                pair1 += 1
-            elif type == "real" or type == "imaginary":
-                pair2 += 1
+        for combo in self.main_window.ui_mixing_combo_boxes:
+            if len(self.main_window.image_ports)!=4:
+                raise ValueError('please pick the rest of images')
             else:
-                raise ValueError("Invalid type")
+                image_selection = combo.currentIndex()
+                operation = operations[str(image_selection)]
+                # image = self.main_window.image_ports[image_selection]
+                op_sequence.append(operation)
+        pair1 = (op_sequence[0],op_sequence[1])
+        pair2 = (op_sequence[2],op_sequence[3])
+        if pair1 not in valid_pairs or pair2 not in valid_pairs:
+            raise ValueError('Please choose valid pairs')
+        # for key, type in operations.items():
+        #     if type == "phase" or type == "magnitude":
+        #         pair1 += 1
+        #     elif type == "real" or type == "imaginary":
+        #         pair2 += 1
+        #     else:
+        #         raise ValueError("Invalid type")
         
-        if pair1%2 != 0  or   pair2%2 != 0 :
-            raise ValueError ("")
-        # Display the mixed image
-        self.set_image(mixed_image)
+        # if pair1%2 != 0  or   pair2%2 != 0 :
+        #     raise ValueError ("")
+        # # Display the mixed image
+        # self.set_image(mixed_image)
         
     def mix_images(self):
         self.check_op_validity()

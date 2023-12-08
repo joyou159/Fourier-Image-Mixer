@@ -18,7 +18,6 @@ class ImageViewport(QWidget):
     def __init__(self,main_window, parent=None):
         super().__init__(parent)
         self.image = None
-        self.image_ind = None
         self.ft_components = {}  # Store calculated FT components
         self.main_window = main_window
         
@@ -43,7 +42,6 @@ class ImageViewport(QWidget):
         
     def update_image_parameters(self,index,path):
         self.main_window.image_ports[index].set_image(path)
-        self.main_window.image_ports[index].set_image_ind(index)
         #pick FT type for each image by default
         self.main_window.ui_image_combo_boxes[index].setCurrentIndex(index)
         #set some attributes of the Image
@@ -65,10 +63,6 @@ class ImageViewport(QWidget):
         except Exception as e:
             print(f"Error opening image: {e}")
     
-    #save the image index in case we need it, Optional
-    def set_image_ind(self,index):
-        self.image_ind = index
-
     def update_display(self):
             if self.image:
                 # Update the widget by triggering a repaint
@@ -125,26 +119,6 @@ class ImageViewport(QWidget):
 
             self.ft_components["FT Imaginary"] = QImage(
                 imaginary.data, imaginary.shape[1], imaginary.shape[0], QImage.Format.Format_Grayscale8)
-
-
-
-    # def update_component(self, index):
-    #     component = self.component_selector.currentText()
-    #     if component == "Original":
-    #         self.component_label.setPixmap(None)
-    #     else:
-    #         try:
-    #             ft_image = self.get_ft_component(component)
-    #             pixmap = QPixmap.fromImage(ft_image)
-    #             self.component_label.setPixmap(pixmap.scaled(self.width(), self.height(), Qt.AspectRatioMode.KeepAspectRatio))
-    #         except KeyError:
-    #             # Calculate and store the FT component
-    #             self.calculate_ft_components()
-    #             self.update_component(index)
-
-
-    # def get_ft_component(self, component):
-    #     return self.ft_components[component]
 
 
 

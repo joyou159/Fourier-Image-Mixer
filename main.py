@@ -91,29 +91,31 @@ class MainWindow(QtWidgets.QMainWindow):
         print(self.operations)
         
         
-    
+
 
 
     def browse_image(self, event, index):
         file_filter = "Raw Data (*.png *.jpg *.jpeg)"
-        image_path, _ = QtWidgets.QFileDialog.getOpenFileName(
+        self.image_path, _ = QtWidgets.QFileDialog.getOpenFileName(
             None, 'Open Signal File', './', filter=file_filter)
 
-        if image_path:
+        if self.image_path:
             if 0 <= index < len(self.image_ports):
                 # Set the image only for the ImageViewport at the specified index
-                self.image_ports[index].set_image(image_path)
-                self.image_ports[index].set_image_ind(index)
-                #pick FT type for each image by default
-                self.ui_image_combo_boxes[index].setCurrentIndex(index)
-                #set some attributes of the Image
-                operation = self.ui_image_combo_boxes[index].currentText()
-                self.operations[str(index)] = operation
-                self.image_ports[index].set_image_op = operation
-                #update the mixing boxes and sliders
-                self.ui_mixing_combo_boxes[index].setCurrentIndex(index)
-                self.ui_vertical_sliders[index].setValue(100)
-                print(self.operations)
+                self.update_image_parameters(index)
+                
+                
+    def update_image_parameters(self,index):
+        self.image_ports[index].set_image(self.image_path)
+        self.image_ports[index].set_image_ind(index)
+        #pick FT type for each image by default
+        self.ui_image_combo_boxes[index].setCurrentIndex(index)
+        #set some attributes of the Image
+        operation = self.ui_image_combo_boxes[index].currentText()
+        self.operations[str(index)] = operation
+        #update the mixing boxes and sliders
+        self.ui_mixing_combo_boxes[index].setCurrentIndex(index)
+        self.ui_vertical_sliders[index].setValue(100)
 
     def get_operations(self):
         return self.operations

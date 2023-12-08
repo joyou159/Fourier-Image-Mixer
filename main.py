@@ -55,43 +55,13 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.combo11, self.ui.combo12, self.ui.combo13, self.ui.combo14]
         self.ui_vertical_sliders = [
             self.ui.verticalSlider_1, self.ui.verticalSlider_2, self.ui.verticalSlider_3, self.ui.verticalSlider_4]
-        # Create an empty list to store ImageViewport instances
-
         # Create ImageViewport instances using the function
-        self.image_ports.extend([
-            self.create_image_viewport(
-                self.ui_view_ports[0], lambda event: self.browse_image(event, 0)),
-            self.create_image_viewport(
-                self.ui_view_ports[1], lambda event: self.browse_image(event, 1)),
-            self.create_image_viewport(
-                self.ui_view_ports[2], lambda event: self.browse_image(event, 2)),
-            self.create_image_viewport(
-                self.ui_view_ports[3], lambda event: self.browse_image(event, 3))
-        ])
-
-        # connect the combo boxes value changed to a function that shows the corresponding FT type, and to the set_image_op
-        for index, combo_box in enumerate(self.ui_image_combo_boxes):
-            combo_box.currentIndexChanged.connect(
-                self.handle_image_combo_boxes_selection)
-
-        for combo_box in self.ui_image_combo_boxes:
-            combo_box.addItems(["FT Magnitude", "FT Phase", "FT Real", "FT Imaginary"])
-
+        for index, viewport in enumerate(self.ui_view_ports):
+            image_port = self.create_image_viewport(viewport, lambda event, idx=index: self.browse_image(event, idx))
+            self.image_ports.append(image_port)
+        
         for combo_box in self.ui_mixing_combo_boxes:
             combo_box.addItems(['image1', 'image2', 'image3', 'image4'])
-
-    def handle_image_combo_boxes_selection(self):
-        sender_combo_box = self.sender()
-        combo_ind = self.ui_image_combo_boxes.index(sender_combo_box)
-        target_combo = self.ui_image_combo_boxes[self.ui_image_combo_boxes.index(
-            sender_combo_box)]
-        # now we have the combo box , the new operation now we set the image(combo box index = image index) to the new chosen op
-        operation = target_combo.currentText()
-        self.operations[str(combo_ind)] = operation
-        print(self.operations)
-        
-        
-
 
 
     def browse_image(self, event, index):
@@ -102,21 +72,10 @@ class MainWindow(QtWidgets.QMainWindow):
         if self.image_path:
             if 0 <= index < len(self.image_ports):
                 # Set the image only for the ImageViewport at the specified index
-                self.update_image_parameters(index)
+                image = self.image_ports[index]
+                image.update_image_parameters(index)
+                self.ui_image_combo_boxes[index].addItems(["FT Magnitude", "FT Phase", "FT Real", "FT Imaginary"])
                 
-                
-    def update_image_parameters(self,index):
-        self.image_ports[index].set_image(self.image_path)
-        self.image_ports[index].set_image_ind(index)
-        #pick FT type for each image by default
-        self.ui_image_combo_boxes[index].setCurrentIndex(index)
-        #set some attributes of the Image
-        operation = self.ui_image_combo_boxes[index].currentText()
-        self.operations[str(index)] = operation
-        #update the mixing boxes and sliders
-        self.ui_mixing_combo_boxes[index].setCurrentIndex(index)
-        self.ui_vertical_sliders[index].setValue(100)
-
     def get_operations(self):
         return self.operations
 

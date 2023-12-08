@@ -30,7 +30,32 @@ class ImageViewport(QWidget):
         layout.addWidget(self.image_label)
         self.setLayout(layout)
 
-
+        # connect the combo boxes value changed to a function that shows the corresponding FT type, and to the set_image_op
+        for index, combo_box in enumerate(self.main_window.ui_image_combo_boxes):
+            combo_box.currentIndexChanged.connect(
+                self.handle_image_combo_boxes_selection)
+            
+    def handle_image_combo_boxes_selection(self):
+        sender_combo_box = self.sender()
+        combo_ind = self.main_window.ui_image_combo_boxes.index(sender_combo_box)
+        target_combo = self.main_window.ui_image_combo_boxes[self.main_window.ui_image_combo_boxes.index(
+            sender_combo_box)]
+        # now we have the combo box , the new operation now we set the image(combo box index = image index) to the new chosen op
+        operation = target_combo.currentText()
+        self.main_window.operations[str(combo_ind)] = operation
+        
+        
+    def update_image_parameters(self,index):
+        self.main_window.image_ports[index].set_image(self.main_window.image_path)
+        self.main_window.image_ports[index].set_image_ind(index)
+        #pick FT type for each image by default
+        self.main_window.ui_image_combo_boxes[index].setCurrentIndex(index)
+        #set some attributes of the Image
+        operation = self.main_window.ui_image_combo_boxes[index].currentText()
+        self.main_window.operations[str(index)] = operation
+        #update the mixing boxes and sliders
+        self.main_window.ui_mixing_combo_boxes[index].setCurrentIndex(index)
+        self.main_window.ui_vertical_sliders[index].setValue(100)
 
     def set_image(self, image_path):
         try:
@@ -45,8 +70,6 @@ class ImageViewport(QWidget):
     #save the image index in case we need it, Optional
     def set_image_ind(self,index):
         self.image_ind = index
-        
-
 
     def set_image_from_qimage(self, image):
         self.image = image
@@ -54,32 +77,11 @@ class ImageViewport(QWidget):
         # If the widget has been shown, calculate and set the initial display
         if self.isVisible():
             self.update_display()
-
-
+            
     def update_display(self):
-            if self.image is not None:
-                pixmap = QPixmap.fromImage(self.image)
-                self.image_label.setPixmap(pixmap.scaled(self.width(), self.height(), Qt.AspectRatioMode.KeepAspectRatio))
-
-
-    def update_component(self, index):
-        component = self.component_selector.currentText()
-        if component == "Original":
-            self.component_label.setPixmap(None)
-        else:
-            try:
-                ft_image = self.get_ft_component(component)
-                pixmap = QPixmap.fromImage(ft_image)
-                self.component_label.setPixmap(pixmap.scaled(self.width(), self.height(), Qt.AspectRatioMode.KeepAspectRatio))
-            except KeyError:
-                # Calculate and store the FT component
-                self.calculate_ft_components()
-                self.update_component(index)
-
-
-    def get_ft_component(self, component):
-        return self.ft_components[component]
-
+        if self.image is not None:
+            pixmap = QPixmap.fromImage(self.image)
+            self.image_label.setPixmap(pixmap.scaled(self.width(), self.height(), Qt.AspectRatioMode.KeepAspectRatio))
 
     # Placeholder for FT calculations
     def calculate_ft_components(self):
@@ -110,6 +112,28 @@ class ImageViewport(QWidget):
             
             self.ft_components["FT Imaginary"] = QImage(
                 ft_imaginary.data, ft_imaginary.shape[1], ft_imaginary.shape[0], QImage.Format.Format_Grayscale8)
+
+
+
+
+
+    def update_component(self, index):
+        component = self.component_selector.currentText()
+        if component == "Original":
+            self.component_label.setPixmap(None)
+        else:
+            try:
+                ft_image = self.get_ft_component(component)
+                pixmap = QPixmap.fromImage(ft_image)
+                self.component_label.setPixmap(pixmap.scaled(self.width(), self.height(), Qt.AspectRatioMode.KeepAspectRatio))
+            except KeyError:
+                # Calculate and store the FT component
+                self.calculate_ft_components()
+                self.update_component(index)
+
+
+    def get_ft_component(self, component):
+        return self.ft_components[component]
 
 
 

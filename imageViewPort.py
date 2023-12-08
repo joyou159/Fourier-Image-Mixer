@@ -10,7 +10,6 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtGui import QPixmap, QImage
 from PyQt6.QtCore import Qt
 from PyQt6 import QtWidgets
-
 # Placeholder for FT-related functionalities
 import numpy as np
 from scipy.fft import fft2, ifft2, fftshift
@@ -43,10 +42,11 @@ class ImageViewport(QWidget):
         # now we have the combo box , the new operation now we set the image(combo box index = image index) to the new chosen op
         operation = target_combo.currentText()
         self.main_window.operations[str(combo_ind)] = operation
+        print(self.main_window.operations)
         
         
-    def update_image_parameters(self,index):
-        self.main_window.image_ports[index].set_image(self.main_window.image_path)
+    def update_image_parameters(self,index,path):
+        self.main_window.image_ports[index].set_image(path)
         self.main_window.image_ports[index].set_image_ind(index)
         #pick FT type for each image by default
         self.main_window.ui_image_combo_boxes[index].setCurrentIndex(index)

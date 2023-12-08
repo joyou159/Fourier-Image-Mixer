@@ -31,7 +31,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui = uic.loadUi('Mainwindow.ui', self)
         self.setWindowTitle("FT Mixer")
         self.image_ports = []
-        
         #mixer and its connection line
         self.mixer = ImageMixer(self)
         self.ui.mixxer.clicked.connect(self.mixer.mix_images)
@@ -59,6 +58,7 @@ class MainWindow(QtWidgets.QMainWindow):
         for index, viewport in enumerate(self.ui_view_ports):
             image_port = self.create_image_viewport(viewport, lambda event, idx=index: self.browse_image(event, idx))
             self.image_ports.append(image_port)
+            
         
         for combo_box in self.ui_mixing_combo_boxes:
             combo_box.addItems(['image1', 'image2', 'image3', 'image4'])
@@ -66,15 +66,17 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def browse_image(self, event, index):
         file_filter = "Raw Data (*.png *.jpg *.jpeg)"
-        self.image_path, _ = QtWidgets.QFileDialog.getOpenFileName(
+        image_path, _ = QtWidgets.QFileDialog.getOpenFileName(
             None, 'Open Signal File', './', filter=file_filter)
 
-        if self.image_path:
+        if image_path:
             if 0 <= index < len(self.image_ports):
                 # Set the image only for the ImageViewport at the specified index
                 image = self.image_ports[index]
-                image.update_image_parameters(index)
+                # image.update_image_parameters(index)
                 self.ui_image_combo_boxes[index].addItems(["FT Magnitude", "FT Phase", "FT Real", "FT Imaginary"])
+                
+                image.update_image_parameters(index,image_path)
                 
     def get_operations(self):
         return self.operations

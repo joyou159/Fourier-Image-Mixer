@@ -19,7 +19,6 @@ class ImageViewport(QWidget):
     def __init__(self,main_window, parent=None):
         super().__init__(parent)
         self.image = None
-        self.image_op = None
         self.image_ind = None
         self.ft_components = {}  # Store calculated FT components
         self.main_window = main_window
@@ -48,12 +47,6 @@ class ImageViewport(QWidget):
         self.image_ind = index
         
 
-    def set_image_op(self,index,operation):
-        #set the operation in this class, and also in the Dict in the main window(Optionl)
-        self.image_op = operation
-        self.main_window.operations[str(index)] = operation
-        
-        
 
     def set_image_from_qimage(self, image):
         self.image = image

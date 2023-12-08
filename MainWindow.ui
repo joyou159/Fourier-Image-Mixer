@@ -850,7 +850,7 @@ font-weight:10000px;</string>
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="pushButton">
+          <widget class="QPushButton" name="mixxer">
            <property name="styleSheet">
             <string notr="true">color:white;
 font-weight:10000px;</string>
@@ -1001,7 +1001,7 @@ background: rgba(74, 74, 74, 0);
               </widget>
              </item>
              <item>
-              <widget class="QSlider" name="verticalSlider">
+              <widget class="QSlider" name="verticalSlider_1">
                <property name="layoutDirection">
                 <enum>Qt::LeftToRight</enum>
                </property>

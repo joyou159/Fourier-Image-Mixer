@@ -31,7 +31,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui = uic.loadUi('Mainwindow.ui', self)
         self.setWindowTitle("FT Mixer")
         self.image_ports = []
+        
+        #mixer and its connection line
         self.mixer = ImageMixer(self)
+        self.ui.mixxer.clicked.connect(self.mixer.mix_images)
+        
         self.operations = {"0": '', "1": '', '2': '', '3': ''}
         self.load_ui_elements()
 
@@ -45,10 +49,12 @@ class MainWindow(QtWidgets.QMainWindow):
     def load_ui_elements(self):
         self.ui_view_ports = [
             self.ui.original1, self.ui.original2, self.ui.original3, self.ui.original4]
-        self.ui_combo_boxes = [self.ui.combo1,
-                               self.ui.combo2, self.ui.combo3, self.ui.combo4]
         self.ui_image_combo_boxes = [
+            self.ui.combo1,self.ui.combo2, self.ui.combo3, self.ui.combo4]
+        self.ui_mixing_combo_boxes = [
             self.ui.combo11, self.ui.combo12, self.ui.combo13, self.ui.combo14]
+        self.ui_vertical_sliders = [
+            self.ui.verticalSlider_1, self.ui.verticalSlider_2, self.ui.verticalSlider_3, self.ui.verticalSlider_4]
         # Create an empty list to store ImageViewport instances
 
         # Create ImageViewport instances using the function
@@ -64,28 +70,29 @@ class MainWindow(QtWidgets.QMainWindow):
         ])
 
         # connect the combo boxes value changed to a function that shows the corresponding FT type, and to the set_image_op
-        for index, combo_box in enumerate(self.ui_combo_boxes):
+        for index, combo_box in enumerate(self.ui_image_combo_boxes):
             combo_box.currentIndexChanged.connect(
                 self.handle_image_combo_boxes_selection)
 
-        for combo_box in self.ui_combo_boxes:
-            combo_box.addItems(["Magnitude", "Phase", "Real", "Imaginary"])
-
         for combo_box in self.ui_image_combo_boxes:
+            combo_box.addItems(["FT Magnitude", "[FT Phase", "FT Real", "FT Imaginary"])
+
+        for combo_box in self.ui_mixing_combo_boxes:
             combo_box.addItems(['image1', 'image2', 'image3', 'image4'])
 
     def handle_image_combo_boxes_selection(self):
         sender_combo_box = self.sender()
-        combo_ind = self.ui_combo_boxes.index(sender_combo_box)
-        print(combo_ind)
-        target_combo = self.ui_combo_boxes[self.ui_combo_boxes.index(
+        combo_ind = self.ui_image_combo_boxes.index(sender_combo_box)
+        target_combo = self.ui_image_combo_boxes[self.ui_image_combo_boxes.index(
             sender_combo_box)]
         # now we have the combo box , the new operation now we set the image(combo box index = image index) to the new chosen op
         operation = target_combo.currentText()
-        print(operation)
-        print(type(self.image_ports[combo_ind]))
-        self.image_ports[combo_ind].set_image_op(combo_ind, operation)
-        print(self.image_ports[combo_ind].image_op)
+        self.operations[str(combo_ind)] = operation
+        print(self.operations)
+        
+        
+    
+
 
     def browse_image(self, event, index):
         file_filter = "Raw Data (*.png *.jpg *.jpeg)"
@@ -97,10 +104,15 @@ class MainWindow(QtWidgets.QMainWindow):
                 # Set the image only for the ImageViewport at the specified index
                 self.image_ports[index].set_image(image_path)
                 self.image_ports[index].set_image_ind(index)
-                self.ui_combo_boxes[index].setCurrentIndex(index)
-                operation = self.ui_combo_boxes[index].currentText()
+                #pick FT type for each image by default
+                self.ui_image_combo_boxes[index].setCurrentIndex(index)
+                #set some attributes of the Image
+                operation = self.ui_image_combo_boxes[index].currentText()
                 self.operations[str(index)] = operation
                 self.image_ports[index].set_image_op = operation
+                #update the mixing boxes and sliders
+                self.ui_mixing_combo_boxes[index].setCurrentIndex(index)
+                self.ui_vertical_sliders[index].setValue(100)
                 print(self.operations)
 
     def get_operations(self):

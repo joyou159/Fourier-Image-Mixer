@@ -38,6 +38,10 @@ class ImageMixer(QWidget):
             raise ValueError ("")
         # Display the mixed image
         self.set_image(mixed_image)
+        
+    def mix_images(self):
+        self.check_op_validity()
+        pass
 
     # def set_image(self, image_array):
     #     if image_array is not None:

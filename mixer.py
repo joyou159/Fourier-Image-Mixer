@@ -42,6 +42,12 @@ class ImageMixer(QWidget):
         if pair1 not in valid_pairs or pair2 not in valid_pairs:
             raise ValueError('Please choose valid pairs')
 
+    def handle_mixing_sliders(self):
+        pass
+
+    def collect_chunks(self, ind, event):
+        print("don't touch this")
+
     def mix_images(self):
         self.check_pair_validity()
 

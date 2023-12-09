@@ -18,6 +18,7 @@ import bisect
 
 
 from imageViewPort import ImageViewport
+from FTViewPort import FTViewPort
 from mixer import ImageMixer
 
 
@@ -33,7 +34,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.setWindowTitle("FT Mixer")
         self.image_ports = []
         self.components_ports = []
-        self.components = {"0": '', "1": '', '2': '', '3': ''}
+        self.components = {"0": '', "1": '', "2": '', "3": ''}
         # mixer and its connection line
         self.mixer = ImageMixer(self)
         self.ui.mixxer.clicked.connect(self.mixer.mix_images)
@@ -48,13 +49,6 @@ class MainWindow(QtWidgets.QMainWindow):
             self.showNormal()  # Show the window in normal size
         else:
             super().keyPressEvent(event)
-
-    def create_image_viewport(self, parent, mouse_double_click_event_handler):
-        image_port = ImageViewport(self)
-        image_layout = QVBoxLayout(parent)
-        image_layout.addWidget(image_port)
-        image_port.mouseDoubleClickEvent = mouse_double_click_event_handler
-        return image_port
 
     def load_ui_elements(self):
         """
@@ -85,16 +79,26 @@ class MainWindow(QtWidgets.QMainWindow):
             for i in range(4)
         ])
 
+        self.components_ports.extend([
+            self.create_FT_viewport(
+                self.ui_view_ports_comp[i], lambda event, index=i: self.mixer.collect_chunks(event, index))
+            for i in range(4)
+        ])
+
         self.ui_vertical_sliders = [
             self.ui.Slider_weight1, self.ui.Slider_weight2, self.ui.Slider_weight3, self.ui.Slider_weight4]
 
-        # Add items to combo boxes for UI
-        # self.add_items_to_combo_boxes(
-        #     self.ui_image_combo_boxes, ["Magnitude", "Phase", "Real", "Imaginary"])
-
         # Add items to combo boxes for mixing UI
-        self.add_items_to_combo_boxes(self.ui_mixing_combo_boxes, [
-                                      f'image{i+1}' for i in range(4)])
+        for combo_box in self.ui_mixing_combo_boxes:
+            combo_box.addItems([f'image{i+1}' for i in range(4)])
+
+        for i, combo_box in enumerate(self.ui_image_combo_boxes):
+            self.components_ports[i].combo_box = combo_box
+            combo_box.addItems(
+                ["FT Magnitude", "FT Phase", "FT Real", "FT Imaginary"])
+            combo_box.setCurrentIndex(i)
+            combo_box.currentIndexChanged.connect(
+                self.components_ports[i].handle_image_combo_boxes_selection)
 
         # List of brightness sliders
         self.ui_brightness_sliders = [
@@ -105,11 +109,14 @@ class MainWindow(QtWidgets.QMainWindow):
             getattr(self.ui, f"contrastSlider{i+1}") for i in range(4)]
 
         # Set minimum, maximum, and initial value for brightness and contrast sliders
-        for slider in self.ui_brightness_sliders + self.ui_contrast_sliders:
-            slider.setMinimum(-255)
-            slider.setMaximum(255)
-            slider.setValue(0)
-            slider.valueChanged.connect(self.update_slider)
+        for image_ind, slider_pairs in enumerate(zip(self.ui_brightness_sliders, self.ui_contrast_sliders)):
+            self.image_ports[image_ind].slider_pairs = slider_pairs
+            for slider in slider_pairs:
+                slider.setMinimum(-255)
+                slider.setMaximum(255)
+                slider.setValue(0)
+                slider.valueChanged.connect(
+                    self.image_ports[image_ind].update_slider)
 
     def browse_image(self, event, index: int):
         """
@@ -124,13 +131,14 @@ class MainWindow(QtWidgets.QMainWindow):
             None, 'Open Signal File', './', filter=file_filter)
 
         if image_path and 0 <= index < len(self.image_ports):
-            self.image_ports[index].set_image(image_path)
             image_port = self.image_ports[index]
-            # image.update_image_parameters(index)
-            self.ui_image_combo_boxes[index].addItems(
-                ["FT Magnitude", "FT Phase", "FT Real", "FT Imaginary"])
             image_port.update_image_parameters(index, image_path)
-            # image_port.calculate_ft_components(image_path)
+            self.components_ports[index].viewport_FT_ind = index
+            self.components_ports[index].update_FT_components()
+            # print(
+            #     f"the size of the image before resizing{np.array(image_port.original_img).shape}")
+            # print(
+            #     f"the size of the image after resizing{np.array( image_port.resized_img).shape}")
 
     def create_image_viewport(self, parent, mouse_double_click_event_handler):
         """
@@ -150,31 +158,23 @@ class MainWindow(QtWidgets.QMainWindow):
         image_port.mouseDoubleClickEvent = mouse_double_click_event_handler
         return image_port
 
-    def add_items_to_combo_boxes(self, combo_boxes, items):
+    def create_FT_viewport(self, parent, mouse_double_click_event_handler):
         """
-        Adds the specified items to the given combo boxes.
+        Creates an FT viewport and adds it to the specified parent widget.
 
         Args:
-            combo_boxes (list): A list of combo boxes to which the items will be added.
-            items (list): A list of items to be added to the combo boxes.
+            parent: The parent widget to which the image viewport will be added.
+            mouse_double_click_event_handler: The event handler function to be called when a mouse double-click event occurs on the image viewport.
 
         Returns:
-            None
-        """
-        for combo_box in combo_boxes:
-            combo_box.addItems(items)
+            The created FT viewport.
 
-    def update_slider(self):
         """
-        Update the brightness and contrast values of each image port based on the slider values.
-        """
-        # Iterate over the brightness and contrast sliders and their corresponding image ports
-        for index, (brightness_slider, contrast_slider) in enumerate(zip(self.ui_brightness_sliders, self.ui_contrast_sliders)):
-            # Update the brightness and contrast values of the image port
-            self.image_ports[index].brightness = brightness_slider.value()
-            self.image_ports[index].contrast = contrast_slider.value()
-            # Update the display of the image port
-            self.image_ports[index].update_display()
+        FT_port = FTViewPort(self)
+        FT_layout = QVBoxLayout(parent)
+        FT_layout.addWidget(FT_port)
+        FT_port.mouseDoubleClickEvent = mouse_double_click_event_handler
+        return FT_port
 
 
 def main():

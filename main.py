@@ -135,10 +135,10 @@ class MainWindow(QtWidgets.QMainWindow):
             image_port.update_image_parameters(index, image_path)
             self.components_ports[index].viewport_FT_ind = index
             self.components_ports[index].update_FT_components()
-            # print(
-            #     f"the size of the image before resizing{np.array(image_port.original_img).shape}")
-            # print(
-            #     f"the size of the image after resizing{np.array( image_port.resized_img).shape}")
+            print(
+                f"the size of the image before resizing{np.array(image_port.original_img).shape}")
+            print(
+                f"the size of the image after resizing{np.array( image_port.resized_img).shape}")
 
     def create_image_viewport(self, parent, mouse_double_click_event_handler):
         """

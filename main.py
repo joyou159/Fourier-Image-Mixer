@@ -9,12 +9,7 @@ import sys
 import pyqtgraph as pg
 import qdarkstyle
 import os
-from scipy import signal
-import librosa
-import matplotlib
 import sounddevice as sd
-from functools import partial
-import bisect
 
 
 from imageViewPort import ImageViewport

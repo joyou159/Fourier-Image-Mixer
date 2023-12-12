@@ -28,11 +28,12 @@ class FTViewPort(QWidget):
         self.curr_component_name = None
         self.component_data = None
         self.ft_components = {}
+        self.weight_slider = None
         self.original_img = None
         self.press_pos = None
         self.release_pos = None
-        self.current_rect = None
         self.drawRect = False
+        self.current_rect = QRect()
 
     def update_FT_components(self):
         self.component_data = np.array(
@@ -85,6 +86,7 @@ class FTViewPort(QWidget):
             painter.drawPixmap(x, y, pixmap)
 
             painter.end()
+
         if self.drawRect:
             painter = QPainter(self)
             painter.setPen(QPen(Qt.red, 2, Qt.SolidLine))
@@ -98,24 +100,26 @@ class FTViewPort(QWidget):
 
     def mousePressEvent(self, event):
         if event.button() == Qt.MouseButton.LeftButton:
-            self.press_pos = (event.position().x(), event.position().y())
-            print("Mouse Pressed at:", event.position())
-            self.current_rect = QRect(
-                int(self.press_pos[0]), int(self.press_pos[1]), 0, 0)
+            self.press_pos = event.position()
+            print("Mouse Pressed at:", self.press_pos)
+            self.current_rect.setTopLeft(self.press_pos.toPoint())
+            self.current_rect.setBottomRight(self.press_pos.toPoint())
             self.drawRect = True
+            self.update_display()
+
+    def mouseMoveEvent(self, event):
+        if self.drawRect:
+            self.current_rect.setBottomRight(event.position().toPoint())
             self.update_display()
 
     def mouseReleaseEvent(self, event):
         if event.button() == Qt.MouseButton.LeftButton:
-            self.release_pos = (event.position().x(), event.position().y())
-            print("Mouse Released at:", event.position())
-            self.main_window.mixer.collect_chunks(self.viewport_FT_ind)
+            self.release_pos = event.position()
+            print("Mouse Released at:", self.release_pos)
+            self.main_window.mixer.collect_chunks(
+                self.viewport_FT_ind)
             self.drawRect = False
             self.update_display()
-
-    def clear_rect(self):
-        self.current_rect = None
-        self.update_display()
 
     def calculate_ft_components(self):
 

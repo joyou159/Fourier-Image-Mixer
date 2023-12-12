@@ -116,6 +116,11 @@ class MainWindow(QtWidgets.QMainWindow):
 
         for i, combo_box in enumerate(self.ui_image_combo_boxes):
             self.components_ports[i].combo_box = combo_box
+            self.components_ports[i].weight_slider = self.ui_vertical_sliders[i]
+            self.ui_vertical_sliders[i].setMinimum(1)
+            self.ui_vertical_sliders[i].setMaximum(100)
+            self.ui_vertical_sliders[i].valueChanged.connect(
+                self.mixer.handle_weight_sliders)
             combo_box.addItems(
                 ["FT Magnitude", "FT Phase", "FT Real", "FT Imaginary"])
             combo_box.setCurrentIndex(0)

@@ -26,13 +26,15 @@ class ImageMixer(QWidget):
         self.main_window = main_window
         self.fft2_output = []
         self.mixing_comp = []
+        self.weight_reference = np.repeat(100, 4)
+        self.weight_value = np.repeat(1, 4)
         self.selection_mode = 1
-        self.precedence = False
+        self.higher_precedence_ft_component = None
         self.chunks = {
-            "0": [],
-            "1": [],
-            "2": [],
-            "3": []
+            "0": np.array([]),
+            "1": np.array([]),
+            "2": np.array([]),
+            "3": np.array([])
         }
 
     def check_pair_validity(self):
@@ -62,29 +64,46 @@ class ImageMixer(QWidget):
         pass
 
     def collect_chunks(self, ind):
-        print("the current modified image", ind)
-        curr_FTViewport_object = self.main_window.components_ports[ind]
+        if self.higher_precedence_ft_component == None:
+            self.higher_precedence_ft_component = ind
+            # the object of position is the same as object of data
+
+        for data_object_ind in range(len(self.chunks)):
+            if self.main_window.image_ports[data_object_ind].original_img != None:
+                selection_matrix = self.get_chunk(
+                    self.higher_precedence_ft_component, data_object_ind)
+                curr_chunk = self.main_window.components_ports[ind].component_data * \
+                    selection_matrix
+                self.chunks[str(data_object_ind)] = curr_chunk
+
+        print(self.chunks)
+        # self.draw_rectangles()
+        # self.deactivate_drawing_event()
+
+    def get_chunk(self, object_of_position, object_of_data):
+        data_object = self.main_window.components_ports[object_of_data]
 
         if self.selection_mode:
             selection_matrix = np.zeros_like(
-                curr_FTViewport_object.component_data)
+                data_object.component_data)
         else:
             selection_matrix = np.ones_like(
-                curr_FTViewport_object.component_data)
+                data_object.component_data)
 
-            start_pos = curr_FTViewport_object.press_pos  # (x1,y1)
-            end_pos = curr_FTViewport_object.release_pos  # (x2,y2)
+        position_object = self.main_window.components_ports[object_of_position]
+        start_pos = position_object.press_pos  # (x1,y1)
+        end_pos = position_object.release_pos  # (x2,y2)
 
-            for i in range(start_pos[1], end_pos[1] + 1):
-                for j in range(start_pos[0], end_pos[0] + 1):
-                    if self.selection_mode:
-                        selection_matrix[i, j] = 1
-                    else:
-                        selection_matrix[i, j] = 0
-
-        curr_chunk = curr_FTViewport_object.component_data * selection_matrix
-        self.chunks[str(ind)] = curr_chunk
-        print(f"no of chunks {len(self.chunks)}")
+        if object_of_position != object_of_data:
+            data_object.press_pos = position_object.press_pos
+            data_object.release_pos = position_object.release_pos
+        for i in range(int(start_pos.y()), int(end_pos.y()) + 1):
+            for j in range(int(start_pos.x()), int(end_pos.x()) + 1):
+                if self.selection_mode:
+                    selection_matrix[i, j] = 1
+                else:
+                    selection_matrix[i, j] = 0
+        return selection_matrix
 
     def mix_images(self):
         self.check_pair_validity()
@@ -99,8 +118,8 @@ class ImageMixer(QWidget):
             self.compose_complex(pair_1_indices, pair_1_comp))
         self.fft2_output.append(
             self.compose_complex(pair_2_indices, pair_2_comp))
-        self.mixed_image = ifft2(self.compose_complex)
-        self.set_image()
+        # self.mixed_image = ifft2(self.fft2_output)
+        # self.set_image()
 
     def decode_pairs(self):
         mixing_order = []
@@ -117,15 +136,19 @@ class ImageMixer(QWidget):
             phase_index = pair_indices[pair_comp.index("FT Phase")]
             print(
                 f"the resulting complex number is of indices {mag_index, phase_index} in order")
-            # complex_numbers = self.chunks[mag_index] * np.exp(
-            #     1j * self.chunks[phase_index])
+            print(self.chunks[str(mag_index)].shape,
+                  self.chunks[str(phase_index)].shape)
+            # complex_numbers = self.weight_value[mag_index]* self.chunks[mag_index] * np.exp(
+            #     1j * self.chunks[phase_index] * self.weight_value[phase_index] )
         else:
             real_index = pair_indices[pair_comp.index("FT Real")]
             imaginary_index = pair_indices[pair_comp.index("FT Imaginary")]
             print(
                 f"the resulting complex number is of indices {real_index, imaginary_index} in order")
-            # complex_numbers = self.chunks[real_index] + \
-            #     1j * self.chunks[imaginary_index]
+            print(self.chunks[str(real_index)].shape,
+                  self.chunks[str(imaginary_index)].shape)
+            # complex_numbers = self.chunks[real_index] * self.weight_value[real_index] + \
+            #     1j * self.chunks[imaginary_index] * self.weight_value[imaginary_index]
         # return complex_numbers
 
     def handle_radio_button_toggled(self):
@@ -133,3 +156,10 @@ class ImageMixer(QWidget):
             self.selection_mode = 1
         elif self.main_window.ui.radioButton_Out.isChecked():
             self.selection_mode = 0
+
+    def handle_weight_sliders(self):
+        slider = self.sender()
+        slider_ind = self.main_window.ui_vertical_sliders.index(slider)
+        new_weight_value = slider.value() / self.weight_reference[slider_ind]
+        self.weight_reference[slider_ind] = slider.value()
+        self.weight_value[slider_ind] = new_weight_value

@@ -139,12 +139,12 @@ class ImageViewport(QWidget):
             current+1)
         self.main_window.ui_vertical_sliders[selection].setValue(100)
 
-    def update_slider(self, ind):
-        """
-        Update the brightness and contrast values of each image port based on the slider values.
-        """
+    # def update_slider(self, ind):
+    #     """
+    #     Update the brightness and contrast values of each image port based on the slider values.
+    #     """
 
-        self.brightness = self.slider_pairs[0].value()
-        self.contrast = self.slider_pairs[1].value()
-        # Update the display of the image port
-        self.main_window.image_ports[self.viewport_image_ind].update_display()
+    #     self.brightness = self.slider_pairs[0].value()
+    #     self.contrast = self.slider_pairs[1].value()
+    #     # Update the display of the image port
+    #     self.main_window.image_ports[self.viewport_image_ind].update_display()

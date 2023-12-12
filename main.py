@@ -30,9 +30,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.setWindowIcon(QIcon("icons/mixer.png"))
         self.image_ports = []
         self.components_ports = []
+        self.open_order = []
         self.min_width = None
         self.min_height = None     
-        self.components = {"0": '', "1": '', "2": '', "3": ''}
+        self.components = {"1": '', "2": '', '3': '', '4': ''}
         self.ui.output1_port.resize(self.ui.original1.width(), self.ui.original1.height())
         # mixer and its connection line
         self.mixer = ImageMixer(self)
@@ -106,7 +107,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Add items to combo boxes for mixing UI
         for combo_box in self.ui_mixing_combo_boxes:
-            combo_box.addItems([f'image{i+1}' for i in range(4)])
+            combo_box.addItems(['None']+[f'image{i+1}' for i in range(4)])
 
         for i, combo_box in enumerate(self.ui_image_combo_boxes):
             self.components_ports[i].combo_box = combo_box
@@ -149,10 +150,16 @@ class MainWindow(QtWidgets.QMainWindow):
 
         if image_path and 0 <= index < len(self.image_ports):
             image_port = self.image_ports[index]
+            if index not in self.open_order:
+                self.open_order.append(index)
+            else:
+                #swap ,and make the one we open the last one
+                self.open_order[-1],self.open_order[self.open_order.index(index)] = self.open_order[self.open_order.index(index)],self.open_order[-1]    
+
             self.image_processing(index, image_port, image_path)
 
     def image_processing(self, index, image_port, image_path):
-            image_port.update_image_parameters(index, image_path)
+            image_port.update_image_parameters( image_path)
             self.components_ports[index].viewport_FT_ind = index
             self.components_ports[index].update_FT_components()
             print(

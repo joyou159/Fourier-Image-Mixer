@@ -26,13 +26,17 @@ class ImageMixer(QWidget):
                        ("FT Real", "FT Imaginary"), ("FT Imaginary", "FT Real"), ("", "")]
         comp_seq = []
         components = self.main_window.components  # returns the
+        print(components)
         print(len(self.main_window.image_ports))
         for combo in self.main_window.ui_mixing_combo_boxes:
             if len(self.main_window.image_ports) % 2 != 0:
                 raise ValueError('please pick the rest of images')
             else:
                 image_selection = combo.currentIndex()
-                component = components[str(image_selection)]
+                if image_selection == 0:
+                    component = ""
+                else:
+                    component = components[str(image_selection)]
                 # image = self.main_window.image_ports[image_selection]
                 comp_seq.append(component)
         pair1 = (comp_seq[0], comp_seq[1])
@@ -41,6 +45,7 @@ class ImageMixer(QWidget):
         print(pair2)
         if pair1 not in valid_pairs or pair2 not in valid_pairs:
             raise ValueError('Please choose valid pairs')
+        return pair1,pair2
 
     def handle_mixing_sliders(self):
         pass

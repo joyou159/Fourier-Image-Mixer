@@ -120,17 +120,23 @@ class ImageViewport(QWidget):
         enhancer = ImageEnhance.Contrast(img)
         self.resized_img = enhancer.enhance((self.contrast + 127) / 127.0)
 
-    def update_image_parameters(self, index, path):
-        self.main_window.image_ports[index].set_image(path)
-        self.viewport_image_ind = index
+    def update_image_parameters(self, path):
+        #images indices by openeing order
+        order = self.main_window.open_order
+        #latest opened image index
+        current = order[-1] 
+        #used for orderly set the ft components for each opened image
+        selection = len(order)-1
+        
+        self.main_window.image_ports[current].set_image(path)
         # pick FT type for each image by default
-        # self.main_window.ui_image_combo_boxes[index].setCurrentIndex(index)
+        self.main_window.ui_image_combo_boxes[current].setCurrentIndex(selection)
         # set some attributes of the Image
-        # component = self.main_window.ui_image_combo_boxes[index].currentText()
-        # self.main_window.components[str(index)] = component
+        component = self.main_window.ui_image_combo_boxes[current].currentText()
+        self.main_window.components[str(current+1)] = component
         # update the mixing boxes and sliders
-        self.main_window.ui_mixing_combo_boxes[index].setCurrentIndex(index)
-        self.main_window.ui_vertical_sliders[index].setValue(100)
+        self.main_window.ui_mixing_combo_boxes[selection].setCurrentIndex(current+1)
+        self.main_window.ui_vertical_sliders[selection].setValue(100)
 
     def update_slider(self, ind):
         """

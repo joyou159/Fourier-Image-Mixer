@@ -12,6 +12,8 @@ from PyQt6 import QtGui
 from PyQt6.QtCore import Qt, QBuffer, QByteArray
 from PIL import Image, ImageQt, ImageEnhance
 from PyQt6 import QtWidgets
+from PyQt6.QtGui import QPainter, QBrush, QPen
+from PyQt6.QtCore import Qt, QRect
 # Placeholder for FT-related functionalities
 import numpy as np
 from scipy.fft import fft2, ifft2, fftshift
@@ -27,6 +29,10 @@ class FTViewPort(QWidget):
         self.component_data = None
         self.ft_components = {}
         self.original_img = None
+        self.press_pos = None
+        self.release_pos = None
+        self.current_rect = None
+        self.drawRect = False
 
     def update_FT_components(self):
         self.component_data = np.array(
@@ -35,9 +41,11 @@ class FTViewPort(QWidget):
         self.handle_image_combo_boxes_selection()
 
     def handle_image_combo_boxes_selection(self):
-        self.curr_component_name = self.combo_box.currentText()
-        self.set_image()
-        # self.main_window.components[str(combo_ind)] = component
+        if self.ft_components:
+            self.curr_component_name = self.combo_box.currentText()
+            self.main_window.components[str(
+                self.viewport_FT_ind + 1)] = self.curr_component_name
+            self.set_image()
 
     def set_image(self):
         try:
@@ -51,7 +59,6 @@ class FTViewPort(QWidget):
             print(f"Error opening image: {e}")
 
     def update_display(self):
-
         if self.original_img:
             self.repaint()
 
@@ -74,14 +81,40 @@ class FTViewPort(QWidget):
             y = (self.height() - new_height) // 2
 
             # Draw the images onto the widget using the minimum width and height
-
             pixmap = QPixmap.fromImage(ImageQt.ImageQt(self.original_img))
             painter.drawPixmap(x, y, pixmap)
 
             painter.end()
+        if self.drawRect:
+            painter = QPainter(self)
+            painter.setPen(QPen(Qt.red, 2, Qt.SolidLine))
+            painter.setBrush(QBrush(Qt.red, Qt.DiagCrossPattern))
+            painter.drawRect(self.current_rect)
+            painter.end()
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
+        self.update_display()
+
+    def mousePressEvent(self, event):
+        if event.button() == Qt.MouseButton.LeftButton:
+            self.press_pos = (event.position().x(), event.position().y())
+            print("Mouse Pressed at:", event.position())
+            self.current_rect = QRect(
+                int(self.press_pos[0]), int(self.press_pos[1]), 0, 0)
+            self.drawRect = True
+            self.update_display()
+
+    def mouseReleaseEvent(self, event):
+        if event.button() == Qt.MouseButton.LeftButton:
+            self.release_pos = (event.position().x(), event.position().y())
+            print("Mouse Released at:", event.position())
+            self.main_window.mixer.collect_chunks(self.viewport_FT_ind)
+            self.drawRect = False
+            self.update_display()
+
+    def clear_rect(self):
+        self.current_rect = None
         self.update_display()
 
     def calculate_ft_components(self):

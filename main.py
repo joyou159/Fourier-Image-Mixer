@@ -32,12 +32,18 @@ class MainWindow(QtWidgets.QMainWindow):
         self.components_ports = []
         self.open_order = []
         self.min_width = None
-        self.min_height = None     
+        self.min_height = None
         self.components = {"1": '', "2": '', '3': '', '4': ''}
-        self.ui.output1_port.resize(self.ui.original1.width(), self.ui.original1.height())
+        self.ui.output1_port.resize(
+            self.ui.original1.width(), self.ui.original1.height())
         # mixer and its connection line
         self.mixer = ImageMixer(self)
         self.ui.mixxer.clicked.connect(self.mixer.mix_images)
+        self.ui.radioButton_In.setChecked(True)
+        self.ui.radioButton_In.toggled.connect(
+            self.mixer.handle_radio_button_toggled)
+        self.ui.radioButton_Out.toggled.connect(
+            self.mixer.handle_radio_button_toggled)
 
         self.load_ui_elements()
 
@@ -74,21 +80,21 @@ class MainWindow(QtWidgets.QMainWindow):
                          self.ui.original3, self.ui.original4]
 
         self.ui_view_ports_comp = [
-            self.ui.component_image1, self.ui.component_image2, 
+            self.ui.component_image1, self.ui.component_image2,
             self.ui.component_image3, self.ui.component_image4]
-        
+
         # List of combo boxes for UI
         self.ui_image_combo_boxes = [
-            self.ui.combo1, self.ui.combo2, 
+            self.ui.combo1, self.ui.combo2,
             self.ui.combo3, self.ui.combo4]
 
         # List of combo boxes for mixing UI
         self.ui_mixing_combo_boxes = [
-            self.ui.combo11, self.ui.combo12, 
+            self.ui.combo11, self.ui.combo12,
             self.ui.combo13, self.ui.combo14]
-        
+
         self.ui_vertical_sliders = [
-            self.ui.Slider_weight1, self.ui.Slider_weight2, 
+            self.ui.Slider_weight1, self.ui.Slider_weight2,
             self.ui.Slider_weight3, self.ui.Slider_weight4]
 
         # Create image viewports and bind browse_image function to the event
@@ -100,10 +106,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.components_ports.extend([
             self.create_FT_viewport(
-                self.ui_view_ports_comp[i], lambda event, index=i: self.mixer.collect_chunks(event, index))
+                self.ui_view_ports_comp[i])
             for i in range(4)
         ])
-
 
         # Add items to combo boxes for mixing UI
         for combo_box in self.ui_mixing_combo_boxes:
@@ -113,10 +118,9 @@ class MainWindow(QtWidgets.QMainWindow):
             self.components_ports[i].combo_box = combo_box
             combo_box.addItems(
                 ["FT Magnitude", "FT Phase", "FT Real", "FT Imaginary"])
-            combo_box.setCurrentIndex(i)
+            combo_box.setCurrentIndex(0)
             combo_box.currentIndexChanged.connect(
                 self.components_ports[i].handle_image_combo_boxes_selection)
-            
 
         # List of brightness sliders
         # self.ui_brightness_sliders = [
@@ -153,20 +157,22 @@ class MainWindow(QtWidgets.QMainWindow):
             if index not in self.open_order:
                 self.open_order.append(index)
             else:
-                #swap ,and make the one we open the last one
-                self.open_order[-1],self.open_order[self.open_order.index(index)] = self.open_order[self.open_order.index(index)],self.open_order[-1]    
+                # swap ,and make the one we open the last one
+                self.open_order[-1], self.open_order[self.open_order.index(
+                    index)] = self.open_order[self.open_order.index(index)], self.open_order[-1]
 
             self.image_processing(index, image_port, image_path)
 
     def image_processing(self, index, image_port, image_path):
-            image_port.update_image_parameters( image_path)
-            self.components_ports[index].viewport_FT_ind = index
-            self.components_ports[index].update_FT_components()
-            print(
-                f"the size of the image before resizing{np.array(image_port.original_img).shape}")
-            print(
-                f"the size of the image after resizing{np.array( image_port.resized_img).shape}")
-            # self.resize_image()
+        image_port.viewport_image_ind = index
+        self.components_ports[index].viewport_FT_ind = index
+        image_port.update_image_parameters(image_path)
+        self.components_ports[index].update_FT_components()
+        # print(
+        #     f"the size of the image before resizing{np.array(image_port.original_img).shape}")
+        # print(
+        #     f"the size of the image after resizing{np.array( image_port.resized_img).shape}")
+        # self.resize_image()
 
     def resize_image(self):
         dimension_lst = []
@@ -182,7 +188,6 @@ class MainWindow(QtWidgets.QMainWindow):
 
             for viewport in self.image_ports:
                 viewport.resize_image(min_width, min_height)
-
 
     def create_image_viewport(self, parent, mouse_double_click_event_handler):
         """
@@ -202,7 +207,6 @@ class MainWindow(QtWidgets.QMainWindow):
         image_port.mouseDoubleClickEvent = mouse_double_click_event_handler
         return image_port
 
-
     def add_items_to_combo_boxes(self, combo_boxes, items):
         """
         Adds the specified items to the given combo boxes.
@@ -217,7 +221,6 @@ class MainWindow(QtWidgets.QMainWindow):
         for combo_box in combo_boxes:
             combo_box.addItems(items)
 
-
     # def update_slider(self):
     #     """
     #     Update the brightness and contrast values of each image port based on the slider values.
@@ -229,8 +232,8 @@ class MainWindow(QtWidgets.QMainWindow):
     #         self.image_ports[index].contrast = contrast_slider.value()
     #         # Update the display of the image port
     #         self.image_ports[index].update_display()
-            
-    def create_FT_viewport(self, parent, mouse_double_click_event_handler):
+
+    def create_FT_viewport(self, parent):
         """
         Creates an FT viewport and adds it to the specified parent widget.
 
@@ -245,7 +248,6 @@ class MainWindow(QtWidgets.QMainWindow):
         FT_port = FTViewPort(self)
         FT_layout = QVBoxLayout(parent)
         FT_layout.addWidget(FT_port)
-        FT_port.mouseDoubleClickEvent = mouse_double_click_event_handler
         return FT_port
 
 

@@ -8,6 +8,7 @@
     <y>0</y>
     <width>1321</width>
     <height>779</height>
+    <height>779</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -23,9 +24,12 @@
    <layout class="QGridLayout" name="gridLayout_5">
     <item row="0" column="0">
      <layout class="QHBoxLayout" name="horizontalMain" stretch="2,1">
+     <layout class="QHBoxLayout" name="horizontalMain" stretch="2,1">
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_left">
+       <layout class="QHBoxLayout" name="horizontalLayout_left">
         <item>
+         <layout class="QVBoxLayout" name="verticalLayout_left">
          <layout class="QVBoxLayout" name="verticalLayout_left">
           <item>
            <widget class="QFrame" name="frame">
@@ -136,6 +140,20 @@ background: rgba(74, 74, 74, 0);
                  </item>
                  <item>
                   <layout class="QVBoxLayout" name="verticalLayout" stretch="0,5,0">
+                  <widget class="QSlider" name="brightnessSlider1">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Fixed" vsizetype="Minimum">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,5,0">
                    <item>
                     <widget class="QLabel" name="label_2">
                      <property name="font">
@@ -174,12 +192,29 @@ font-weight:10000px;
                      </property>
                      <property name="orientation">
                       <enum>Qt::Horizontal</enum>
+                      <string notr="true">QWidget {
+ border: 3px solid rgb(17,17,17);
+}</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QSlider" name="contrastSlider1">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
                      </property>
                     </widget>
                    </item>
                   </layout>
                  </item>
                  <item>
+                  <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,5,0">
                   <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,5,0">
                    <item>
                     <widget class="QLabel" name="label_3">
@@ -195,16 +230,34 @@ font-weight:10000px;
 font-weight:10000px;</string>
                      </property>
                      <property name="text">
-                      <string>Updated Image</string>
+                      <string>FT Component</string>
                      </property>
                     </widget>
                    </item>
                    <item>
+                    <widget class="QWidget" name="component_image1" native="true">
                     <widget class="QWidget" name="updated1" native="true">
                      <property name="styleSheet">
                       <string notr="true">border: 3px solid rgb(17,17,17);</string>
+                      <string notr="true">border: 3px solid rgb(17,17,17);</string>
                      </property>
                     </widget>
+                   </item>
+                   <item>
+                    <spacer name="verticalSpacer">
+                     <property name="orientation">
+                      <enum>Qt::Vertical</enum>
+                     </property>
+                     <property name="sizeType">
+                      <enum>QSizePolicy::Maximum</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>20</width>
+                       <height>28</height>
+                      </size>
+                     </property>
+                    </spacer>
                    </item>
                    <item>
                     <spacer name="verticalSpacer">
@@ -338,6 +391,20 @@ background: rgba(74, 74, 74, 0);
                  </item>
                  <item>
                   <layout class="QVBoxLayout" name="verticalLayout_5" stretch="0,5,0">
+                  <widget class="QSlider" name="brightnessSlider2">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Fixed" vsizetype="Minimum">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <layout class="QVBoxLayout" name="verticalLayout_5" stretch="0,5,0">
                    <item>
                     <widget class="QLabel" name="label_5">
                      <property name="font">
@@ -373,12 +440,27 @@ font-weight:10000px;</string>
                      </property>
                      <property name="orientation">
                       <enum>Qt::Horizontal</enum>
+                      <string notr="true">border: 3px solid rgb(17,17,17);</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QSlider" name="contrastSlider2">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
                      </property>
                     </widget>
                    </item>
                   </layout>
                  </item>
                  <item>
+                  <layout class="QVBoxLayout" name="verticalLayout_6" stretch="0,5,0">
                   <layout class="QVBoxLayout" name="verticalLayout_6" stretch="0,5,0">
                    <item>
                     <widget class="QLabel" name="label_6">
@@ -394,16 +476,34 @@ font-weight:10000px;</string>
 font-weight:10000px;</string>
                      </property>
                      <property name="text">
-                      <string>Updated Image</string>
+                      <string>FT Component</string>
                      </property>
                     </widget>
                    </item>
                    <item>
+                    <widget class="QWidget" name="component_image2" native="true">
                     <widget class="QWidget" name="updated2" native="true">
                      <property name="styleSheet">
                       <string notr="true">border: 3px solid rgb(17,17,17);</string>
+                      <string notr="true">border: 3px solid rgb(17,17,17);</string>
                      </property>
                     </widget>
+                   </item>
+                   <item>
+                    <spacer name="verticalSpacer_3">
+                     <property name="orientation">
+                      <enum>Qt::Vertical</enum>
+                     </property>
+                     <property name="sizeType">
+                      <enum>QSizePolicy::Maximum</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>20</width>
+                       <height>28</height>
+                      </size>
+                     </property>
+                    </spacer>
                    </item>
                    <item>
                     <spacer name="verticalSpacer_3">
@@ -433,6 +533,7 @@ font-weight:10000px;</string>
          </layout>
         </item>
         <item>
+         <layout class="QVBoxLayout" name="verticalLayout_right">
          <layout class="QVBoxLayout" name="verticalLayout_right">
           <item>
            <widget class="QFrame" name="frame_3">
@@ -535,6 +636,20 @@ background: rgba(74, 74, 74, 0);
                  </item>
                  <item>
                   <layout class="QVBoxLayout" name="verticalLayout_10" stretch="0,5,0">
+                  <widget class="QSlider" name="brightnessSlider3">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Fixed" vsizetype="Minimum">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <layout class="QVBoxLayout" name="verticalLayout_10" stretch="0,5,0">
                    <item>
                     <widget class="QLabel" name="label_8">
                      <property name="font">
@@ -570,6 +685,20 @@ font-weight:10000px;</string>
                      </property>
                      <property name="orientation">
                       <enum>Qt::Horizontal</enum>
+                      <string notr="true">border: 3px solid rgb(17,17,17);</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QSlider" name="contrastSlider3">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
                      </property>
                     </widget>
                    </item>
@@ -591,7 +720,7 @@ font-weight:10000px;</string>
 font-weight:10000px;</string>
                      </property>
                      <property name="text">
-                      <string>Updated Image</string>
+                      <string>FT Component</string>
                      </property>
                     </widget>
                    </item>
@@ -599,8 +728,25 @@ font-weight:10000px;</string>
                     <widget class="QWidget" name="updated3" native="true">
                      <property name="styleSheet">
                       <string notr="true">border: 3px solid rgb(17,17,17);</string>
+                      <string notr="true">border: 3px solid rgb(17,17,17);</string>
                      </property>
                     </widget>
+                   </item>
+                   <item>
+                    <spacer name="verticalSpacer_2">
+                     <property name="orientation">
+                      <enum>Qt::Vertical</enum>
+                     </property>
+                     <property name="sizeType">
+                      <enum>QSizePolicy::Maximum</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>20</width>
+                       <height>28</height>
+                      </size>
+                     </property>
+                    </spacer>
                    </item>
                    <item>
                     <spacer name="verticalSpacer_2">
@@ -728,6 +874,20 @@ background: rgba(74, 74, 74, 0);
                  </item>
                  <item>
                   <layout class="QVBoxLayout" name="verticalLayout_13" stretch="0,5,0">
+                  <widget class="QSlider" name="brightnessSlider4">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Fixed" vsizetype="Minimum">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <layout class="QVBoxLayout" name="verticalLayout_13" stretch="0,5,0">
                    <item>
                     <widget class="QLabel" name="label_11">
                      <property name="font">
@@ -763,12 +923,27 @@ font-weight:10000px;</string>
                      </property>
                      <property name="orientation">
                       <enum>Qt::Horizontal</enum>
+                      <string notr="true">border: 3px solid rgb(17,17,17);</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QSlider" name="contrastSlider4">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
                      </property>
                     </widget>
                    </item>
                   </layout>
                  </item>
                  <item>
+                  <layout class="QVBoxLayout" name="verticalLayout_14" stretch="0,5,0">
                   <layout class="QVBoxLayout" name="verticalLayout_14" stretch="0,5,0">
                    <item>
                     <widget class="QLabel" name="label_12">
@@ -784,16 +959,34 @@ font-weight:10000px;</string>
 font-weight:10000px;</string>
                      </property>
                      <property name="text">
-                      <string>Updated Image</string>
+                      <string>FT Component</string>
                      </property>
                     </widget>
                    </item>
                    <item>
+                    <widget class="QWidget" name="component_image4" native="true">
                     <widget class="QWidget" name="updated4" native="true">
                      <property name="styleSheet">
                       <string notr="true">border: 3px solid rgb(17,17,17);</string>
+                      <string notr="true">border: 3px solid rgb(17,17,17);</string>
                      </property>
                     </widget>
+                   </item>
+                   <item>
+                    <spacer name="verticalSpacer_4">
+                     <property name="orientation">
+                      <enum>Qt::Vertical</enum>
+                     </property>
+                     <property name="sizeType">
+                      <enum>QSizePolicy::Maximum</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>20</width>
+                       <height>28</height>
+                      </size>
+                     </property>
+                    </spacer>
                    </item>
                    <item>
                     <spacer name="verticalSpacer_4">
@@ -826,6 +1019,7 @@ font-weight:10000px;</string>
       </item>
       <item>
        <widget class="QFrame" name="frame_right">
+       <widget class="QFrame" name="frame_right">
         <property name="styleSheet">
          <string notr="true">background-color: rgb(39, 44, 54);
 border-radius: 10px;
@@ -839,6 +1033,7 @@ border: none;</string>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_21" stretch="0,0,0,2,0,0,0,0,0,0,0,1">
          <item>
+          <widget class="QLabel" name="mixerOutputTo">
           <widget class="QLabel" name="mixerOutputTo">
            <property name="font">
             <font>
@@ -889,6 +1084,7 @@ margin: 0 0 ;</string>
          </item>
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_Routput">
+          <layout class="QHBoxLayout" name="horizontalLayout_Routput">
            <item>
             <widget class="QRadioButton" name="radioButton">
              <property name="font">
@@ -929,9 +1125,12 @@ font-weight:10000px;</string>
          </item>
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_output">
+          <layout class="QHBoxLayout" name="horizontalLayout_output">
            <item>
             <layout class="QVBoxLayout" name="verticalLayout_OP1" stretch="0,5">
+            <layout class="QVBoxLayout" name="verticalLayout_OP1" stretch="0,5">
              <item>
+              <widget class="QLabel" name="label_op1">
               <widget class="QLabel" name="label_op1">
                <property name="font">
                 <font>
@@ -951,6 +1150,7 @@ font-weight:10000px;</string>
              </item>
              <item>
               <widget class="QWidget" name="output1_port" native="true">
+              <widget class="QWidget" name="output1_port" native="true">
                <property name="styleSheet">
                 <string notr="true">background-color: rgb(0, 0, 0);</string>
                </property>
@@ -960,7 +1160,9 @@ font-weight:10000px;</string>
            </item>
            <item>
             <layout class="QVBoxLayout" name="verticalLayout_OP2" stretch="0,5">
+            <layout class="QVBoxLayout" name="verticalLayout_OP2" stretch="0,5">
              <item>
+              <widget class="QLabel" name="label_op2">
               <widget class="QLabel" name="label_op2">
                <property name="font">
                 <font>
@@ -979,6 +1181,7 @@ font-weight:10000px;</string>
               </widget>
              </item>
              <item>
+              <widget class="QWidget" name="output2_port" native="true">
               <widget class="QWidget" name="output2_port" native="true">
                <property name="styleSheet">
                 <string notr="true">background-color: rgb(0, 0, 0);</string>
@@ -1027,7 +1230,16 @@ font-weight:10000px;</string>
              <pointsize>12</pointsize>
              <bold>true</bold>
             </font>
+          <widget class="QPushButton" name="mixxer">
+           <property name="font">
+            <font>
+             <family>-apple-system</family>
+             <pointsize>12</pointsize>
+             <bold>true</bold>
+            </font>
            </property>
+           <property name="layoutDirection">
+            <enum>Qt::LeftToRight</enum>
            <property name="layoutDirection">
             <enum>Qt::LeftToRight</enum>
            </property>
@@ -1062,14 +1274,49 @@ background-color: #1c2973;
              <normaloff>icons/combine-svgrepo-com.png</normaloff>icons/combine-svgrepo-com.png</iconset>
            </property>
            <property name="iconSize">
+           <property name="styleSheet">
+            <string notr="true">QPushButton{
+  appearance: button;
+  background-color: #405cf5;
+  border-radius: 6px;
+  border-width: 0;
+  box-shadow: rgba(50, 50, 93, .1) 0 0 0 1px inset,rgba(50, 50, 93, .1) 0 2px 5px 0,rgba(0, 0, 0, .07) 0 1px 1px 0;
+  color: #fff;
+  cursor: pointer;
+  font-family: -apple-system,system-ui,&quot;Segoe UI&quot;,Roboto,&quot;Helvetica Neue&quot;,Ubuntu,sans-serif;
+  height: 30px;
+  margin: 0 150px 0 150px;
+  position: center;
+  width:30%;
+}
+QPushButton:hover{
+background-color: #283999;
+}
+QPushButton:pressed{
+background-color: #1c2973;
+}
+</string>
+           </property>
+           <property name="text">
+            <string>Mix</string>
+           </property>
+           <property name="icon">
+            <iconset>
+             <normaloff>icons/combine-svgrepo-com.png</normaloff>icons/combine-svgrepo-com.png</iconset>
+           </property>
+           <property name="iconSize">
             <size>
+             <width>25</width>
+             <height>20</height>
              <width>25</width>
              <height>20</height>
             </size>
            </property>
           </widget>
+          </widget>
          </item>
          <item>
+          <widget class="QLabel" name="selectedArea">
           <widget class="QLabel" name="selectedArea">
            <property name="font">
             <font>
@@ -1090,6 +1337,7 @@ margin: 0 0 ;</string>
          </item>
          <item>
           <widget class="QRadioButton" name="radioButton_In">
+          <widget class="QRadioButton" name="radioButton_In">
            <property name="font">
             <font>
              <family>Oswald SemiBold</family>
@@ -1108,6 +1356,7 @@ font-weight:10000px;
           </widget>
          </item>
          <item>
+          <widget class="QRadioButton" name="radioButton_Out">
           <widget class="QRadioButton" name="radioButton_Out">
            <property name="font">
             <font>
@@ -1157,6 +1406,7 @@ font-weight:10000px;</string>
          </item>
          <item>
           <widget class="QLabel" name="WeightOfImages">
+          <widget class="QLabel" name="WeightOfImages">
            <property name="font">
             <font>
              <family>Overpass Black</family>
@@ -1176,9 +1426,22 @@ margin: 0 0 ;</string>
          </item>
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_Wsliders">
+          <layout class="QHBoxLayout" name="horizontalLayout_Wsliders">
            <item>
             <layout class="QVBoxLayout" name="verticalLayout_weight1">
+            <layout class="QVBoxLayout" name="verticalLayout_weight1">
              <item>
+              <widget class="QComboBox" name="combo11">
+               <property name="styleSheet">
+                <string notr="true">QComboBox {
+    font-family: &quot;Overpass&quot;;
+    font-weight: 600; /* Semibold */
+    font-size: 10pt; /* Adjust the font size as needed */
+    color: white; /* Set the text color to white */
+    border: 1px solid white; /* Set the border to 1px solid white */
+background: rgba(74, 74, 74, 0);
+	border-radius: 10px;
+}</string>
               <widget class="QComboBox" name="combo11">
                <property name="styleSheet">
                 <string notr="true">QComboBox {
@@ -1195,9 +1458,12 @@ background: rgba(74, 74, 74, 0);
              </item>
              <item>
               <widget class="QSlider" name="Slider_weight1">
+              <widget class="QSlider" name="Slider_weight1">
                <property name="layoutDirection">
                 <enum>Qt::LeftToRight</enum>
                </property>
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
                <property name="orientation">
                 <enum>Qt::Vertical</enum>
                </property>
@@ -1207,7 +1473,19 @@ background: rgba(74, 74, 74, 0);
            </item>
            <item>
             <layout class="QVBoxLayout" name="verticalLayout_weight2">
+            <layout class="QVBoxLayout" name="verticalLayout_weight2">
              <item>
+              <widget class="QComboBox" name="combo12">
+               <property name="styleSheet">
+                <string notr="true">QComboBox {
+    font-family: &quot;Overpass&quot;;
+    font-weight: 600; /* Semibold */
+    font-size: 10pt; /* Adjust the font size as needed */
+    color: white; /* Set the text color to white */
+    border: 1px solid white; /* Set the border to 1px solid white */
+background: rgba(74, 74, 74, 0);
+	border-radius: 10px;
+}</string>
               <widget class="QComboBox" name="combo12">
                <property name="styleSheet">
                 <string notr="true">QComboBox {
@@ -1226,6 +1504,9 @@ background: rgba(74, 74, 74, 0);
               <widget class="QSlider" name="Slider_weight2">
                <property name="orientation">
                 <enum>Qt::Vertical</enum>
+              <widget class="QSlider" name="Slider_weight2">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
                </property>
               </widget>
              </item>
@@ -1233,7 +1514,19 @@ background: rgba(74, 74, 74, 0);
            </item>
            <item>
             <layout class="QVBoxLayout" name="verticalLayout_weight3">
+            <layout class="QVBoxLayout" name="verticalLayout_weight3">
              <item>
+              <widget class="QComboBox" name="combo13">
+               <property name="styleSheet">
+                <string notr="true">QComboBox {
+    font-family: &quot;Overpass&quot;;
+    font-weight: 600; /* Semibold */
+    font-size: 10pt; /* Adjust the font size as needed */
+    color: white; /* Set the text color to white */
+    border: 1px solid white; /* Set the border to 1px solid white */
+background: rgba(74, 74, 74, 0);
+	border-radius: 10px;
+}</string>
               <widget class="QComboBox" name="combo13">
                <property name="styleSheet">
                 <string notr="true">QComboBox {
@@ -1252,6 +1545,9 @@ background: rgba(74, 74, 74, 0);
               <widget class="QSlider" name="Slider_weight3">
                <property name="orientation">
                 <enum>Qt::Vertical</enum>
+              <widget class="QSlider" name="Slider_weight3">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
                </property>
               </widget>
              </item>
@@ -1259,7 +1555,19 @@ background: rgba(74, 74, 74, 0);
            </item>
            <item>
             <layout class="QVBoxLayout" name="verticalLayout_weight4">
+            <layout class="QVBoxLayout" name="verticalLayout_weight4">
              <item>
+              <widget class="QComboBox" name="combo14">
+               <property name="styleSheet">
+                <string notr="true">QComboBox {
+    font-family: &quot;Overpass&quot;;
+    font-weight: 600; /* Semibold */
+    font-size: 10pt; /* Adjust the font size as needed */
+    color: white; /* Set the text color to white */
+    border: 1px solid white; /* Set the border to 1px solid white */
+background: rgba(74, 74, 74, 0);
+	border-radius: 10px;
+}</string>
               <widget class="QComboBox" name="combo14">
                <property name="styleSheet">
                 <string notr="true">QComboBox {
@@ -1275,6 +1583,9 @@ background: rgba(74, 74, 74, 0);
               </widget>
              </item>
              <item>
+              <widget class="QSlider" name="Slider_weight4">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
               <widget class="QSlider" name="Slider_weight4">
                <property name="orientation">
                 <enum>Qt::Vertical</enum>
@@ -1298,7 +1609,7 @@ background: rgba(74, 74, 74, 0);
      <x>0</x>
      <y>0</y>
      <width>1321</width>
-     <height>22</height>
+     <height>26</height>
     </rect>
    </property>
   </widget>

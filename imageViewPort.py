@@ -22,20 +22,24 @@ class ImageViewport(QWidget):
         self.original_img = None
         self.resized_img = None
         self.viewport_image_ind = None
-        self.slider_pairs = None  # (brightness,contrast)
+        self.slider_pairs = None  # (brightness, contrast)
         self.brightness = 0
         self.contrast = 100
 
-        self.main_window = main_window
+        self.last_x = 0
+        self.last_y = 0
 
-        # self.layout = QVBoxLayout(self)
-        # self.setLayout(self.layout)
+        self.main_window = main_window
 
         # connect the combo boxes value changed to a function that shows the corresponding FT type, and to the set_image_op
 
     def set_image(self, image_path):
         try:
             image = Image.open(image_path).convert('L')  # Convert to grayscale
+
+            # Set default brightness and contrast values
+            self.brightness = 0
+            self.contrast = 100
 
             self.original_img = image
             self.update_display()
@@ -53,13 +57,23 @@ class ImageViewport(QWidget):
         if self.original_img:
             painter = QPainter(self)
 
-            # Draw the images onto the widget using the minimum width and height
-            x, y = 0, 0
+            # Calculate the new size while maintaining the aspect ratio
+            aspect_ratio = self.original_img.width / self.original_img.height
+            new_width = self.width()
+            new_height = int(new_width / aspect_ratio)
 
-            adjusted_img = self.adjust_brightness_contrast(self.original_img)
-            self.resized_img = adjusted_img.resize(
-                (self.width(), self.height()))
+            if new_height > self.height():
+                new_height = self.height()
+                new_width = int(new_height * aspect_ratio)
 
+            # Calculate the position (x, y) to center the image
+            x = (self.width() - new_width) // 2
+            y = (self.height() - new_height) // 2
+
+            # Resize the image
+            self.adjust_brightness_contrast()
+            self.resized_img = self.resized_img.resize((new_width, new_height))
+            # Draw the image centered on the widget
             pixmap = QPixmap.fromImage(ImageQt.ImageQt(self.resized_img))
             painter.drawPixmap(x, y, pixmap)
 
@@ -69,14 +83,42 @@ class ImageViewport(QWidget):
         super().resizeEvent(event)
         self.update_display()
 
-    def adjust_brightness_contrast(self, img):
+    def mouseMoveEvent(self, event):
+        if self.resized_img and event.buttons() == Qt.RightButton:
+            # Calculate the displacement from the last mouse position
+            dx = event.x() - self.last_x
+            dy = event.y() - self.last_y
+
+            # Update brightness based on horizontal movement
+            self.brightness += dx
+            # Update contrast based on vertical movement
+            self.contrast += dy
+
+            # Clamp brightness and contrast values to valid ranges
+            self.brightness = max(-255, min(255, self.brightness))
+            self.contrast = max(-127, min(127, self.contrast))
+
+            # Update the image with adjusted brightness and contrast
+            self.adjust_brightness_contrast()
+
+            # Update the display
+            self.update_display()
+
+        # Save the current mouse position for the next event
+        self.last_x = event.x()
+        self.last_y = event.y()
+
+    def mousePressEvent(self, event):
+        # Save the initial mouse position when the mouse is pressed
+        self.last_x = event.x()
+        self.last_y = event.y()
+
+    def adjust_brightness_contrast(self):
         # Adjust brightness and contrast
-        enhancer = ImageEnhance.Brightness(img)
+        enhancer = ImageEnhance.Brightness(self.original_img)
         img = enhancer.enhance((self.brightness + 255) / 255.0)
         enhancer = ImageEnhance.Contrast(img)
-        img = enhancer.enhance((self.contrast + 127) / 127.0)
-
-        return img
+        self.resized_img = enhancer.enhance((self.contrast + 127) / 127.0)
 
     def update_image_parameters(self, index, path):
         self.main_window.image_ports[index].set_image(path)

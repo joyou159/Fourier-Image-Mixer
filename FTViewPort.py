@@ -25,7 +25,7 @@ class FTViewPort(QWidget):
         self.main_window = main_window
         self.curr_component_name = None
         self.component_data = None
-        self.ft_components = dict()
+        self.ft_components = {}
         self.original_img = None
 
     def update_FT_components(self):
@@ -60,8 +60,20 @@ class FTViewPort(QWidget):
         if self.original_img:
             painter = QPainter(self)
 
+            # Calculate the new size while maintaining the aspect ratio
+            aspect_ratio = self.original_img.width / self.original_img.height
+            new_width = self.width()
+            new_height = int(new_width / aspect_ratio)
+
+            if new_height > self.height():
+                new_height = self.height()
+                new_width = int(new_height * aspect_ratio)
+
+            # Calculate the position (x, y) to center the image
+            x = (self.width() - new_width) // 2
+            y = (self.height() - new_height) // 2
+
             # Draw the images onto the widget using the minimum width and height
-            x, y = 0, 0
 
             pixmap = QPixmap.fromImage(ImageQt.ImageQt(self.original_img))
             painter.drawPixmap(x, y, pixmap)
@@ -81,17 +93,17 @@ class FTViewPort(QWidget):
         fft_shifted = fftshift(fft)
 
         # Compute the magnitude of the spectrum
-        mag = np.abs(fft)
+        mag = np.abs(fft_shifted)
         mag = np.log(np.abs(mag) + 1)
 
         # Compute the phase of the spectrum
-        phase = np.angle(fft)
+        phase = np.angle(fft_shifted)
 
         # real ft components
-        real = fft.real
+        real = fft_shifted.real
 
         # imaginary ft components
-        imaginary = fft.imag
+        imaginary = fft_shifted.imag
 
         self.ft_components['FT Magnitude'] = Image.fromarray(
             mag, mode="L")

@@ -10,11 +10,22 @@ import pyqtgraph as pg
 import qdarkstyle
 import os
 import sounddevice as sd
-
-
+from PyQt6.QtCore import Qt, QRect, QPoint
+import sys
+import logging
 from imageViewPort import ImageViewport
 from FTViewPort import FTViewPort
 from mixer import ImageMixer
+from ThreadingClass import WorkerSignals, WorkerThread
+
+# Configure logging to capture all log levels
+logging.basicConfig(filemode="a", filename="our_log.log",
+                    format="(%(asctime)s) | %(name)s| %(levelname)s | => %(message)s")
+
+# logging.info("This is an info message.")
+# logging.warning("This is a warning message.")
+# logging.error("This is an error message.")
+# logging.critical("This is a critical message.")
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -38,17 +49,41 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.original1.width(), self.ui.original1.height())
         # mixer and its connection line
         self.mixer = ImageMixer(self)
-        self.ui.mixxer.clicked.connect(self.mixer.mix_images)
+        self.ui.mixxer.clicked.connect(self.start_thread)
         self.ui.radioButton_In.setChecked(True)
         self.ui.radioButton_In.toggled.connect(
             self.mixer.handle_radio_button_toggled)
         self.ui.radioButton_Out.toggled.connect(
             self.mixer.handle_radio_button_toggled)
+        self.ui.Deselect.clicked.connect(self.deselect)
 
         self.load_ui_elements()
 
         self.showFullScreen()
         self.ui.keyPressEvent = self.keyPressEvent
+
+        self.worker_signals = WorkerSignals()
+        self.worker_thread = None
+
+        
+
+    def deselect(self):
+        for comp in self.components_ports:
+            comp.current_rect = QRect()
+            comp.reactivate_drawing_events()
+            comp.update_display()
+
+    def start_thread(self):
+        if self.worker_thread and self.worker_thread.is_alive():
+            print('Terminating the running thread...')
+            self.worker_thread.cancel()
+            print('Thread terminated.')
+
+        print('Starting a new thread...')
+        self.worker_signals.canceled.clear()
+        self.worker_thread = WorkerThread(5, self.worker_signals, self)
+        self.worker_thread.start()
+        self.mixer.mix_images()
 
     def keyPressEvent(self, event):
         # Handle key events, for example, pressing ESC to exit full screen
@@ -228,10 +263,12 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
 def main():
+
     app = QtWidgets.QApplication([])
     app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt6())
     main_window = MainWindow()
     main_window.show()
+
     sys.exit(app.exec())
 
 

@@ -1,3 +1,5 @@
+from PyQt6.QtCore import QTimer
+import sounddevice as sd
 import sys
 from PyQt6.QtWidgets import (
     QApplication,
@@ -14,10 +16,14 @@ from PyQt6.QtGui import QPainter, QBrush, QPen
 from PyQt6.QtCore import Qt, QRect
 
 from PyQt6 import QtWidgets
-
+import sys
+import time
+import threading
+import logging
 # Placeholder for FT-related functionalities
 import numpy as np
 from scipy.fft import ifft2
+from PyQt6.QtWidgets import QWidget, QHBoxLayout, QLabel, QProgressBar
 
 
 class ImageMixer(QWidget):
@@ -38,6 +44,7 @@ class ImageMixer(QWidget):
             "2": np.array([]),
             "3": np.array([])
         }
+        
 
     def check_pair_validity(self):
         valid_pairs = [("FT Magnitude", "FT Phase"), ("FT Phase", "FT Magnitude"),
@@ -174,3 +181,5 @@ class ImageMixer(QWidget):
         new_weight_value = slider.value() / self.weight_reference[slider_ind]
         self.weight_reference[slider_ind] = slider.value()
         self.weight_value[slider_ind] = new_weight_value
+
+

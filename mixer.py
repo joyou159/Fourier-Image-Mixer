@@ -11,7 +11,8 @@ from PyQt6.QtGui import QPixmap, QImage
 from PyQt6.QtGui import QPixmap, QImage,  QImageReader, QPainter
 from PIL import Image, ImageQt, ImageEnhance
 from PyQt6.QtGui import QPainter, QBrush, QPen
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, QRect
+
 from PyQt6 import QtWidgets
 
 # Placeholder for FT-related functionalities
@@ -29,6 +30,7 @@ class ImageMixer(QWidget):
         self.weight_reference = np.repeat(100, 4)
         self.weight_value = np.repeat(1, 4)
         self.selection_mode = 1
+        # the index of the FTviewport at which the mixing begins
         self.higher_precedence_ft_component = None
         self.chunks = {
             "0": np.array([]),
@@ -60,45 +62,52 @@ class ImageMixer(QWidget):
         if pair1 not in valid_pairs or pair2 not in valid_pairs:
             raise ValueError('Please choose valid pairs')
 
-    def handle_mixing_sliders(self):
-        pass
-
-    def collect_chunks(self, ind):
-        if self.higher_precedence_ft_component == None:
-            self.higher_precedence_ft_component = ind
-            # the object of position is the same as object of data
-
-        for data_object_ind in range(len(self.chunks)):
-            if self.main_window.image_ports[data_object_ind].original_img != None:
-                selection_matrix = self.get_chunk(
-                    self.higher_precedence_ft_component, data_object_ind)
+    def collect_chunks(self):
+        for ind in range(len(self.chunks)):
+            if self.main_window.image_ports[ind].original_img != None:
+                selection_matrix = self.get_chunk(ind)
                 curr_chunk = self.main_window.components_ports[ind].component_data * \
                     selection_matrix
-                self.chunks[str(data_object_ind)] = curr_chunk
+                self.chunks[str(ind)] = curr_chunk
 
-        print(self.chunks)
-        # self.draw_rectangles()
-        # self.deactivate_drawing_event()
+    def generalize_rectangle(self, ind):
+        if self.higher_precedence_ft_component == None:
+            self.higher_precedence_ft_component = ind
+            print("higher_precedence_ft_component has changed")
+            # the object of position is the same as object of data
+        for i, port in enumerate(self.main_window.components_ports):
+            if self.main_window.image_ports[i].original_img != None:
+                port.current_rect = QRect(
+                    self.main_window.components_ports[self.higher_precedence_ft_component].current_rect
+                )
+                port.press_pos, port.release_pos = port.current_rect.topLeft(
+                ), port.current_rect.bottomRight()
 
-    def get_chunk(self, object_of_position, object_of_data):
-        data_object = self.main_window.components_ports[object_of_data]
+                port.holdRect = True
+                port.set_image()
+                port.deactivate_drawing_events()
+                print("generalize")
+
+    def get_chunk(self, ind):
+        port = self.main_window.components_ports[ind]
 
         if self.selection_mode:
             selection_matrix = np.zeros_like(
-                data_object.component_data)
+                port.component_data)
         else:
             selection_matrix = np.ones_like(
-                data_object.component_data)
+                port.component_data)
 
-        position_object = self.main_window.components_ports[object_of_position]
-        start_pos = position_object.press_pos  # (x1,y1)
-        end_pos = position_object.release_pos  # (x2,y2)
+        start_pos = port.press_pos  # (x1,y1)
+        end_pos = port.release_pos  # (x2,y2)
 
-        if object_of_position != object_of_data:
-            data_object.press_pos = position_object.press_pos
-            data_object.release_pos = position_object.release_pos
-        for i in range(int(start_pos.y()), int(end_pos.y()) + 1):
-            for j in range(int(start_pos.x()), int(end_pos.x()) + 1):
+        print(round(start_pos.y()), round(end_pos.y()))
+        print(round(start_pos.x()), round(end_pos.x()))
+
+        print("different segmentation")
+
+        for i in range(round(start_pos.y()), round(end_pos.y()) + 1):
+            for j in range(round(start_pos.x()), round(end_pos.x()) + 1):
                 if self.selection_mode:
                     selection_matrix[i, j] = 1
                 else:
@@ -107,6 +116,7 @@ class ImageMixer(QWidget):
 
     def mix_images(self):
         self.check_pair_validity()
+        self.collect_chunks()
         mixing_order = self.decode_pairs()
         pair_1_indices = (mixing_order[0], mixing_order[1])
         pair_1_comp = (self.mixing_comp[0], self.mixing_comp[1])
@@ -132,21 +142,22 @@ class ImageMixer(QWidget):
         if -1 in pair_indices:
             return
         if "FT Magnitude" in pair_comp:
-            mag_index = pair_indices[pair_comp.index("FT Magnitude")]
-            phase_index = pair_indices[pair_comp.index("FT Phase")]
+            mag_index = str(pair_indices[pair_comp.index("FT Magnitude")])
+            phase_index = str(pair_indices[pair_comp.index("FT Phase")])
             print(
                 f"the resulting complex number is of indices {mag_index, phase_index} in order")
-            print(self.chunks[str(mag_index)].shape,
-                  self.chunks[str(phase_index)].shape)
+            print(self.chunks[mag_index].shape,
+                  self.chunks[phase_index].shape)
             # complex_numbers = self.weight_value[mag_index]* self.chunks[mag_index] * np.exp(
             #     1j * self.chunks[phase_index] * self.weight_value[phase_index] )
         else:
-            real_index = pair_indices[pair_comp.index("FT Real")]
-            imaginary_index = pair_indices[pair_comp.index("FT Imaginary")]
+            real_index = str(pair_indices[pair_comp.index("FT Real")])
+            imaginary_index = str(
+                pair_indices[pair_comp.index("FT Imaginary")])
             print(
                 f"the resulting complex number is of indices {real_index, imaginary_index} in order")
-            print(self.chunks[str(real_index)].shape,
-                  self.chunks[str(imaginary_index)].shape)
+            print(self.chunks[real_index].shape,
+                  self.chunks[imaginary_index].shape)
             # complex_numbers = self.chunks[real_index] * self.weight_value[real_index] + \
             #     1j * self.chunks[imaginary_index] * self.weight_value[imaginary_index]
         # return complex_numbers

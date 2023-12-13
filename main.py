@@ -127,24 +127,6 @@ class MainWindow(QtWidgets.QMainWindow):
             combo_box.currentIndexChanged.connect(
                 self.components_ports[i].handle_image_combo_boxes_selection)
 
-        # List of brightness sliders
-        # self.ui_brightness_sliders = [
-        #     getattr(self.ui, f"brightnessSlider{i+1}") for i in range(4)]
-
-        # # List of contrast sliders
-        # self.ui_contrast_sliders = [
-        #     getattr(self.ui, f"contrastSlider{i+1}") for i in range(4)]
-
-        # # Set minimum, maximum, and initial value for brightness and contrast sliders
-        # for image_ind, slider_pairs in enumerate(zip(self.ui_brightness_sliders, self.ui_contrast_sliders)):
-        #     self.image_ports[image_ind].slider_pairs = slider_pairs
-        #     for slider in slider_pairs:
-        #         slider.setMinimum(-255)
-        #         slider.setMaximum(255)
-        #         slider.setValue(0)
-        #         slider.valueChanged.connect(
-        #             self.image_ports[image_ind].update_slider)
-
     def browse_image(self, event, index: int):
         """
         Browse for an image file and set it for the ImageViewport at the specified index.
@@ -183,6 +165,7 @@ class MainWindow(QtWidgets.QMainWindow):
         dimension_lst = []
 
         for viewport in self.image_ports:
+
             dimensions = np.array(viewport.resized_img).shape
             if dimensions:  # Check if the shape tuple is not empty
                 dimension_lst.append(dimensions)
@@ -225,18 +208,6 @@ class MainWindow(QtWidgets.QMainWindow):
         """
         for combo_box in combo_boxes:
             combo_box.addItems(items)
-
-    # def update_slider(self):
-    #     """
-    #     Update the brightness and contrast values of each image port based on the slider values.
-    #     """
-    #     # Iterate over the brightness and contrast sliders and their corresponding image ports
-    #     for index, (brightness_slider, contrast_slider) in enumerate(zip(self.ui_brightness_sliders, self.ui_contrast_sliders)):
-    #         # Update the brightness and contrast values of the image port
-    #         self.image_ports[index].brightness = brightness_slider.value()
-    #         self.image_ports[index].contrast = contrast_slider.value()
-    #         # Update the display of the image port
-    #         self.image_ports[index].update_display()
 
     def create_FT_viewport(self, parent):
         """

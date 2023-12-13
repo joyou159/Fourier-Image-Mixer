@@ -2,7 +2,7 @@ import sys
 from PyQt6.QtWidgets import (
     QApplication,
     QWidget,
-    QVBoxLayout,  
+    QVBoxLayout,
 )
 from PyQt6.QtGui import QPixmap, QImage,  QImageReader, QPainter
 from PyQt6 import QtGui
@@ -14,18 +14,15 @@ import numpy as np
 from scipy.fft import fft2, ifft2, fftshift
 
 
-
 class ImageViewport(QWidget):
     def __init__(self, main_window, parent=None):
         super().__init__(parent)
         # keep track of mini figure size.
         self.original_img = None
         self.resized_img = None
-        self.viewport_image_ind = None
-        self.slider_pairs = None  # (brightness, contrast)
+        self.viewport_image_ind = None  # (brightness, contrast)
         self.brightness = 0
         self.contrast = 100
-
         self.last_x = 0
         self.last_y = 0
 
@@ -100,7 +97,8 @@ class ImageViewport(QWidget):
 
             # Update the image with adjusted brightness and contrast
             self.adjust_brightness_contrast()
-
+            self.main_window.components_ports[self.viewport_image_ind].update_FT_components(
+            )
             # Update the display
             self.update_display()
 
@@ -120,26 +118,23 @@ class ImageViewport(QWidget):
         enhancer = ImageEnhance.Contrast(img)
         self.resized_img = enhancer.enhance((self.contrast + 127) / 127.0)
 
-    def update_image_parameters(self, index, path):
-        self.main_window.image_ports[index].set_image(path)
-        self.viewport_image_ind = index
+    def update_image_parameters(self, path):
+        # images indices by openeing order
+        order = self.main_window.open_order
+        # latest opened image index
+        current = order[-1]
+        # used for orderly set the ft components for each opened image
+        selection = len(order)-1
+
+        self.main_window.image_ports[current].set_image(path)
         # pick FT type for each image by default
-        # self.main_window.ui_image_combo_boxes[index].setCurrentIndex(index)
+        self.main_window.ui_image_combo_boxes[current].setCurrentIndex(
+            selection)
         # set some attributes of the Image
-        # component = self.main_window.ui_image_combo_boxes[index].currentText()
-        # self.main_window.components[str(index)] = component
-        # update the mixing boxes and sliders
-        self.main_window.ui_mixing_combo_boxes[index].setCurrentIndex(index)
-        self.main_window.ui_vertical_sliders[index].setValue(100)
-
-    def update_slider(self, ind):
-        """
-        Update the brightness and contrast values of each image port based on the slider values.
-        """
-
-        self.brightness = self.slider_pairs[0].value()
-        self.contrast = self.slider_pairs[1].value()
-        # Update the display of the image port
-        self.main_window.image_ports[self.viewport_image_ind].update_display()
-        self.main_window.components_ports[self.viewport_image_ind].update_FT_components(
+        component = self.main_window.ui_image_combo_boxes[current].currentText(
         )
+        self.main_window.components[str(current+1)] = component
+        # update the mixing boxes and sliders
+        self.main_window.ui_mixing_combo_boxes[selection].setCurrentIndex(
+            current+1)
+        self.main_window.ui_vertical_sliders[selection].setValue(100)

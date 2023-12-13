@@ -22,60 +22,58 @@
    </property>
    <layout class="QGridLayout" name="gridLayout_5">
     <item row="0" column="0">
-     <layout class="QHBoxLayout" name="horizontalMain" stretch="2,1">
+     <layout class="QHBoxLayout" name="horizontalLayout_10">
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_left">
+       <layout class="QVBoxLayout" name="verticalLayout_left">
         <item>
-         <layout class="QVBoxLayout" name="verticalLayout_left">
-          <item>
-           <widget class="QFrame" name="frame">
-            <property name="styleSheet">
-             <string notr="true">border-radius: 10px;
+         <widget class="QFrame" name="frame">
+          <property name="styleSheet">
+           <string notr="true">border-radius: 10px;
 background-color: rgb(39, 44, 54);
 border: none;
 
 </string>
-            </property>
-            <property name="frameShape">
-             <enum>QFrame::StyledPanel</enum>
-            </property>
-            <property name="frameShadow">
-             <enum>QFrame::Raised</enum>
-            </property>
-            <layout class="QGridLayout" name="gridLayout">
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Raised</enum>
+          </property>
+          <layout class="QGridLayout" name="gridLayout">
+           <property name="leftMargin">
+            <number>9</number>
+           </property>
+           <item row="0" column="0">
+            <layout class="QVBoxLayout" name="verticalLayout_3">
              <property name="leftMargin">
-              <number>9</number>
+              <number>0</number>
              </property>
-             <item row="0" column="0">
-              <layout class="QVBoxLayout" name="verticalLayout_3">
-               <property name="leftMargin">
-                <number>0</number>
-               </property>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout">
                <item>
-                <layout class="QHBoxLayout" name="horizontalLayout">
-                 <item>
-                  <widget class="QLabel" name="label">
-                   <property name="font">
-                    <font>
-                     <family>Overpass Black</family>
-                     <pointsize>-1</pointsize>
-                     <bold>true</bold>
-                    </font>
-                   </property>
-                   <property name="styleSheet">
-                    <string notr="true">color:white;
+                <widget class="QLabel" name="label">
+                 <property name="font">
+                  <font>
+                   <family>Overpass Black</family>
+                   <pointsize>-1</pointsize>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true">color:white;
 font-size:20px;
 margin: 0 0 ;</string>
-                   </property>
-                   <property name="text">
-                    <string>Image 1</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QComboBox" name="combo1">
-                   <property name="styleSheet">
-                    <string notr="true">QComboBox {
+                 </property>
+                 <property name="text">
+                  <string>Image 1</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QComboBox" name="combo1">
+                 <property name="styleSheet">
+                  <string notr="true">QComboBox {
     font-family: &quot;Overpass&quot;;
     font-weight: 600; /* Semibold */
     font-size: 10pt; /* Adjust the font size as needed */
@@ -84,15 +82,15 @@ margin: 0 0 ;</string>
 background: rgba(74, 74, 74, 0);
 	border-radius: 10px;
 }</string>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
+                 </property>
+                </widget>
                </item>
-               <item>
-                <widget class="Line" name="line_10">
-                 <property name="styleSheet">
-                  <string notr="true">/* Line style */
+              </layout>
+             </item>
+             <item>
+              <widget class="Line" name="line_10">
+               <property name="styleSheet">
+                <string notr="true">/* Line style */
 
   /* Set the width of the line */
   width: 20px;
@@ -113,284 +111,129 @@ background: rgba(74, 74, 74, 0);
 
 
 </string>
-                 </property>
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                </widget>
-               </item>
+               </property>
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_2">
                <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_2">
+                <layout class="QVBoxLayout" name="verticalLayout" stretch="0,5">
                  <item>
-                  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,5">
-                   <item>
-                    <widget class="QLabel" name="label_2">
-                     <property name="font">
-                      <font>
-                       <family>Oswald SemiBold</family>
-                       <pointsize>11</pointsize>
-                       <bold>true</bold>
-                      </font>
-                     </property>
-                     <property name="styleSheet">
-                      <string notr="true">color:white;
+                  <widget class="QLabel" name="label_2">
+                   <property name="font">
+                    <font>
+                     <family>Oswald SemiBold</family>
+                     <pointsize>11</pointsize>
+                     <bold>true</bold>
+                    </font>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">color:white;
 font-weight:10000px;
 </string>
-                     </property>
-                     <property name="text">
-                      <string>Original Image</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QWidget" name="original1" native="true">
-                     <property name="styleSheet">
-                      <string notr="true">QWidget {
+                   </property>
+                   <property name="text">
+                    <string>Original Image</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QWidget" name="original1" native="true">
+                   <property name="styleSheet">
+                    <string notr="true">QWidget {
  border: 3px solid rgb(17,17,17);
 }</string>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
-                 </item>
-                 <item>
-                  <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,5">
-                   <item>
-                    <widget class="QLabel" name="label_3">
-                     <property name="font">
-                      <font>
-                       <family>Oswald SemiBold</family>
-                       <pointsize>11</pointsize>
-                       <bold>true</bold>
-                      </font>
-                     </property>
-                     <property name="styleSheet">
-                      <string notr="true">color:white;
-font-weight:10000px;</string>
-                     </property>
-                     <property name="text">
-                      <string>FT Component</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QWidget" name="component_image1" native="true">
-                     <property name="styleSheet">
-                      <string notr="true">border: 3px solid rgb(17,17,17);</string>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
+                   </property>
+                  </widget>
                  </item>
                 </layout>
                </item>
-              </layout>
-             </item>
-            </layout>
-           </widget>
-          </item>
-          <item>
-           <widget class="QFrame" name="frame_2">
-            <property name="styleSheet">
-             <string notr="true">background-color: rgb(39, 44, 54);
-border-radius: 10px;
-border: none;</string>
-            </property>
-            <property name="frameShape">
-             <enum>QFrame::StyledPanel</enum>
-            </property>
-            <property name="frameShadow">
-             <enum>QFrame::Raised</enum>
-            </property>
-            <layout class="QGridLayout" name="gridLayout_2">
-             <property name="leftMargin">
-              <number>9</number>
-             </property>
-             <item row="0" column="0">
-              <layout class="QVBoxLayout" name="verticalLayout_4">
-               <property name="leftMargin">
-                <number>0</number>
-               </property>
                <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_3">
+                <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,5">
                  <item>
-                  <widget class="QLabel" name="label_4">
+                  <widget class="QLabel" name="label_3">
                    <property name="font">
                     <font>
-                     <family>Overpass Black</family>
-                     <pointsize>-1</pointsize>
+                     <family>Oswald SemiBold</family>
+                     <pointsize>11</pointsize>
                      <bold>true</bold>
                     </font>
                    </property>
                    <property name="styleSheet">
                     <string notr="true">color:white;
-font-size:20px;
-margin: 0 0 ;</string>
+font-weight:10000px;</string>
                    </property>
                    <property name="text">
-                    <string>Image 2</string>
+                    <string>FT Component</string>
                    </property>
                   </widget>
                  </item>
                  <item>
-                  <widget class="QComboBox" name="combo2">
+                  <widget class="QWidget" name="component_image1" native="true">
                    <property name="styleSheet">
-                    <string notr="true">QComboBox {
-    font-family: &quot;Overpass&quot;;
-    font-weight: 600; /* Semibold */
-    font-size: 10pt; /* Adjust the font size as needed */
-    color: white; /* Set the text color to white */
-    border: 1px solid white; /* Set the border to 1px solid white */
-background: rgba(74, 74, 74, 0);
-	border-radius: 10px;
-}</string>
+                    <string notr="true">border: 3px solid rgb(17,17,17);</string>
                    </property>
                   </widget>
-                 </item>
-                </layout>
-               </item>
-               <item>
-                <widget class="Line" name="line_12">
-                 <property name="styleSheet">
-                  <string notr="true">/* Line style */
-
-  /* Set the width of the line */
-  width: 20px;
-
-  /* Set the height of the line */
-  height: 5px;
-
-  /* Set the background color of the line */
-  background-color:rgb(77, 86, 105);
-
-  /* Set the border of the line */
-  border: 10px;
-
-  /* Set the border radius of the line */
-  border-radius:5px;
-
-
-
-
-</string>
-                 </property>
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_4">
-                 <item>
-                  <layout class="QVBoxLayout" name="verticalLayout_5" stretch="0,5">
-                   <item>
-                    <widget class="QLabel" name="label_5">
-                     <property name="font">
-                      <font>
-                       <family>Oswald SemiBold</family>
-                       <pointsize>11</pointsize>
-                       <bold>true</bold>
-                      </font>
-                     </property>
-                     <property name="styleSheet">
-                      <string notr="true">color:white;
-font-weight:10000px;</string>
-                     </property>
-                     <property name="text">
-                      <string>Original Image</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QWidget" name="original2" native="true">
-                     <property name="styleSheet">
-                      <string notr="true">border: 3px solid rgb(17,17,17);</string>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
-                 </item>
-                 <item>
-                  <layout class="QVBoxLayout" name="verticalLayout_6" stretch="0,5">
-                   <item>
-                    <widget class="QLabel" name="label_6">
-                     <property name="font">
-                      <font>
-                       <family>Oswald SemiBold</family>
-                       <pointsize>11</pointsize>
-                       <bold>true</bold>
-                      </font>
-                     </property>
-                     <property name="styleSheet">
-                      <string notr="true">color:white;
-font-weight:10000px;</string>
-                     </property>
-                     <property name="text">
-                      <string>FT Component</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QWidget" name="component_image2" native="true">
-                     <property name="styleSheet">
-                      <string notr="true">border: 3px solid rgb(17,17,17);</string>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
                  </item>
                 </layout>
                </item>
               </layout>
              </item>
             </layout>
-           </widget>
-          </item>
-         </layout>
+           </item>
+          </layout>
+         </widget>
         </item>
         <item>
-         <layout class="QVBoxLayout" name="verticalLayout_right">
-          <item>
-           <widget class="QFrame" name="frame_3">
-            <property name="styleSheet">
-             <string notr="true">background-color: rgb(39, 44, 54);
+         <widget class="QFrame" name="frame_2">
+          <property name="styleSheet">
+           <string notr="true">background-color: rgb(39, 44, 54);
 border-radius: 10px;
 border: none;</string>
-            </property>
-            <property name="frameShape">
-             <enum>QFrame::StyledPanel</enum>
-            </property>
-            <property name="frameShadow">
-             <enum>QFrame::Raised</enum>
-            </property>
-            <layout class="QGridLayout" name="gridLayout_3">
-             <item row="0" column="0">
-              <layout class="QVBoxLayout" name="verticalLayout_9">
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Raised</enum>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_2">
+           <property name="leftMargin">
+            <number>9</number>
+           </property>
+           <item row="0" column="0">
+            <layout class="QVBoxLayout" name="verticalLayout_4">
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_3">
                <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_5">
-                 <item>
-                  <widget class="QLabel" name="label_7">
-                   <property name="font">
-                    <font>
-                     <family>Overpass Black</family>
-                     <pointsize>-1</pointsize>
-                     <bold>true</bold>
-                    </font>
-                   </property>
-                   <property name="styleSheet">
-                    <string notr="true">color:white;
+                <widget class="QLabel" name="label_4">
+                 <property name="font">
+                  <font>
+                   <family>Overpass Black</family>
+                   <pointsize>-1</pointsize>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true">color:white;
 font-size:20px;
 margin: 0 0 ;</string>
-                   </property>
-                   <property name="text">
-                    <string>Image 3</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QComboBox" name="combo3">
-                   <property name="styleSheet">
-                    <string notr="true">QComboBox {
+                 </property>
+                 <property name="text">
+                  <string>Image 2</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QComboBox" name="combo2">
+                 <property name="styleSheet">
+                  <string notr="true">QComboBox {
     font-family: &quot;Overpass&quot;;
     font-weight: 600; /* Semibold */
     font-size: 10pt; /* Adjust the font size as needed */
@@ -399,15 +242,15 @@ margin: 0 0 ;</string>
 background: rgba(74, 74, 74, 0);
 	border-radius: 10px;
 }</string>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
+                 </property>
+                </widget>
                </item>
-               <item>
-                <widget class="Line" name="line_11">
-                 <property name="styleSheet">
-                  <string notr="true">/* Line style */
+              </layout>
+             </item>
+             <item>
+              <widget class="Line" name="line_12">
+               <property name="styleSheet">
+                <string notr="true">/* Line style */
 
   /* Set the width of the line */
   width: 20px;
@@ -428,120 +271,124 @@ background: rgba(74, 74, 74, 0);
 
 
 </string>
-                 </property>
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                </widget>
-               </item>
+               </property>
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_4">
                <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_6">
+                <layout class="QVBoxLayout" name="verticalLayout_5" stretch="0,5">
                  <item>
-                  <layout class="QVBoxLayout" name="verticalLayout_10" stretch="0,5">
-                   <item>
-                    <widget class="QLabel" name="label_8">
-                     <property name="font">
-                      <font>
-                       <family>Oswald SemiBold</family>
-                       <pointsize>11</pointsize>
-                       <bold>true</bold>
-                      </font>
-                     </property>
-                     <property name="styleSheet">
-                      <string notr="true">color:white;
+                  <widget class="QLabel" name="label_5">
+                   <property name="font">
+                    <font>
+                     <family>Oswald SemiBold</family>
+                     <pointsize>11</pointsize>
+                     <bold>true</bold>
+                    </font>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">color:white;
 font-weight:10000px;</string>
-                     </property>
-                     <property name="text">
-                      <string>Original Image</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QWidget" name="original3" native="true">
-                     <property name="styleSheet">
-                      <string notr="true">border: 3px solid rgb(17,17,17);</string>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
+                   </property>
+                   <property name="text">
+                    <string>Original Image</string>
+                   </property>
+                  </widget>
                  </item>
                  <item>
-                  <layout class="QVBoxLayout" name="verticalLayout_11" stretch="0,5">
-                   <item>
-                    <widget class="QLabel" name="label_9">
-                     <property name="font">
-                      <font>
-                       <family>Oswald SemiBold</family>
-                       <pointsize>11</pointsize>
-                       <bold>true</bold>
-                      </font>
-                     </property>
-                     <property name="styleSheet">
-                      <string notr="true">color:white;
+                  <widget class="QWidget" name="original2" native="true">
+                   <property name="styleSheet">
+                    <string notr="true">border: 3px solid rgb(17,17,17);</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <layout class="QVBoxLayout" name="verticalLayout_6" stretch="0,5">
+                 <item>
+                  <widget class="QLabel" name="label_6">
+                   <property name="font">
+                    <font>
+                     <family>Oswald SemiBold</family>
+                     <pointsize>11</pointsize>
+                     <bold>true</bold>
+                    </font>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">color:white;
 font-weight:10000px;</string>
-                     </property>
-                     <property name="text">
-                      <string>FT Component</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QWidget" name="component_image3" native="true">
-                     <property name="styleSheet">
-                      <string notr="true">border: 3px solid rgb(17,17,17);</string>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
+                   </property>
+                   <property name="text">
+                    <string>FT Component</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QWidget" name="component_image2" native="true">
+                   <property name="styleSheet">
+                    <string notr="true">border: 3px solid rgb(17,17,17);</string>
+                   </property>
+                  </widget>
                  </item>
                 </layout>
                </item>
               </layout>
              </item>
             </layout>
-           </widget>
-          </item>
-          <item>
-           <widget class="QFrame" name="frame_4">
-            <property name="styleSheet">
-             <string notr="true">background-color: rgb(39, 44, 54);
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout_right">
+        <item>
+         <widget class="QFrame" name="frame_3">
+          <property name="styleSheet">
+           <string notr="true">background-color: rgb(39, 44, 54);
 border-radius: 10px;
 border: none;</string>
-            </property>
-            <property name="frameShape">
-             <enum>QFrame::StyledPanel</enum>
-            </property>
-            <property name="frameShadow">
-             <enum>QFrame::Raised</enum>
-            </property>
-            <layout class="QGridLayout" name="gridLayout_4">
-             <item row="0" column="0">
-              <layout class="QVBoxLayout" name="verticalLayout_12">
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Raised</enum>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_3">
+           <item row="0" column="0">
+            <layout class="QVBoxLayout" name="verticalLayout_9">
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_5">
                <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_7">
-                 <item>
-                  <widget class="QLabel" name="label_10">
-                   <property name="font">
-                    <font>
-                     <family>Overpass Black</family>
-                     <pointsize>-1</pointsize>
-                     <bold>true</bold>
-                    </font>
-                   </property>
-                   <property name="styleSheet">
-                    <string notr="true">color:white;
+                <widget class="QLabel" name="label_7">
+                 <property name="font">
+                  <font>
+                   <family>Overpass Black</family>
+                   <pointsize>-1</pointsize>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true">color:white;
 font-size:20px;
 margin: 0 0 ;</string>
-                   </property>
-                   <property name="text">
-                    <string>Image 4</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QComboBox" name="combo4">
-                   <property name="styleSheet">
-                    <string notr="true">QComboBox {
+                 </property>
+                 <property name="text">
+                  <string>Image 3</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QComboBox" name="combo3">
+                 <property name="styleSheet">
+                  <string notr="true">QComboBox {
     font-family: &quot;Overpass&quot;;
     font-weight: 600; /* Semibold */
     font-size: 10pt; /* Adjust the font size as needed */
@@ -550,15 +397,15 @@ margin: 0 0 ;</string>
 background: rgba(74, 74, 74, 0);
 	border-radius: 10px;
 }</string>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
+                 </property>
+                </widget>
                </item>
-               <item>
-                <widget class="Line" name="line_14">
-                 <property name="styleSheet">
-                  <string notr="true">/* Line style */
+              </layout>
+             </item>
+             <item>
+              <widget class="Line" name="line_11">
+               <property name="styleSheet">
+                <string notr="true">/* Line style */
 
   /* Set the width of the line */
   width: 20px;
@@ -579,80 +426,229 @@ background: rgba(74, 74, 74, 0);
 
 
 </string>
-                 </property>
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                </widget>
-               </item>
+               </property>
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_6">
                <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_8">
+                <layout class="QVBoxLayout" name="verticalLayout_10" stretch="0,5">
                  <item>
-                  <layout class="QVBoxLayout" name="verticalLayout_13" stretch="0,5">
-                   <item>
-                    <widget class="QLabel" name="label_11">
-                     <property name="font">
-                      <font>
-                       <family>Oswald SemiBold</family>
-                       <pointsize>11</pointsize>
-                       <bold>true</bold>
-                      </font>
-                     </property>
-                     <property name="styleSheet">
-                      <string notr="true">color:white;
+                  <widget class="QLabel" name="label_8">
+                   <property name="font">
+                    <font>
+                     <family>Oswald SemiBold</family>
+                     <pointsize>11</pointsize>
+                     <bold>true</bold>
+                    </font>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">color:white;
 font-weight:10000px;</string>
-                     </property>
-                     <property name="text">
-                      <string>Original Image</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QWidget" name="original4" native="true">
-                     <property name="styleSheet">
-                      <string notr="true">border: 3px solid rgb(17,17,17);</string>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
+                   </property>
+                   <property name="text">
+                    <string>Original Image</string>
+                   </property>
+                  </widget>
                  </item>
                  <item>
-                  <layout class="QVBoxLayout" name="verticalLayout_14" stretch="0,5">
-                   <item>
-                    <widget class="QLabel" name="label_12">
-                     <property name="font">
-                      <font>
-                       <family>Oswald SemiBold</family>
-                       <pointsize>11</pointsize>
-                       <bold>true</bold>
-                      </font>
-                     </property>
-                     <property name="styleSheet">
-                      <string notr="true">color:white;
+                  <widget class="QWidget" name="original3" native="true">
+                   <property name="styleSheet">
+                    <string notr="true">border: 3px solid rgb(17,17,17);</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <layout class="QVBoxLayout" name="verticalLayout_11" stretch="0,5">
+                 <item>
+                  <widget class="QLabel" name="label_9">
+                   <property name="font">
+                    <font>
+                     <family>Oswald SemiBold</family>
+                     <pointsize>11</pointsize>
+                     <bold>true</bold>
+                    </font>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">color:white;
 font-weight:10000px;</string>
-                     </property>
-                     <property name="text">
-                      <string>FT Component</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QWidget" name="component_image4" native="true">
-                     <property name="styleSheet">
-                      <string notr="true">border: 3px solid rgb(17,17,17);</string>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
+                   </property>
+                   <property name="text">
+                    <string>FT Component</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QWidget" name="component_image3" native="true">
+                   <property name="styleSheet">
+                    <string notr="true">border: 3px solid rgb(17,17,17);</string>
+                   </property>
+                  </widget>
                  </item>
                 </layout>
                </item>
               </layout>
              </item>
             </layout>
-           </widget>
-          </item>
-         </layout>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QFrame" name="frame_4">
+          <property name="styleSheet">
+           <string notr="true">background-color: rgb(39, 44, 54);
+border-radius: 10px;
+border: none;</string>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Raised</enum>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_4">
+           <item row="0" column="0">
+            <layout class="QVBoxLayout" name="verticalLayout_12">
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_7">
+               <item>
+                <widget class="QLabel" name="label_10">
+                 <property name="font">
+                  <font>
+                   <family>Overpass Black</family>
+                   <pointsize>-1</pointsize>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true">color:white;
+font-size:20px;
+margin: 0 0 ;</string>
+                 </property>
+                 <property name="text">
+                  <string>Image 4</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QComboBox" name="combo4">
+                 <property name="styleSheet">
+                  <string notr="true">QComboBox {
+    font-family: &quot;Overpass&quot;;
+    font-weight: 600; /* Semibold */
+    font-size: 10pt; /* Adjust the font size as needed */
+    color: white; /* Set the text color to white */
+    border: 1px solid white; /* Set the border to 1px solid white */
+background: rgba(74, 74, 74, 0);
+	border-radius: 10px;
+}</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <widget class="Line" name="line_14">
+               <property name="styleSheet">
+                <string notr="true">/* Line style */
+
+  /* Set the width of the line */
+  width: 20px;
+
+  /* Set the height of the line */
+  height: 5px;
+
+  /* Set the background color of the line */
+  background-color:rgb(77, 86, 105);
+
+  /* Set the border of the line */
+  border: 10px;
+
+  /* Set the border radius of the line */
+  border-radius:5px;
+
+
+
+
+</string>
+               </property>
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_8">
+               <item>
+                <layout class="QVBoxLayout" name="verticalLayout_13" stretch="0,5">
+                 <item>
+                  <widget class="QLabel" name="label_11">
+                   <property name="font">
+                    <font>
+                     <family>Oswald SemiBold</family>
+                     <pointsize>11</pointsize>
+                     <bold>true</bold>
+                    </font>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">color:white;
+font-weight:10000px;</string>
+                   </property>
+                   <property name="text">
+                    <string>Original Image</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QWidget" name="original4" native="true">
+                   <property name="styleSheet">
+                    <string notr="true">border: 3px solid rgb(17,17,17);</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <layout class="QVBoxLayout" name="verticalLayout_14" stretch="0,5">
+                 <item>
+                  <widget class="QLabel" name="label_12">
+                   <property name="font">
+                    <font>
+                     <family>Oswald SemiBold</family>
+                     <pointsize>11</pointsize>
+                     <bold>true</bold>
+                    </font>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">color:white;
+font-weight:10000px;</string>
+                   </property>
+                   <property name="text">
+                    <string>FT Component</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QWidget" name="component_image4" native="true">
+                   <property name="styleSheet">
+                    <string notr="true">border: 3px solid rgb(17,17,17);</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
         </item>
        </layout>
       </item>
@@ -669,7 +665,7 @@ border: none;</string>
         <property name="frameShadow">
          <enum>QFrame::Raised</enum>
         </property>
-        <layout class="QVBoxLayout" name="verticalLayout_21" stretch="0,0,0,2,0,0,0,0,0,0,0,1">
+        <layout class="QVBoxLayout" name="verticalLayout_18" stretch="0,0,2,0,0,0,1">
          <item>
           <widget class="QLabel" name="mixerOutputTo">
            <property name="font">
@@ -720,58 +716,15 @@ margin: 0 0 ;</string>
           </widget>
          </item>
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_Routput">
+          <layout class="QVBoxLayout" name="verticalLayout_17">
            <item>
-            <widget class="QRadioButton" name="radioButton">
-             <property name="font">
-              <font>
-               <family>Oswald SemiBold</family>
-               <pointsize>16</pointsize>
-               <bold>true</bold>
-              </font>
-             </property>
-             <property name="styleSheet">
-              <string notr="true">color:white;
-font-weight:10000px;</string>
-             </property>
-             <property name="text">
-              <string>Output 1</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QRadioButton" name="radioButton_2">
-             <property name="font">
-              <font>
-               <family>Oswald SemiBold</family>
-               <pointsize>16</pointsize>
-               <bold>true</bold>
-              </font>
-             </property>
-             <property name="styleSheet">
-              <string notr="true">color:white;
-font-weight:10000px;</string>
-             </property>
-             <property name="text">
-              <string>Output 2</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_output">
-           <property name="bottomMargin">
-            <number>5</number>
-           </property>
-           <item>
-            <layout class="QVBoxLayout" name="verticalLayout_OP1" stretch="0,5">
+            <layout class="QHBoxLayout" name="horizontalLayout_Routput">
              <item>
-              <widget class="QLabel" name="label_op1">
+              <widget class="QRadioButton" name="radioButton">
                <property name="font">
                 <font>
                  <family>Oswald SemiBold</family>
-                 <pointsize>11</pointsize>
+                 <pointsize>16</pointsize>
                  <bold>true</bold>
                 </font>
                </property>
@@ -785,22 +738,11 @@ font-weight:10000px;</string>
               </widget>
              </item>
              <item>
-              <widget class="QWidget" name="output1_port" native="true">
-               <property name="styleSheet">
-                <string notr="true">background-color: rgb(0, 0, 0);</string>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item>
-            <layout class="QVBoxLayout" name="verticalLayout_OP2" stretch="0,5">
-             <item>
-              <widget class="QLabel" name="label_op2">
+              <widget class="QRadioButton" name="radioButton_2">
                <property name="font">
                 <font>
                  <family>Oswald SemiBold</family>
-                 <pointsize>11</pointsize>
+                 <pointsize>16</pointsize>
                  <bold>true</bold>
                 </font>
                </property>
@@ -813,12 +755,70 @@ font-weight:10000px;</string>
                </property>
               </widget>
              </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_output">
+             <property name="bottomMargin">
+              <number>11</number>
+             </property>
              <item>
-              <widget class="QWidget" name="output2_port" native="true">
-               <property name="styleSheet">
-                <string notr="true">background-color: rgb(0, 0, 0);</string>
-               </property>
-              </widget>
+              <layout class="QVBoxLayout" name="verticalLayout_OP1" stretch="0,5">
+               <item>
+                <widget class="QLabel" name="label_op1">
+                 <property name="font">
+                  <font>
+                   <family>Oswald SemiBold</family>
+                   <pointsize>11</pointsize>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true">color:white;
+font-weight:10000px;</string>
+                 </property>
+                 <property name="text">
+                  <string>Output 1</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QWidget" name="output1_port" native="true">
+                 <property name="styleSheet">
+                  <string notr="true">background-color: rgb(0, 0, 0);</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QVBoxLayout" name="verticalLayout_OP2" stretch="0,5">
+               <item>
+                <widget class="QLabel" name="label_op2">
+                 <property name="font">
+                  <font>
+                   <family>Oswald SemiBold</family>
+                   <pointsize>11</pointsize>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true">color:white;
+font-weight:10000px;</string>
+                 </property>
+                 <property name="text">
+                  <string>Output 2</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QWidget" name="output2_port" native="true">
+                 <property name="styleSheet">
+                  <string notr="true">background-color: rgb(0, 0, 0);</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
              </item>
             </layout>
            </item>
@@ -855,19 +855,153 @@ font-weight:10000px;</string>
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="mixxer">
-           <property name="font">
-            <font>
-             <family>-apple-system</family>
-             <pointsize>12</pointsize>
-             <bold>true</bold>
-            </font>
-           </property>
-           <property name="layoutDirection">
-            <enum>Qt::LeftToRight</enum>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">QPushButton{
+          <layout class="QVBoxLayout" name="verticalLayout_16">
+           <item>
+            <widget class="QPushButton" name="mixxer">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="font">
+              <font>
+               <family>-apple-system</family>
+               <pointsize>12</pointsize>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="layoutDirection">
+              <enum>Qt::LeftToRight</enum>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">QPushButton{
+appearance: button;
+
+background-color: #405cf5;
+border-radius: 6px;
+border-width: 0;
+box-shadow: rgba(50, 50, 93, .1) 0 0 0 1px inset,rgba(50, 50, 93, .1) 0 2px 5px 0,rgba(0, 0, 0, .07) 0 1px 1px 0;
+
+color: #fff;
+cursor: pointer;
+font-family: -apple-system,system-ui,&quot;Segoe UI&quot;,Roboto,&quot;Helvetica Neue&quot;,Ubuntu,sans-serif;
+font-size: 100%;
+height: 30px;
+line-height: 1.15;
+outline: none;
+overflow: hidden;
+position: relative;
+margin: 0 150;
+text-align: center;
+text-transform: none;
+transform: translateZ(0);
+transition: all .2s,box-shadow .08s ease-in;
+user-select: none;
+-webkit-user-select: none;
+touch-action: manipulation;
+width: 100%; /* Reduced width to 200 pixels */
+}
+QPushButton:hover{
+background-color: #283999;
+}
+QPushButton:pressed{
+background-color: #1c2973;
+}</string>
+             </property>
+             <property name="text">
+              <string>Mix</string>
+             </property>
+             <property name="icon">
+              <iconset>
+               <normaloff>icons/combine-svgrepo-com.png</normaloff>icons/combine-svgrepo-com.png</iconset>
+             </property>
+             <property name="iconSize">
+              <size>
+               <width>25</width>
+               <height>20</height>
+              </size>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <layout class="QVBoxLayout" name="verticalLayout_15">
+             <item>
+              <widget class="QLabel" name="selectedArea">
+               <property name="font">
+                <font>
+                 <family>Overpass Black</family>
+                 <pointsize>-1</pointsize>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">color:white;
+font-size:20px;
+margin: 0 0 ;</string>
+               </property>
+               <property name="text">
+                <string>Selected Area</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_9">
+               <item>
+                <layout class="QVBoxLayout" name="verticalLayout_7">
+                 <item>
+                  <widget class="QRadioButton" name="radioButton_In">
+                   <property name="font">
+                    <font>
+                     <family>Oswald SemiBold</family>
+                     <pointsize>14</pointsize>
+                     <bold>true</bold>
+                    </font>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">color:white;
+font-weight:10000px;
+</string>
+                   </property>
+                   <property name="text">
+                    <string>Inside Region</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QRadioButton" name="radioButton_Out">
+                   <property name="font">
+                    <font>
+                     <family>Oswald SemiBold</family>
+                     <pointsize>14</pointsize>
+                     <bold>true</bold>
+                    </font>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">color:white;
+font-weight:10000px;</string>
+                   </property>
+                   <property name="text">
+                    <string>Outside Region</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <widget class="QPushButton" name="Deselect">
+                 <property name="font">
+                  <font>
+                   <family>-apple-system</family>
+                   <pointsize>12</pointsize>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="layoutDirection">
+                  <enum>Qt::LeftToRight</enum>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true">QPushButton{
   appearance: button;
   background-color: #405cf5;
   border-radius: 6px;
@@ -877,9 +1011,9 @@ font-weight:10000px;</string>
   cursor: pointer;
   font-family: -apple-system,system-ui,&quot;Segoe UI&quot;,Roboto,&quot;Helvetica Neue&quot;,Ubuntu,sans-serif;
   height: 30px;
-  margin: 0 150px 0 150px;
+  margin: 0 20px 0 20px;
   position: center;
-  width:30%;
+  width:70px;
 }
 QPushButton:hover{
 background-color: #283999;
@@ -888,77 +1022,23 @@ QPushButton:pressed{
 background-color: #1c2973;
 }
 </string>
-           </property>
-           <property name="text">
-            <string>Mix</string>
-           </property>
-           <property name="icon">
-            <iconset>
-             <normaloff>icons/combine-svgrepo-com.png</normaloff>icons/combine-svgrepo-com.png</iconset>
-           </property>
-           <property name="iconSize">
-            <size>
-             <width>25</width>
-             <height>20</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="selectedArea">
-           <property name="font">
-            <font>
-             <family>Overpass Black</family>
-             <pointsize>-1</pointsize>
-             <bold>true</bold>
-            </font>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">color:white;
-font-size:20px;
-margin: 0 0 ;</string>
-           </property>
-           <property name="text">
-            <string>Selected Area</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QRadioButton" name="radioButton_In">
-           <property name="font">
-            <font>
-             <family>Oswald SemiBold</family>
-             <pointsize>14</pointsize>
-             <bold>true</bold>
-            </font>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">color:white;
-font-weight:10000px;
-</string>
-           </property>
-           <property name="text">
-            <string>Inside Region</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QRadioButton" name="radioButton_Out">
-           <property name="font">
-            <font>
-             <family>Oswald SemiBold</family>
-             <pointsize>14</pointsize>
-             <bold>true</bold>
-            </font>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">color:white;
-font-weight:10000px;</string>
-           </property>
-           <property name="text">
-            <string>Outside Region</string>
-           </property>
-          </widget>
+                 </property>
+                 <property name="text">
+                  <string>Deselect</string>
+                 </property>
+                 <property name="iconSize">
+                  <size>
+                   <width>25</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </item>
+          </layout>
          </item>
          <item>
           <widget class="Line" name="line_18">
@@ -991,61 +1071,34 @@ font-weight:10000px;</string>
           </widget>
          </item>
          <item>
-          <widget class="QLabel" name="WeightOfImages">
-           <property name="font">
-            <font>
-             <family>Overpass Black</family>
-             <pointsize>-1</pointsize>
-             <bold>true</bold>
-            </font>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">color:white;
+          <layout class="QVBoxLayout" name="verticalLayout_8">
+           <item>
+            <widget class="QLabel" name="WeightOfImages">
+             <property name="font">
+              <font>
+               <family>Overpass Black</family>
+               <pointsize>-1</pointsize>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">color:white;
 font-size:20px;
 margin: 0 0 ;</string>
-           </property>
-           <property name="text">
-            <string>Weights of images</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_Wsliders">
-           <item>
-            <layout class="QVBoxLayout" name="verticalLayout_weight1">
-             <item>
-              <widget class="QComboBox" name="combo11">
-               <property name="styleSheet">
-                <string notr="true">QComboBox {
-    font-family: &quot;Overpass&quot;;
-    font-weight: 600; /* Semibold */
-    font-size: 10pt; /* Adjust the font size as needed */
-    color: white; /* Set the text color to white */
-    border: 1px solid white; /* Set the border to 1px solid white */
-background: rgba(74, 74, 74, 0);
-	border-radius: 10px;
-}</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QSlider" name="Slider_weight1">
-               <property name="layoutDirection">
-                <enum>Qt::LeftToRight</enum>
-               </property>
-               <property name="orientation">
-                <enum>Qt::Vertical</enum>
-               </property>
-              </widget>
-             </item>
-            </layout>
+             </property>
+             <property name="text">
+              <string>Weights of images</string>
+             </property>
+            </widget>
            </item>
            <item>
-            <layout class="QVBoxLayout" name="verticalLayout_weight2">
+            <layout class="QHBoxLayout" name="horizontalLayout_Wsliders">
              <item>
-              <widget class="QComboBox" name="combo12">
-               <property name="styleSheet">
-                <string notr="true">QComboBox {
+              <layout class="QVBoxLayout" name="verticalLayout_weight1">
+               <item>
+                <widget class="QComboBox" name="combo11">
+                 <property name="styleSheet">
+                  <string notr="true">QComboBox {
     font-family: &quot;Overpass&quot;;
     font-weight: 600; /* Semibold */
     font-size: 10pt; /* Adjust the font size as needed */
@@ -1054,24 +1107,27 @@ background: rgba(74, 74, 74, 0);
 background: rgba(74, 74, 74, 0);
 	border-radius: 10px;
 }</string>
-               </property>
-              </widget>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QSlider" name="Slider_weight1">
+                 <property name="layoutDirection">
+                  <enum>Qt::LeftToRight</enum>
+                 </property>
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
+                 </property>
+                </widget>
+               </item>
+              </layout>
              </item>
              <item>
-              <widget class="QSlider" name="Slider_weight2">
-               <property name="orientation">
-                <enum>Qt::Vertical</enum>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item>
-            <layout class="QVBoxLayout" name="verticalLayout_weight3">
-             <item>
-              <widget class="QComboBox" name="combo13">
-               <property name="styleSheet">
-                <string notr="true">QComboBox {
+              <layout class="QVBoxLayout" name="verticalLayout_weight2">
+               <item>
+                <widget class="QComboBox" name="combo12">
+                 <property name="styleSheet">
+                  <string notr="true">QComboBox {
     font-family: &quot;Overpass&quot;;
     font-weight: 600; /* Semibold */
     font-size: 10pt; /* Adjust the font size as needed */
@@ -1080,24 +1136,24 @@ background: rgba(74, 74, 74, 0);
 background: rgba(74, 74, 74, 0);
 	border-radius: 10px;
 }</string>
-               </property>
-              </widget>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QSlider" name="Slider_weight2">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
+                 </property>
+                </widget>
+               </item>
+              </layout>
              </item>
              <item>
-              <widget class="QSlider" name="Slider_weight3">
-               <property name="orientation">
-                <enum>Qt::Vertical</enum>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item>
-            <layout class="QVBoxLayout" name="verticalLayout_weight4">
-             <item>
-              <widget class="QComboBox" name="combo14">
-               <property name="styleSheet">
-                <string notr="true">QComboBox {
+              <layout class="QVBoxLayout" name="verticalLayout_weight3">
+               <item>
+                <widget class="QComboBox" name="combo13">
+                 <property name="styleSheet">
+                  <string notr="true">QComboBox {
     font-family: &quot;Overpass&quot;;
     font-weight: 600; /* Semibold */
     font-size: 10pt; /* Adjust the font size as needed */
@@ -1106,15 +1162,43 @@ background: rgba(74, 74, 74, 0);
 background: rgba(74, 74, 74, 0);
 	border-radius: 10px;
 }</string>
-               </property>
-              </widget>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QSlider" name="Slider_weight3">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
+                 </property>
+                </widget>
+               </item>
+              </layout>
              </item>
              <item>
-              <widget class="QSlider" name="Slider_weight4">
-               <property name="orientation">
-                <enum>Qt::Vertical</enum>
-               </property>
-              </widget>
+              <layout class="QVBoxLayout" name="verticalLayout_weight4">
+               <item>
+                <widget class="QComboBox" name="combo14">
+                 <property name="styleSheet">
+                  <string notr="true">QComboBox {
+    font-family: &quot;Overpass&quot;;
+    font-weight: 600; /* Semibold */
+    font-size: 10pt; /* Adjust the font size as needed */
+    color: white; /* Set the text color to white */
+    border: 1px solid white; /* Set the border to 1px solid white */
+background: rgba(74, 74, 74, 0);
+	border-radius: 10px;
+}</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QSlider" name="Slider_weight4">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
+                 </property>
+                </widget>
+               </item>
+              </layout>
              </item>
             </layout>
            </item>
@@ -1137,7 +1221,6 @@ background: rgba(74, 74, 74, 0);
     </rect>
    </property>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources/>
  <connections/>

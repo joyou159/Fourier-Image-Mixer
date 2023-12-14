@@ -41,20 +41,19 @@ class MainWindow(QtWidgets.QMainWindow):
         self.setWindowIcon(QIcon("icons/mixer.png"))
         self.image_ports = []
         self.components_ports = []
+        self.out_ports = []
         self.open_order = []
         self.min_width = None
         self.min_height = None
         self.components = {"1": '', "2": '', '3': '', '4': ''}
+        self.out_
         self.ui.output1_port.resize(
             self.ui.original1.width(), self.ui.original1.height())
         # mixer and its connection line
         self.mixer = ImageMixer(self)
         self.ui.mixxer.clicked.connect(self.start_thread)
         self.ui.radioButton_In.setChecked(True)
-        self.ui.radioButton_In.toggled.connect(
-            self.mixer.handle_radio_button_toggled)
-        self.ui.radioButton_Out.toggled.connect(
-            self.mixer.handle_radio_button_toggled)
+
         self.ui.Deselect.clicked.connect(self.deselect)
 
         self.load_ui_elements()
@@ -65,13 +64,17 @@ class MainWindow(QtWidgets.QMainWindow):
         self.worker_signals = WorkerSignals()
         self.worker_thread = None
 
-        
-
     def deselect(self):
+        self.mixer.reset_after_mixing_and_deselect()
         for comp in self.components_ports:
+            comp.press_pos = None
+            comp.release_pos = None
+            comp.drawRect = False
+            comp.holdRect = False
+            comp.move_active = False
             comp.current_rect = QRect()
             comp.reactivate_drawing_events()
-            comp.update_display()
+            comp.set_image()
 
     def start_thread(self):
         if self.worker_thread and self.worker_thread.is_alive():
@@ -118,6 +121,10 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.component_image1, self.ui.component_image2,
             self.ui.component_image3, self.ui.component_image4]
 
+        self.ui_out_ports = [
+            self.ui.output1_port, self.ui.output2_port,
+        ]
+
         # List of combo boxes for UI
         self.ui_image_combo_boxes = [
             self.ui.combo1, self.ui.combo2,
@@ -143,6 +150,12 @@ class MainWindow(QtWidgets.QMainWindow):
             self.create_FT_viewport(
                 self.ui_view_ports_comp[i])
             for i in range(4)
+        ])
+
+        self.out_ports.extend([
+            self.create_image_viewport(
+                self.ui_out_ports[i], lambda: None)
+            for i in range(2)
         ])
 
         # Add items to combo boxes for mixing UI
@@ -190,11 +203,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.components_ports[index].viewport_FT_ind = index
         image_port.update_image_parameters(image_path)
         self.components_ports[index].update_FT_components()
-        # print(
-        #     f"the size of the image before resizing{np.array(image_port.original_img).shape}")
-        # print(
-        #     f"the size of the image after resizing{np.array( image_port.resized_img).shape}")
-        # self.resize_image()
+        print(
+            f"the size of the image before resizing{np.array(image_port.original_img).shape}")
+        print(
+            f"the size of the image after resizing{np.array(image_port.resized_img).shape}")
 
     def resize_image(self):
         dimension_lst = []

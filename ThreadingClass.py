@@ -27,11 +27,8 @@ class WorkerThread(threading.Thread, ):
             if self.signals.canceled.is_set():
                 print(
                     f'Thread canceled - Remaining time: {self.seconds - i - 1} seconds')
-                logging.info(
-                    f'Thread canceled - Remaining time: {self.seconds - i - 1} seconds')
                 return
         print('Thread completed')
-        logging.info('Thread completed')
 
     def cancel(self):
         self.signals.canceled.set()
@@ -42,6 +39,3 @@ class WorkerThread(threading.Thread, ):
         self.progress_value += 20
         self.main_window.ui.progressBar.setValue(self.progress_value)
 
-
-
-        logging.info("Mixing completed.")

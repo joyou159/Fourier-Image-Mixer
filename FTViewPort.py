@@ -72,16 +72,14 @@ class FTViewPort(QWidget):
             # Calculate the position (x, y) to center the image
             x = (self.width() - new_width) // 2
             y = (self.height() - new_height) // 2
-            resized_img = self.original_img.resize((self.width(), self.height()))
+            resized_img = self.original_img.resize(
+                (self.width(), self.height()))
             pixmap = QPixmap.fromImage(ImageQt.ImageQt(resized_img))
             painter.drawPixmap(0, 0, pixmap)
 
             painter.end()
 
-        if self.holdRect:
-            self.draw_rectangle()
-
-        if self.drawRect:
+        if self.holdRect or self.drawRect:
             self.draw_rectangle()
 
     def resizeEvent(self, event):

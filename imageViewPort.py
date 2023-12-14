@@ -36,7 +36,6 @@ class ImageViewport(QWidget):
             print(f"Error opening image: {e}")
 
     def update_display(self):
-
         if self.original_img:
             self.repaint()
 

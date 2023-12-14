@@ -25,6 +25,10 @@ import numpy as np
 from scipy.fft import ifft2
 from PyQt6.QtWidgets import QWidget, QHBoxLayout, QLabel, QProgressBar
 
+# Configure logging to capture all log levels
+logging.basicConfig(filemode="a", filename="our_log.log",
+                    format="(%(asctime)s) | %(name)s| %(levelname)s | => %(message)s")
+
 
 class ImageMixer(QWidget):
     def __init__(self, main_window, parent=None):
@@ -36,7 +40,7 @@ class ImageMixer(QWidget):
         self.weight_reference = np.repeat(100, 4)
         self.weight_value = np.repeat(1, 4)
         self.selection_mode = 1
-        # the index of the FTviewport at which the mixing begins
+        self.output = 1        # the index of the FTviewport at which the mixing begins
         self.higher_precedence_ft_component = None
         self.chunks = {
             "0": np.array([]),
@@ -44,7 +48,16 @@ class ImageMixer(QWidget):
             "2": np.array([]),
             "3": np.array([])
         }
-        
+
+        self.main_window.ui.radioButton_In.toggled.connect(
+            self.mixer.handle_radio_button_toggled)
+        self.main_window.ui.radioButton_Out.toggled.connect(
+            self.mixer.handle_radio_button_toggled)
+
+        self.main_window.ui.radioButton1.toggled.connect(
+            self.mixer.handle_out_radio_button_toggled)
+        self.main_window.ui.radioButton2.toggled.connect(
+            self.mixer.handle_out_radio_button_toggled)
 
     def check_pair_validity(self):
         valid_pairs = [("FT Magnitude", "FT Phase"), ("FT Phase", "FT Magnitude"),
@@ -135,8 +148,12 @@ class ImageMixer(QWidget):
             self.compose_complex(pair_1_indices, pair_1_comp))
         self.fft2_output.append(
             self.compose_complex(pair_2_indices, pair_2_comp))
-        # self.mixed_image = ifft2(self.fft2_output)
-        # self.set_image()
+        print(len(self.fft2_output[0]), len(self.fft2_output[1]))
+        self.mixed_image = ifft2(self.fft2_output)
+
+        self.main_window.out_ports[self.output].set_image()
+
+        self.main_window.deselect()
 
     def decode_pairs(self):
         mixing_order = []
@@ -155,8 +172,8 @@ class ImageMixer(QWidget):
                 f"the resulting complex number is of indices {mag_index, phase_index} in order")
             print(self.chunks[mag_index].shape,
                   self.chunks[phase_index].shape)
-            # complex_numbers = self.weight_value[mag_index]* self.chunks[mag_index] * np.exp(
-            #     1j * self.chunks[phase_index] * self.weight_value[phase_index] )
+            complex_numbers = self.weight_value[int(mag_index)] * self.chunks[mag_index] * np.exp(
+                1j * self.chunks[phase_index] * self.weight_value[int(phase_index)])
         else:
             real_index = str(pair_indices[pair_comp.index("FT Real")])
             imaginary_index = str(
@@ -165,15 +182,22 @@ class ImageMixer(QWidget):
                 f"the resulting complex number is of indices {real_index, imaginary_index} in order")
             print(self.chunks[real_index].shape,
                   self.chunks[imaginary_index].shape)
-            # complex_numbers = self.chunks[real_index] * self.weight_value[real_index] + \
-            #     1j * self.chunks[imaginary_index] * self.weight_value[imaginary_index]
-        # return complex_numbers
+            complex_numbers = self.chunks[real_index] * self.weight_value[int(real_index)] + \
+                1j * self.chunks[imaginary_index] * \
+                self.weight_value[int(imaginary_index)]
+        return complex_numbers
 
     def handle_radio_button_toggled(self):
         if self.main_window.ui.radioButton_In.isChecked():
             self.selection_mode = 1
         elif self.main_window.ui.radioButton_Out.isChecked():
             self.selection_mode = 0
+
+    def handle_out_radio_button_toggled(self):
+        if self.main_window.ui.radioButton1.isChecked():
+            self.output = 0
+        elif self.main_window.ui.radioButton2.isChecked():
+            self.output = 1
 
     def handle_weight_sliders(self):
         slider = self.sender()
@@ -182,4 +206,11 @@ class ImageMixer(QWidget):
         self.weight_reference[slider_ind] = slider.value()
         self.weight_value[slider_ind] = new_weight_value
 
-
+    def reset_after_mixing_and_deselect(self):
+        self.higher_precedence_ft_component = None
+        self.chunks = {
+            "0": np.array([]),
+            "1": np.array([]),
+            "2": np.array([]),
+            "3": np.array([])
+        }

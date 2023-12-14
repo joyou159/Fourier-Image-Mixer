@@ -60,10 +60,10 @@ class ImageViewport(QWidget):
 
             # Resize the image
             self.adjust_brightness_contrast()
-            self.resized_img = self.resized_img.resize((new_width, new_height))
+            self.resized_img = self.resized_img.resize((self.width(), self.height()))
             # Draw the image centered on the widget
             pixmap = QPixmap.fromImage(ImageQt.ImageQt(self.resized_img))
-            painter.drawPixmap(x, y, pixmap)
+            painter.drawPixmap(0, 0, pixmap)
 
             painter.end()
 

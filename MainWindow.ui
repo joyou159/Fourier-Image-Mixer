@@ -718,7 +718,7 @@ margin: 0 0 ;</string>
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_Routput">
            <item>
-            <widget class="QRadioButton" name="radioButton">
+            <widget class="QRadioButton" name="radioButton1">
              <property name="font">
               <font>
                <family>Oswald SemiBold</family>
@@ -736,7 +736,7 @@ font-weight:10000px;</string>
             </widget>
            </item>
            <item>
-            <widget class="QRadioButton" name="radioButton_2">
+            <widget class="QRadioButton" name="radioButton2">
              <property name="font">
               <font>
                <family>Oswald SemiBold</family>

@@ -1,17 +1,8 @@
-import sys
 from PyQt6.QtWidgets import (
-    QApplication,
     QWidget,
-    QVBoxLayout,
-    QHBoxLayout,
-    QLabel,
-    QComboBox,
 )
 from PyQt6.QtGui import QPixmap, QImage,  QImageReader, QPainter
-from PyQt6 import QtGui
-from PyQt6.QtCore import Qt, QBuffer, QByteArray
-from PIL import Image, ImageQt, ImageEnhance
-from PyQt6 import QtWidgets
+from PIL import Image, ImageQt
 from PyQt6.QtGui import QPainter, QBrush, QPen
 from PyQt6.QtCore import Qt, QRect, QPoint
 # Placeholder for FT-related functionalities
@@ -52,7 +43,6 @@ class FTViewPort(QWidget):
 
     def set_image(self):
         try:
-            # Convert to grayscale
             image = self.ft_components[self.curr_component_name]
 
             self.original_img = image
@@ -82,9 +72,8 @@ class FTViewPort(QWidget):
             # Calculate the position (x, y) to center the image
             x = (self.width() - new_width) // 2
             y = (self.height() - new_height) // 2
-
-            # Draw the images onto the widget using the minimum width and height
-            pixmap = QPixmap.fromImage(ImageQt.ImageQt(self.original_img))
+            resized_img = self.original_img.resize((new_width, new_height))
+            pixmap = QPixmap.fromImage(ImageQt.ImageQt(resized_img))
             painter.drawPixmap(x, y, pixmap)
 
             painter.end()

@@ -1,17 +1,12 @@
-import sys
+
 from PyQt6.QtWidgets import (
     QApplication,
     QWidget,
-    QVBoxLayout,
 )
 from PyQt6.QtGui import QPixmap, QImage,  QImageReader, QPainter
 from PyQt6 import QtGui
-from PyQt6.QtCore import Qt, QBuffer, QByteArray
-from PyQt6 import QtWidgets
+from PyQt6.QtCore import Qt
 from PIL import Image, ImageQt, ImageEnhance
-# Placeholder for FT-related functionalities
-import numpy as np
-from scipy.fft import fft2, ifft2, fftshift
 
 
 class ImageViewport(QWidget):
@@ -33,10 +28,6 @@ class ImageViewport(QWidget):
     def set_image(self, image_path):
         try:
             image = Image.open(image_path).convert('L')  # Convert to grayscale
-
-            # Set default brightness and contrast values
-            self.brightness = 0
-            self.contrast = 100
 
             self.original_img = image
             self.update_display()
@@ -76,9 +67,23 @@ class ImageViewport(QWidget):
 
             painter.end()
 
-    def resizeEvent(self, event):
-        super().resizeEvent(event)
-        self.update_display()
+    def resize_image(self, min_width, min_height):
+        if self.resized_img:
+            painter = QPainter(self)
+
+
+            # Calculate the position (x, y) to center the image
+            x = (self.width() - min_width) // 2
+            y = (self.height() - min_height) // 2
+
+            # Resize the image
+            self.adjust_brightness_contrast()
+            resized_img = self.resized_img.copy().resize((min_width, min_height))
+            # Draw the image centered on the widget
+            pixmap = QPixmap.fromImage(ImageQt.ImageQt(resized_img ))
+            painter.drawPixmap(x, y, pixmap)
+
+            painter.end()
 
     def mouseMoveEvent(self, event):
         if self.resized_img and event.buttons() == Qt.RightButton:

@@ -194,7 +194,7 @@ class MainWindow(QtWidgets.QMainWindow):
         #     f"the size of the image before resizing{np.array(image_port.original_img).shape}")
         # print(
         #     f"the size of the image after resizing{np.array( image_port.resized_img).shape}")
-        # self.resize_image()
+        self.resize_image()
 
     def resize_image(self):
         dimension_lst = []

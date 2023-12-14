@@ -67,23 +67,23 @@ class ImageViewport(QWidget):
 
             painter.end()
 
-    def resize_image(self, min_width, min_height):
-        if self.resized_img:
-            painter = QPainter(self)
+    # def resize_image(self, min_width, min_height):
+    #     if self.resized_img:
+    #         painter = QPainter(self)
 
 
-            # Calculate the position (x, y) to center the image
-            x = (self.width() - min_width) // 2
-            y = (self.height() - min_height) // 2
+    #         # Calculate the position (x, y) to center the image
+    #         x = (self.width() - min_width) // 2
+    #         y = (self.height() - min_height) // 2
 
-            # Resize the image
-            self.adjust_brightness_contrast()
-            resized_img = self.resized_img.copy().resize((min_width, min_height))
-            # Draw the image centered on the widget
-            pixmap = QPixmap.fromImage(ImageQt.ImageQt(resized_img ))
-            painter.drawPixmap(x, y, pixmap)
+    #         # Resize the image
+    #         self.adjust_brightness_contrast()
+    #         resized_img = self.resized_img.copy().resize((min_width, min_height))
+    #         # Draw the image centered on the widget
+    #         pixmap = QPixmap.fromImage(ImageQt.ImageQt(resized_img ))
+    #         painter.drawPixmap(x, y, pixmap)
 
-            painter.end()
+    #         painter.end()
 
     def mouseMoveEvent(self, event):
         if self.resized_img and event.buttons() == Qt.RightButton:

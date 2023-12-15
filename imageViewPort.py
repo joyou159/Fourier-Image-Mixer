@@ -59,7 +59,9 @@ class ImageViewport(QWidget):
 
             # Resize the image
             self.adjust_brightness_contrast()
-            self.resized_img = self.resized_img.resize((self.width(), self.height()))
+            self.resized_img = self.resized_img.resize(
+                (self.width(), self.height()))
+
             # Draw the image centered on the widget
             pixmap = QPixmap.fromImage(ImageQt.ImageQt(self.resized_img))
             painter.drawPixmap(0, 0, pixmap)
@@ -69,7 +71,6 @@ class ImageViewport(QWidget):
     # def resize_image(self, min_width, min_height):
     #     if self.resized_img:
     #         painter = QPainter(self)
-
 
     #         # Calculate the position (x, y) to center the image
     #         x = (self.width() - min_width) // 2

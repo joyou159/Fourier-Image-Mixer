@@ -50,20 +50,21 @@ class ImageMixer(QWidget):
         }
 
         self.main_window.ui.radioButton_In.toggled.connect(
-            self.mixer.handle_radio_button_toggled)
+            self.handle_radio_button_toggled)
         self.main_window.ui.radioButton_Out.toggled.connect(
-            self.mixer.handle_radio_button_toggled)
+            self.handle_radio_button_toggled)
 
         self.main_window.ui.radioButton1.toggled.connect(
-            self.mixer.handle_out_radio_button_toggled)
+            self.handle_out_radio_button_toggled)
         self.main_window.ui.radioButton2.toggled.connect(
-            self.mixer.handle_out_radio_button_toggled)
+            self.handle_out_radio_button_toggled)
+        self.main_window.ui.radioButton_In.setChecked(True)
+        self.main_window.ui.radioButton1.setChecked(True)
 
     def check_pair_validity(self):
         valid_pairs = [("FT Magnitude", "FT Phase"), ("FT Phase", "FT Magnitude"),
                        ("FT Real", "FT Imaginary"), ("FT Imaginary", "FT Real"), ("", "")]
         components = self.main_window.components  # returns the
-        print(components)
         self.mixing_comp = []
         for combo in self.main_window.ui_mixing_combo_boxes:
             if len(self.main_window.image_ports) % 2 != 0:
@@ -86,14 +87,14 @@ class ImageMixer(QWidget):
         for ind in range(len(self.chunks)):
             if self.main_window.image_ports[ind].original_img != None:
                 selection_matrix = self.get_chunk(ind)
-                curr_chunk = self.main_window.components_ports[ind].component_data * \
+
+                curr_chunk = np.array(self.main_window.components_ports[ind].resized_img).astype(float) * \
                     selection_matrix
                 self.chunks[str(ind)] = curr_chunk
 
     def generalize_rectangle(self, ind):
         if self.higher_precedence_ft_component == None:
             self.higher_precedence_ft_component = ind
-            print("higher_precedence_ft_component has changed")
             # the object of position is the same as object of data
         for i, port in enumerate(self.main_window.components_ports):
             if self.main_window.image_ports[i].original_img != None:
@@ -106,17 +107,16 @@ class ImageMixer(QWidget):
                 port.holdRect = True
                 port.set_image()
                 port.deactivate_drawing_events()
-                print("generalize")
 
     def get_chunk(self, ind):
         port = self.main_window.components_ports[ind]
 
         if self.selection_mode:
             selection_matrix = np.zeros_like(
-                port.component_data)
+                np.array(port.resized_img))
         else:
             selection_matrix = np.ones_like(
-                port.component_data)
+                np.array(port.resized_img))
 
         start_pos = port.press_pos  # (x1,y1)
         end_pos = port.release_pos  # (x2,y2)
@@ -144,14 +144,11 @@ class ImageMixer(QWidget):
         pair_2_comp = (self.mixing_comp[2], self.mixing_comp[3])
         print(pair_1_indices, pair_2_indices)
         self.fft2_output = []
-        self.fft2_output.append(
-            self.compose_complex(pair_1_indices, pair_1_comp))
-        self.fft2_output.append(
-            self.compose_complex(pair_2_indices, pair_2_comp))
-        print(len(self.fft2_output[0]), len(self.fft2_output[1]))
-        self.mixed_image = ifft2(self.fft2_output)
-
-        self.main_window.out_ports[self.output].set_image()
+        self.fft2_output = self.compose_complex(pair_1_indices, pair_1_comp)
+        self.fft2_output += self.compose_complex(pair_2_indices, pair_2_comp)
+        self.mixed_image = ifft2(self.fft2_output).astype(np.uint8)
+        image = Image.fromarray(np.abs(self.mixed_image), mode="L")
+        self.main_window.out_ports[self.output].set_image(image)
 
         self.main_window.deselect()
 
@@ -164,7 +161,7 @@ class ImageMixer(QWidget):
 
     def compose_complex(self, pair_indices, pair_comp):
         if -1 in pair_indices:
-            return
+            return np.zeros_like(self.fft2_output)
         if "FT Magnitude" in pair_comp:
             mag_index = str(pair_indices[pair_comp.index("FT Magnitude")])
             phase_index = str(pair_indices[pair_comp.index("FT Phase")])

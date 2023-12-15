@@ -15,6 +15,7 @@ import sys
 import logging
 from imageViewPort import ImageViewport
 from FTViewPort import FTViewPort
+from OutViewPort import OutViewPort
 from mixer import ImageMixer
 from ThreadingClass import WorkerSignals, WorkerThread
 
@@ -46,13 +47,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.min_width = None
         self.min_height = None
         self.components = {"1": '', "2": '', '3': '', '4': ''}
-        self.out_
         self.ui.output1_port.resize(
             self.ui.original1.width(), self.ui.original1.height())
         # mixer and its connection line
         self.mixer = ImageMixer(self)
         self.ui.mixxer.clicked.connect(self.start_thread)
-        self.ui.radioButton_In.setChecked(True)
 
         self.ui.Deselect.clicked.connect(self.deselect)
 
@@ -153,8 +152,8 @@ class MainWindow(QtWidgets.QMainWindow):
         ])
 
         self.out_ports.extend([
-            self.create_image_viewport(
-                self.ui_out_ports[i], lambda: None)
+            self.create_output_viewport(
+                self.ui_out_ports[i])
             for i in range(2)
         ])
 
@@ -272,6 +271,12 @@ class MainWindow(QtWidgets.QMainWindow):
         FT_layout = QVBoxLayout(parent)
         FT_layout.addWidget(FT_port)
         return FT_port
+
+    def create_output_viewport(self, parent):
+        out_port = OutViewPort(self)
+        FT_layout = QVBoxLayout(parent)
+        FT_layout.addWidget(out_port)
+        return out_port
 
 
 def main():

@@ -3,6 +3,7 @@ from PyQt6.QtWidgets import (
 )
 from PyQt6.QtGui import QPixmap, QImage,  QImageReader, QPainter
 from PIL import Image, ImageQt
+import cv2
 from PyQt6.QtGui import QPainter, QBrush, QPen
 from PyQt6.QtCore import Qt, QRect, QPoint
 # Placeholder for FT-related functionalities
@@ -21,6 +22,7 @@ class FTViewPort(QWidget):
         self.ft_components = {}
         self.weight_slider = None
         self.original_img = None
+        self.resized_img = None
         self.press_pos = None
         self.release_pos = None
         self.drawRect = False
@@ -44,7 +46,6 @@ class FTViewPort(QWidget):
     def set_image(self):
         try:
             image = self.ft_components[self.curr_component_name]
-
             self.original_img = image
             self.update_display()
 
@@ -72,11 +73,10 @@ class FTViewPort(QWidget):
             # Calculate the position (x, y) to center the image
             x = (self.width() - new_width) // 2
             y = (self.height() - new_height) // 2
-            resized_img = self.original_img.resize(
+            self.resized_img = self.original_img.resize(
                 (self.width(), self.height()))
-            pixmap = QPixmap.fromImage(ImageQt.ImageQt(resized_img))
+            pixmap = QPixmap.fromImage(ImageQt.ImageQt(self.resized_img))
             painter.drawPixmap(0, 0, pixmap)
-
             painter.end()
 
         if self.holdRect or self.drawRect:
@@ -190,17 +190,20 @@ class FTViewPort(QWidget):
         fft_shifted = fftshift(fft)
 
         # Compute the magnitude of the spectrum
-        mag = np.abs(fft_shifted)
-        mag = np.log(np.abs(mag) + 1)
+
+        epsilon = 1e-10  # Small constant to avoid log(0)
+        mag = (
+            20 * np.log(np.abs(fft_shifted) + epsilon)).astype(np.uint8)
 
         # Compute the phase of the spectrum
-        phase = np.angle(fft_shifted)
+        phase = np.angle(fft_shifted).astype(np.uint8)
 
         # real ft components
-        real = fft_shifted.real
+        real = (20 * np.log(np.abs(np.real(fft_shifted)) + epsilon)
+                ).astype(np.uint8)
 
         # imaginary ft components
-        imaginary = fft_shifted.imag
+        imaginary = fft_shifted.imag.astype(np.uint8)
 
         self.ft_components['FT Magnitude'] = Image.fromarray(
             mag, mode="L")

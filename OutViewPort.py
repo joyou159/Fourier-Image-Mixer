@@ -21,6 +21,8 @@ class OutViewPort(QWidget):
         try:
             # Convert to grayscale
             self.original_img = output_image
+            print(type(self.original_img), "the type of output image ")
+
             self.update_display()
 
         except Exception:

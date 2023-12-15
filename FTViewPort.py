@@ -18,7 +18,10 @@ class FTViewPort(QWidget):
         self.combo_box = None  # as widget object
         self.main_window = main_window
         self.curr_component_name = None
+        self.image_data = None
         self.component_data = None
+
+        self.ft_components_images = {}
         self.ft_components = {}
         self.weight_slider = None
         self.original_img = None
@@ -31,13 +34,14 @@ class FTViewPort(QWidget):
         self.current_rect = QRect()
 
     def update_FT_components(self):
-        self.component_data = np.array(
+        self.image_data = np.array(
             self.main_window.image_ports[self.viewport_FT_ind].resized_img)
+
         self.calculate_ft_components()
         self.handle_image_combo_boxes_selection()
 
     def handle_image_combo_boxes_selection(self):
-        if self.ft_components:
+        if self.ft_components_images:
             self.curr_component_name = self.combo_box.currentText()
             self.main_window.components[str(
                 self.viewport_FT_ind + 1)] = self.curr_component_name
@@ -45,7 +49,9 @@ class FTViewPort(QWidget):
 
     def set_image(self):
         try:
-            image = self.ft_components[self.curr_component_name]
+            image = self.ft_components_images[self.curr_component_name]
+            self.component_data = self.ft_components[self.curr_component_name]
+
             self.original_img = image
             self.update_display()
 
@@ -184,7 +190,7 @@ class FTViewPort(QWidget):
     def calculate_ft_components(self):
 
         # Compute the 2D Fourier Transform
-        fft = fft2(self.component_data)
+        fft = fft2(self.image_data)
 
         # Shift the zero-frequency component to the center
         fft_shifted = fftshift(fft)
@@ -193,26 +199,30 @@ class FTViewPort(QWidget):
 
         epsilon = 1e-10  # Small constant to avoid log(0)
         mag = (
-            20 * np.log(np.abs(fft_shifted) + epsilon)).astype(np.uint8)
+            10 * np.log(np.abs(fft_shifted) + epsilon)).astype(np.uint8)
 
         # Compute the phase of the spectrum
         phase = np.angle(fft_shifted).astype(np.uint8)
 
         # real ft components
-        real = (20 * np.log(np.abs(np.real(fft_shifted)) + epsilon)
+        real = (10 * np.log(np.abs(np.real(fft_shifted)) + epsilon)
                 ).astype(np.uint8)
 
         # imaginary ft components
         imaginary = fft_shifted.imag.astype(np.uint8)
 
-        self.ft_components['FT Magnitude'] = Image.fromarray(
+        self.ft_components_images['FT Magnitude'] = Image.fromarray(
             mag, mode="L")
+        self.ft_components['FT Magnitude'] = np.abs(fft_shifted)
 
-        self.ft_components['FT Phase'] = Image.fromarray(
+        self.ft_components_images['FT Phase'] = Image.fromarray(
             phase, mode='L')
+        self.ft_components['FT Phase'] = np.angle(fft_shifted)
 
-        self.ft_components["FT Real"] = Image.fromarray(
+        self.ft_components_images["FT Real"] = Image.fromarray(
             real, mode='L')
+        self.ft_components["FT Real"] = fft_shifted.real
 
-        self.ft_components["FT Imaginary"] = Image.fromarray(
+        self.ft_components_images["FT Imaginary"] = Image.fromarray(
             imaginary, mode='L')
+        self.ft_components["FT Imaginary"] = fft_shifted.imag

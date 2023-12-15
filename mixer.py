@@ -22,7 +22,7 @@ import threading
 import logging
 # Placeholder for FT-related functionalities
 import numpy as np
-from scipy.fft import ifft2
+from scipy.fft import ifft2, fftshift
 from PyQt6.QtWidgets import QWidget, QHBoxLayout, QLabel, QProgressBar
 
 # Configure logging to capture all log levels
@@ -88,7 +88,7 @@ class ImageMixer(QWidget):
             if self.main_window.image_ports[ind].original_img != None:
                 selection_matrix = self.get_chunk(ind)
 
-                curr_chunk = np.array(self.main_window.components_ports[ind].resized_img).astype(float) * \
+                curr_chunk = self.main_window.components_ports[ind].component_data * \
                     selection_matrix
                 self.chunks[str(ind)] = curr_chunk
 
@@ -113,10 +113,10 @@ class ImageMixer(QWidget):
 
         if self.selection_mode:
             selection_matrix = np.zeros_like(
-                np.array(port.resized_img))
+                np.array(port.image_data))
         else:
             selection_matrix = np.ones_like(
-                np.array(port.resized_img))
+                np.array(port.image_data))
 
         start_pos = port.press_pos  # (x1,y1)
         end_pos = port.release_pos  # (x2,y2)
@@ -143,12 +143,16 @@ class ImageMixer(QWidget):
         pair_2_indices = (mixing_order[2], mixing_order[3])
         pair_2_comp = (self.mixing_comp[2], self.mixing_comp[3])
         print(pair_1_indices, pair_2_indices)
-        self.fft2_output = []
         self.fft2_output = self.compose_complex(pair_1_indices, pair_1_comp)
         self.fft2_output += self.compose_complex(pair_2_indices, pair_2_comp)
-        self.mixed_image = ifft2(self.fft2_output).astype(np.uint8)
-        image = Image.fromarray(np.abs(self.mixed_image), mode="L")
-        self.main_window.out_ports[self.output].set_image(image)
+
+        print(self.fft2_output.shape, "the shape of fft_output")
+
+        self.mixed_image = abs(ifft2(fftshift(self.fft2_output)))
+        print(self.mixed_image[0, 0:10])
+
+        self.mixed_image = Image.fromarray(self.mixed_image, mode="L")
+        self.main_window.out_ports[self.output].set_image(self.mixed_image)
 
         self.main_window.deselect()
 

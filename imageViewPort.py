@@ -30,6 +30,7 @@ class ImageViewport(QWidget):
             image = Image.open(image_path).convert('L')  # Convert to grayscale
 
             self.original_img = image
+            print(type(self.original_img), "the type of input image ")
             self.update_display()
 
         except Exception as e:
@@ -59,13 +60,12 @@ class ImageViewport(QWidget):
 
             # Resize the image
             self.adjust_brightness_contrast()
-            self.resized_img = self.resized_img.resize(
+            resized_img = self.resized_img.resize(
                 (self.width(), self.height()))
 
             # Draw the image centered on the widget
-            pixmap = QPixmap.fromImage(ImageQt.ImageQt(self.resized_img))
+            pixmap = QPixmap.fromImage(ImageQt.ImageQt(resized_img))
             painter.drawPixmap(0, 0, pixmap)
-
             painter.end()
 
     # def resize_image(self, min_width, min_height):

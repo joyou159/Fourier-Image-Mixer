@@ -81,6 +81,7 @@ class ImageMixer(QWidget):
         pair2 = (self.mixing_comp[2], self.mixing_comp[3])
         print(self.mixing_comp)
         if pair1 not in valid_pairs or pair2 not in valid_pairs:
+            self.main_window.show_error_message('Please choose valid pairs')
             raise ValueError('Please choose valid pairs')
 
     def collect_chunks(self):

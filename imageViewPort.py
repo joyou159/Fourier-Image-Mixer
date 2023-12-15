@@ -17,7 +17,7 @@ class ImageViewport(QWidget):
         self.resized_img = None
         self.viewport_image_ind = None  # (brightness, contrast)
         self.brightness = 0
-        self.contrast = 100
+        self.contrast = 0
         self.last_x = 0
         self.last_y = 0
 

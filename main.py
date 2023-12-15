@@ -62,6 +62,22 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.worker_signals = WorkerSignals()
         self.worker_thread = None
+        
+    def show_error_message(self, message):
+        """
+        Displays an error message to the user.
+
+        Args:
+            message (str): The error message to be displayed.
+
+        Returns:
+            None
+        """
+        msg_box = QMessageBox()
+        msg_box.setIcon(QMessageBox.Icon.Critical)
+        msg_box.setWindowTitle("Error")
+        msg_box.setText(message)
+        msg_box.exec()
 
     def deselect(self):
         self.mixer.reset_after_mixing_and_deselect()

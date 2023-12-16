@@ -3,6 +3,11 @@ from PyQt6.QtWidgets import QWidget
 from PyQt6.QtGui import QPixmap, QPainter
 from PyQt6.QtCore import Qt
 from PIL import Image, ImageQt, ImageEnhance
+import logging
+
+# Configure logging to capture all log levels
+logging.basicConfig(filemode="a", filename="our_log.log",
+                    format="(%(asctime)s) | %(name)s| %(levelname)s | => %(message)s", level=logging.INFO)
 
 
 class ImageViewport(QWidget):
@@ -18,7 +23,6 @@ class ImageViewport(QWidget):
         self.last_y = 0
 
         self.main_window = main_window
-
 
     def set_image(self, image_path):
         """
@@ -41,8 +45,7 @@ class ImageViewport(QWidget):
             self.update_display()
 
         except Exception as e:
-            print(f"Error opening image: {e}")
-
+            logging.info(f"Error opening image: {e}")
 
     def update_display(self):
         """
@@ -57,33 +60,33 @@ class ImageViewport(QWidget):
         if self.original_img:
             self.repaint()
 
-
     def paintEvent(self, event):
         """
         Override the paintEvent method to draw the resized image on the widget.
         """
         super().paintEvent(event)
-        
+
         if self.original_img:
             painter = QPainter(self)
-            
+
             # Calculate the new size while maintaining the aspect ratio
             aspect_ratio = self.original_img.width / self.original_img.height
             new_width = self.width()
             new_height = int(new_width / aspect_ratio)
-            
+
             if new_height > self.height():
                 new_height = self.height()
                 new_width = int(new_height * aspect_ratio)
-            
+
             # Calculate the position (x, y) to center the image
             x = (self.width() - new_width) // 2
             y = (self.height() - new_height) // 2
-            
+
             # adjust brightness, contrast, and resize the image
             self.adjust_brightness_contrast()
-            resized_img = self.resized_img.resize((self.width(), self.height()))
-            
+            resized_img = self.resized_img.resize(
+                (self.width(), self.height()))
+
             # Draw the image on the widget
             pixmap = QPixmap.fromImage(ImageQt.ImageQt(resized_img))
             painter.drawPixmap(0, 0, pixmap)
@@ -141,7 +144,6 @@ class ImageViewport(QWidget):
         self.last_x = event.x()
         self.last_y = event.y()
 
-
     def mousePressEvent(self, event):
         """
         Save the initial mouse position when the mouse is pressed.
@@ -156,7 +158,6 @@ class ImageViewport(QWidget):
         self.last_x = event.x()
         self.last_y = event.y()
 
-
     def adjust_brightness_contrast(self):
         """
         Adjusts the brightness and contrast of the image.
@@ -164,13 +165,13 @@ class ImageViewport(QWidget):
         # Adjust brightness
         brightness_factor = (self.brightness + 255) / 255.0
         brightness_enhancer = ImageEnhance.Brightness(self.original_img)
-        img_with_brightness_adjusted = brightness_enhancer.enhance(brightness_factor)
+        img_with_brightness_adjusted = brightness_enhancer.enhance(
+            brightness_factor)
 
         # Adjust contrast
         contrast_factor = (self.contrast + 127) / 127.0
         contrast_enhancer = ImageEnhance.Contrast(img_with_brightness_adjusted)
         self.resized_img = contrast_enhancer.enhance(contrast_factor)
-
 
     def update_image_parameters(self, path):
         """
@@ -194,13 +195,16 @@ class ImageViewport(QWidget):
         self.main_window.image_ports[current].set_image(path)
 
         # pick FT type for each image by default
-        self.main_window.ui_image_combo_boxes[current].setCurrentIndex(selection)
-        
+        self.main_window.ui_image_combo_boxes[current].setCurrentIndex(
+            selection)
+
         # set some attributes of the Image
-        component = self.main_window.ui_image_combo_boxes[current].currentText()
+        component = self.main_window.ui_image_combo_boxes[current].currentText(
+        )
         self.main_window.components[str(current+1)] = component
 
         # update the mixing boxes and sliders
-        self.main_window.ui_mixing_combo_boxes[selection].setCurrentIndex(current+1)
+        self.main_window.ui_mixing_combo_boxes[selection].setCurrentIndex(
+            current+1)
 
         self.main_window.ui_vertical_sliders[selection].setValue(100)

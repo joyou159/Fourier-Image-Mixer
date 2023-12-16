@@ -5,7 +5,7 @@ from PyQt6.QtWidgets import (
 
 from PIL import Image
 
-from PyQt6.QtCore import  QRect
+from PyQt6.QtCore import QRect
 
 from PyQt6 import QtWidgets
 import sys
@@ -19,7 +19,7 @@ from PyQt6.QtWidgets import QWidget
 
 # Configure logging to capture all log levels
 logging.basicConfig(filemode="a", filename="our_log.log",
-                    format="(%(asctime)s) | %(name)s| %(levelname)s | => %(message)s")
+                    format="(%(asctime)s) | %(name)s| %(levelname)s | => %(message)s", level=logging.INFO)
 
 
 class ImageMixer(QWidget):
@@ -45,22 +45,25 @@ class ImageMixer(QWidget):
         }
 
         # Connect radio button toggled signals to corresponding handlers
-        self.main_window.ui.radioButton_In.toggled.connect(self.handle_radio_button_toggled)
-        self.main_window.ui.radioButton_Out.toggled.connect(self.handle_radio_button_toggled)
+        self.main_window.ui.radioButton_In.toggled.connect(
+            self.handle_radio_button_toggled)
+        self.main_window.ui.radioButton_Out.toggled.connect(
+            self.handle_radio_button_toggled)
 
         # Connect output radio button toggled signals to corresponding handlers
-        self.main_window.ui.radioButton1.toggled.connect(self.handle_out_radio_button_toggled)
-        self.main_window.ui.radioButton2.toggled.connect(self.handle_out_radio_button_toggled)
+        self.main_window.ui.radioButton1.toggled.connect(
+            self.handle_out_radio_button_toggled)
+        self.main_window.ui.radioButton2.toggled.connect(
+            self.handle_out_radio_button_toggled)
 
         # Set default radio button states
         self.main_window.ui.radioButton_In.setChecked(True)
         self.main_window.ui.radioButton1.setChecked(True)
 
-
     def check_pair_validity(self):
         """
         Check the validity of the pairs selected for mixing.
-        
+
         Raises:
             ValueError: If the selected pairs are not valid.
         """
@@ -71,30 +74,29 @@ class ImageMixer(QWidget):
             ("FT Imaginary", "FT Real"),
             ("", "")
         ]
-        
+
         components = self.main_window.components
-        
+
         self.mixing_comp = []
-        
+
         for combo in self.main_window.ui_mixing_combo_boxes:
-                
-                image_selection = combo.currentIndex()
-                
-                if image_selection == 0:
-                    component = ""
-                else:
-                    component = components[str(image_selection)]
-                    
-                self.mixing_comp.append(component)
-        
+
+            image_selection = combo.currentIndex()
+
+            if image_selection == 0:
+                component = ""
+            else:
+                component = components[str(image_selection)]
+
+            self.mixing_comp.append(component)
+
         pair1 = (self.mixing_comp[0], self.mixing_comp[1])
         pair2 = (self.mixing_comp[2], self.mixing_comp[3])
-        
 
         if pair1 not in valid_pairs or pair2 not in valid_pairs:
             self.main_window.show_error_message('Please choose valid pairs')
-            raise ValueError('Please choose valid pairs')
-
+            logging.error("the user didn't choose valid pairs ")
+            return 0
 
     def collect_chunks(self):
         """
@@ -104,7 +106,6 @@ class ImageMixer(QWidget):
             if self.main_window.image_ports[ind].original_img is not None:
                 curr_chunk = self.get_chunk(ind)
                 self.chunks[str(ind)] = curr_chunk
-
 
     def get_chunk(self, ind):
         """Get the selected region of an image based on the given index.
@@ -124,16 +125,18 @@ class ImageMixer(QWidget):
 
         if self.selection_mode:
             # Extract the selected region within the port
-            selected_region = self.inner_region_extraction(port, start_pos, end_pos)
+            selected_region = self.inner_region_extraction(
+                port, start_pos, end_pos)
         else:
             # Extract the selected region outside the port
-            selected_region = self.outer_region_extraction(port, start_pos, end_pos)
+            selected_region = self.outer_region_extraction(
+                port, start_pos, end_pos)
 
         # Print the size of the selected region
-        print(selected_region.shape, "The size of the selected region")
+        logging.info(f"The size of the selected region{
+                     selected_region.shape}")
 
         return selected_region
-    
 
     def inner_region_extraction(self, port, start_pos, end_pos) -> np.ndarray:
         """
@@ -154,9 +157,8 @@ class ImageMixer(QWidget):
             for jj, j in enumerate(range(round(start_pos.x()), round(end_pos.x()) + 1)):
                 if self.selection_mode:
                     selected_region[ii, jj] = port.component_data[i, j]
-        
-        return selected_region
 
+        return selected_region
 
     def outer_region_extraction(self, port, start_pos, end_pos):
         """
@@ -170,34 +172,33 @@ class ImageMixer(QWidget):
         Returns:
             - selected_region: The extracted outer region of the component's data matrix.
         """
-        
+
         # Calculate the shape of the inner region
         inner_region_shape = (
             round(end_pos.y() - start_pos.y()) + 1, round(end_pos.x() - start_pos.x()) + 1)
-        
+
         # Get the shape of the full matrix
         full_matrix_shape = port.component_data.shape
-        
+
         # Create an array to store the selected region
         selected_region = np.zeros(
             (full_matrix_shape[0], full_matrix_shape[1] - inner_region_shape[1]))
-        
+
         # Iterate over each row in the full matrix
         for i in range(full_matrix_shape[0]):
             curr_column = 0  # reset the columns
-            
+
             # Iterate over each column in the full matrix
             for j in range(full_matrix_shape[1]):
-                
+
                 # Check if the current cell is not within the inner region
                 if j not in range(round(start_pos.x()), round(end_pos.x()) + 1) and i not in (range(round(start_pos.y()), round(end_pos.y()) + 1)):
-                    
+
                     # Copy the value from the component's data matrix to the selected region
                     selected_region[i, curr_column] = port.component_data[i, j]
                     curr_column += 1
-        
+
         return selected_region
-    
 
     def generalize_rectangle(self, ind):
         """
@@ -212,18 +213,17 @@ class ImageMixer(QWidget):
 
         for i, port in enumerate(self.main_window.components_ports):
             if self.main_window.image_ports[i].original_img is not None:
-                port.current_rect = QRect(self.main_window.components_ports[self.higher_precedence_ft_component].current_rect)
-                
-                port.press_pos, port.release_pos = port.current_rect.topLeft(), port.current_rect.bottomRight()
+                port.current_rect = QRect(
+                    self.main_window.components_ports[self.higher_precedence_ft_component].current_rect)
+
+                port.press_pos, port.release_pos = port.current_rect.topLeft(
+                ), port.current_rect.bottomRight()
 
                 port.holdRect = True
                 port.set_image()
                 port.deactivate_drawing_events()
 
-
     def mix_images(self):
-        # Check if the pair of images is valid
-        self.check_pair_validity()
 
         # Collect image chunks
         self.collect_chunks()
@@ -249,7 +249,7 @@ class ImageMixer(QWidget):
         self.fft2_output += self.compose_complex(pair_2_indices, pair_2_comp)
 
         # Print the shape of the fft2_output
-        print(self.fft2_output.shape, "the shape of fft_output")
+        logging.info(f"the shape of fft_output{self.fft2_output.shape}")
 
         # Calculate the mixed image using inverse Fourier transform
         self.mixed_image = abs(ifft2(fftshift(self.fft2_output)))
@@ -266,11 +266,10 @@ class ImageMixer(QWidget):
         # Deselect any selected items in the main window
         self.main_window.deselect()
 
-
     def decode_pairs(self):
         """
         Decode the image number pairs from the UI mixing combo boxes.
-        
+
         Returns:
             list: The decoded image number pairs.
         """
@@ -278,11 +277,10 @@ class ImageMixer(QWidget):
         # Iterate over the UI mixing combo boxes
         for combo in self.main_window.ui_mixing_combo_boxes:
             # Get the selected image number from the combo box
-            image_num = combo.currentIndex() - 1 # Subtract 1 to get the index of the image
+            image_num = combo.currentIndex() - 1  # Subtract 1 to get the index of the image
             # Add the image number to the mixing order list
             mixing_order.append(image_num)
         return mixing_order
-
 
     def compose_complex(self, pair_indices, pair_comp):
         """
@@ -322,7 +320,6 @@ class ImageMixer(QWidget):
                 self.weight_value[int(imaginary_index)]
         return complex_numbers
 
-
     def handle_radio_button_toggled(self):
         """
         Handle the event when a radio button is toggled.
@@ -338,7 +335,6 @@ class ImageMixer(QWidget):
             # If the "Out" radio button is checked, set the selection mode to 0
             self.selection_mode = 0
 
-
     def handle_out_radio_button_toggled(self):
         """
         Handle the toggling of the output radio buttons.
@@ -353,7 +349,6 @@ class ImageMixer(QWidget):
         elif self.main_window.ui.radioButton2.isChecked():
             # Set output to 1 if radioButton2 is checked
             self.output = 1
-
 
     def handle_weight_sliders(self):
         """
@@ -373,7 +368,6 @@ class ImageMixer(QWidget):
 
         # Update the weight reference with the new slider value
         self.weight_reference[slider_ind] = slider.value()
-
 
     def reset_after_mixing_and_deselect(self):
         """

@@ -4,7 +4,7 @@ import logging
 
 # Configure logging to capture all log levels
 logging.basicConfig(filemode="a", filename="our_log.log",
-                    format="(%(asctime)s) | %(name)s| => %(message)s")
+                    format="(%(asctime)s) | %(name)s| %(levelname)s | => %(message)s", level=logging.INFO)
 
 
 class WorkerSignals:
@@ -25,10 +25,10 @@ class WorkerThread(threading.Thread, ):
             time.sleep(1)
             self.update_progress()
             if self.signals.canceled.is_set():
-                print(
+                logging.info(
                     f'Thread canceled - Remaining time: {self.seconds - i - 1} seconds')
                 return
-        print('Thread completed')
+        logging.info('Thread completed')
 
     def cancel(self):
         self.signals.canceled.set()
@@ -38,4 +38,5 @@ class WorkerThread(threading.Thread, ):
         # This function can be called to update the progress bar manually
         self.progress_value += 20
         self.main_window.ui.progressBar.setValue(self.progress_value)
-
+        if self.progress_value == 100:
+            self.main_window.mixer.mix_images()

@@ -1,6 +1,12 @@
 from PyQt6.QtWidgets import QWidget
 from PyQt6.QtGui import QPixmap, QPainter
-from PIL import  ImageQt
+from PIL import ImageQt
+import logging
+
+# Configure logging to capture all log levels
+logging.basicConfig(filemode="a", filename="our_log.log",
+                    format="(%(asctime)s) | %(name)s| %(levelname)s | => %(message)s", level=logging.INFO)
+
 
 class OutViewPort(QWidget):
     def __init__(self, parent=None):
@@ -17,7 +23,7 @@ class OutViewPort(QWidget):
             self.update_display()
 
         except Exception:
-            print("Error Displaying Output Image")
+            logging.error("Error Displaying Output Image")
 
     def update_display(self):
         if self.original_img:
@@ -42,8 +48,9 @@ class OutViewPort(QWidget):
             y = (self.height() - new_height) // 2
 
             # Resize the image
-            self.resized_img = self.original_img.resize((self.width(), self.height()))
-            
+            self.resized_img = self.original_img.resize(
+                (self.width(), self.height()))
+
             # Draw the image centered on the widget
             pixmap = QPixmap.fromImage(ImageQt.ImageQt(self.resized_img))
             painter.drawPixmap(0, 0, pixmap)

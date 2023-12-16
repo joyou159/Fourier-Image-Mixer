@@ -1,27 +1,18 @@
-
-from PyQt6.QtWidgets import (
-    QApplication,
-    QWidget,
-)
-from PyQt6.QtGui import QPixmap, QImage,  QImageReader, QPainter
-from PyQt6 import QtGui
-from PyQt6.QtCore import Qt
-from PIL import Image, ImageQt, ImageEnhance
-
+from PyQt6.QtWidgets import QWidget
+from PyQt6.QtGui import QPixmap, QPainter
+from PIL import  ImageQt
 
 class OutViewPort(QWidget):
-    def __init__(self, main_window, parent=None):
+    def __init__(self, parent=None):
         super().__init__(parent)
         # keep track of mini figure size.
         self.original_img = None
         self.resized_img = None
-        # connect the combo boxes value changed to a function that shows the corresponding FT type, and to the set_image_op
 
     def set_image(self, output_image):
         try:
             # Convert to grayscale
             self.original_img = output_image
-            print(type(self.original_img), "the type of output image ")
 
             self.update_display()
 
@@ -51,14 +42,10 @@ class OutViewPort(QWidget):
             y = (self.height() - new_height) // 2
 
             # Resize the image
-            self.resized_img = self.original_img.resize(
-                (self.width(), self.height()))
+            self.resized_img = self.original_img.resize((self.width(), self.height()))
+            
             # Draw the image centered on the widget
             pixmap = QPixmap.fromImage(ImageQt.ImageQt(self.resized_img))
             painter.drawPixmap(0, 0, pixmap)
 
             painter.end()
-
-    def resizeEvent(self, event):
-        super().resizeEvent(event)
-        self.update_display()

@@ -1,16 +1,12 @@
 from PyQt6 import QtWidgets
-from PyQt6.QtWidgets import QVBoxLayout,  QMessageBox,  QSlider
-from PyQt6.QtCore import Qt, QTimer
+from PyQt6.QtWidgets import QVBoxLayout,  QMessageBox
+from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QIcon
 from PyQt6 import QtWidgets, uic
 import numpy as np
-import pandas as pd
 import sys
-import pyqtgraph as pg
 import qdarkstyle
-import os
-import sounddevice as sd
-from PyQt6.QtCore import Qt, QRect, QPoint
+from PyQt6.QtCore import Qt, QRect
 import sys
 import logging
 from imageViewPort import ImageViewport
@@ -36,6 +32,17 @@ class MainWindow(QtWidgets.QMainWindow):
         self.init_ui()
 
     def init_ui(self):
+        """
+        Initializes the user interface by loading the UI page, setting the window title and icon,
+        initializing various attributes, connecting signals to slots, loading UI elements, and 
+        setting the window to full screen.
+
+        Parameters:
+            None
+        
+        Returns:
+            None
+        """
         # Load the UI Page
         self.ui = uic.loadUi('Mainwindow.ui', self)
         self.setWindowTitle("Image Mixer")
@@ -80,18 +87,27 @@ class MainWindow(QtWidgets.QMainWindow):
         msg_box.exec()
 
     def deselect(self):
+        """
+        Deselects all components and resets their properties.
+
+        This function does not take any parameters and does not return anything.
+        """
         self.mixer.reset_after_mixing_and_deselect()
         for comp in self.components_ports:
             comp.press_pos = None
             comp.release_pos = None
-            comp.drawRect = False
-            comp.holdRect = False
-            comp.move_active = False
+            self.holdRect = False
+            self.move_active = False
             comp.current_rect = QRect()
             comp.reactivate_drawing_events()
-            comp.set_image()
+            comp.update_display()
 
     def start_thread(self):
+        """
+        Start a new thread for processing.
+        
+        If there is a running thread, terminate it before starting a new one.
+        """
         if self.worker_thread and self.worker_thread.is_alive():
             print('Terminating the running thread...')
             self.worker_thread.cancel()
@@ -104,91 +120,82 @@ class MainWindow(QtWidgets.QMainWindow):
         self.mixer.mix_images()
 
     def keyPressEvent(self, event):
+        """
+        Handle key events, for example, pressing ESC to exit full screen.
+        
+        Parameters:
+            event (QKeyEvent): The key event object.
+        
+        Returns:
+            None
+        """
         # Handle key events, for example, pressing ESC to exit full screen
         if event.key() == Qt.Key.Key_Escape:
             self.showNormal()  # Show the window in normal size
         else:
             super().keyPressEvent(event)
 
-        self.showFullScreen()
-        self.ui.keyPressEvent = self.keyPressEvent
-
-    def keyPressEvent(self, event):
-        # Handle key events, for example, pressing ESC to exit full screen
-        if event.key() == Qt.Key.Key_Escape:
-            self.showNormal()  # Show the window in normal size
-        else:
-            super().keyPressEvent(event)
 
     def load_ui_elements(self):
         """
         Load UI elements.
 
-        This function is responsible for loading the UI elements of the application. It initializes and configures various UI components 
-        such as view ports, combo boxes, sliders, and connects them to the appropriate event handlers.
+        Initializes and configures various UI components such as viewports, combo boxes, sliders, and connects them to appropriate event handlers.
 
         """
-        # List of original UI view ports
-        ui_view_ports = [self.ui.original1, self.ui.original2,
-                         self.ui.original3, self.ui.original4]
+        self.initialize_ui_lists()
+        self.create_image_viewports()
+        self.configure_combo_boxes()
 
-        self.ui_view_ports_comp = [
-            self.ui.component_image1, self.ui.component_image2,
-            self.ui.component_image3, self.ui.component_image4]
+    def load_ui_elements(self):
+        """
+        Load UI elements.
 
-        self.ui_out_ports = [
-            self.ui.output1_port, self.ui.output2_port,
-        ]
+        Initializes and configures various UI components such as viewports, combo boxes, sliders, and connects them to appropriate event handlers.
 
-        # List of combo boxes for UI
-        self.ui_image_combo_boxes = [
-            self.ui.combo1, self.ui.combo2,
-            self.ui.combo3, self.ui.combo4]
-
-        # List of combo boxes for mixing UI
-        self.ui_mixing_combo_boxes = [
-            self.ui.combo11, self.ui.combo12,
-            self.ui.combo13, self.ui.combo14]
-
-        self.ui_vertical_sliders = [
-            self.ui.Slider_weight1, self.ui.Slider_weight2,
-            self.ui.Slider_weight3, self.ui.Slider_weight4]
+        """
+        # Define lists of original UI view ports, output ports, component view ports, image combo boxes, mixing combo boxes, and vertical sliders
+        ui_view_ports = [self.ui.original1, self.ui.original2, self.ui.original3, self.ui.original4]
+        self.ui_out_ports = [self.ui.output1_port, self.ui.output2_port]
+        self.ui_view_ports_comp = [self.ui.component_image1, self.ui.component_image2, self.ui.component_image3, self.ui.component_image4]
+        self.ui_image_combo_boxes = [self.ui.combo1, self.ui.combo2, self.ui.combo3, self.ui.combo4]
+        self.ui_mixing_combo_boxes = [self.ui.combo11, self.ui.combo12, self.ui.combo13, self.ui.combo14]
+        self.ui_vertical_sliders = [self.ui.Slider_weight1, self.ui.Slider_weight2, self.ui.Slider_weight3, self.ui.Slider_weight4]
 
         # Create image viewports and bind browse_image function to the event
         self.image_ports.extend([
-            self.create_image_viewport(
-                ui_view_ports[i], lambda event, index=i: self.browse_image(event, index))
-            for i in range(4)
-        ])
+            self.create_image_viewport(ui_view_ports[i], lambda event, index=i: self.browse_image(event, index)) for i in range(4)])
 
-        self.components_ports.extend([
-            self.create_FT_viewport(
-                self.ui_view_ports_comp[i])
-            for i in range(4)
-        ])
+        # Create FT viewports
+        self.components_ports.extend([self.create_FT_viewport(self.ui_view_ports_comp[i]) for i in range(4)])
 
-        self.out_ports.extend([
-            self.create_output_viewport(
-                self.ui_out_ports[i])
-            for i in range(2)
-        ])
+        # Create output viewports
+        self.out_ports.extend([self.create_output_viewport(self.ui_out_ports[i]) for i in range(2)])
 
         # Add items to combo boxes for mixing UI
         for combo_box in self.ui_mixing_combo_boxes:
-            combo_box.addItems(['None']+[f'image{i+1}' for i in range(4)])
+            combo_box.addItems(['None'] + [f'image{i+1}' for i in range(4)])
 
+        # Loop through each combo box and associated components_ports
         for i, combo_box in enumerate(self.ui_image_combo_boxes):
+            # Set the combo box and weight slider for the corresponding components_port
             self.components_ports[i].combo_box = combo_box
             self.components_ports[i].weight_slider = self.ui_vertical_sliders[i]
+
+            # Set the minimum and maximum values for the weight slider
             self.ui_vertical_sliders[i].setMinimum(1)
             self.ui_vertical_sliders[i].setMaximum(100)
-            self.ui_vertical_sliders[i].valueChanged.connect(
-                self.mixer.handle_weight_sliders)
-            combo_box.addItems(
-                ["FT Magnitude", "FT Phase", "FT Real", "FT Imaginary"])
+
+            # Connect the valueChanged signal of the weight slider to the handle_weight_sliders method of the mixer
+            self.ui_vertical_sliders[i].valueChanged.connect(self.mixer.handle_weight_sliders)
+
+            # Add items to the combo box and set the current index to 0
+            combo_box.addItems(["FT Magnitude", "FT Phase", "FT Real", "FT Imaginary"])
             combo_box.setCurrentIndex(0)
-            combo_box.currentIndexChanged.connect(
-                self.components_ports[i].handle_image_combo_boxes_selection)
+
+            # Connect the currentIndexChanged signal of the combo box to the handle_image_combo_boxes_selection method of the components_port
+            combo_box.currentIndexChanged.connect(self.components_ports[i].handle_image_combo_boxes_selection)
+
 
     def browse_image(self, event, index: int):
         """
@@ -198,6 +205,7 @@ class MainWindow(QtWidgets.QMainWindow):
             event: The event that triggered the image browsing.
             index: The index of the ImageViewport to set the image for.
         """
+        
         file_filter = "Raw Data (*.png *.jpg *.jpeg *.jfif)"
         image_path, _ = QtWidgets.QFileDialog.getOpenFileName(
             None, 'Open Signal File', './', filter=file_filter)
@@ -208,54 +216,72 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.open_order.append(index)
             else:
                 # swap ,and make the one we open the last one
-                self.open_order[-1], self.open_order[self.open_order.index(
-                    index)] = self.open_order[self.open_order.index(index)], self.open_order[-1]
+                self.open_order[-1], self.open_order[self.open_order.index(index)] = self.open_order[self.open_order.index(index)], self.open_order[-1]
 
             self.image_processing(index, image_port, image_path)
 
     def image_processing(self, index, image_port, image_path):
-        image_port.viewport_image_ind = index
-        self.components_ports[index].viewport_FT_ind = index
-        image_port.update_image_parameters(image_path)
-        self.components_ports[index].update_FT_components()
-        print(
-            f"the size of the image before resizing{np.array(image_port.original_img).shape}")
-        print(
-            f"the size of the image after resizing{np.array(image_port.resized_img).shape}")
-
-    def resize_image(self):
-        dimension_lst = []
-
-        for viewport in self.image_ports:
-
-            dimensions = np.array(viewport.resized_img).shape
-            if dimensions:  # Check if the shape tuple is not empty
-                dimension_lst.append(dimensions)
-
-        if dimension_lst:
-            min_width = min(dim[1] for dim in dimension_lst)
-            min_height = min(dim[0] for dim in dimension_lst)
-
-            for viewport in self.image_ports:
-                viewport.resize_image(min_width, min_height)
-
-    def create_image_viewport(self, parent, mouse_double_click_event_handler):
         """
-        Creates an image viewport and adds it to the specified parent widget.
+        Process the image with the given index and update the image parameters.
 
-        Args:
-            parent: The parent widget to which the image viewport will be added.
-            mouse_double_click_event_handler: The event handler function to be called when a mouse double-click event occurs on the image viewport.
+        Parameters:
+        - index: int - The index of the image to process.
+        - image_port: ImagePort - The image port object.
+        - image_path: str - The path to the image file.
 
         Returns:
-            The created image viewport.
+        - None
+        """
+        # Update the viewport image index
+        image_port.viewport_image_ind = index
+
+        # Update the FT index of the component port
+        self.components_ports[index].viewport_FT_ind = index
+
+        # Update the image parameters
+        image_port.update_image_parameters(image_path)
+
+        # Update the FT components of the component port
+        self.components_ports[index].update_FT_components()
+
+        # Print the size of the image before resizing
+        print(f"The size of the image before resizing: {np.array(image_port.original_img).shape}")
+
+        # Print the size of the image after resizing
+        print(f"The size of the image after resizing: {np.array(image_port.resized_img).shape}")
+
+
+    def create_viewport(self, parent, viewport_class, mouse_double_click_event_handler=None):
+        """
+        Creates a viewport of the specified class and adds it to the specified parent widget.
+
+        Args:
+            parent: The parent widget to which the viewport will be added.
+            viewport_class: The class of the viewport to be created.
+            mouse_double_click_event_handler: The event handler function to be called when a mouse double-click event occurs (optional).
+
+        Returns:
+            The created viewport.
 
         """
-        image_port = ImageViewport(self)
-        image_layout = QVBoxLayout(parent)
-        image_layout.addWidget(image_port)
-        image_port.mouseDoubleClickEvent = mouse_double_click_event_handler
-        return image_port
+        new_port = viewport_class(self)
+        layout = QVBoxLayout(parent)
+        layout.addWidget(new_port)
+
+        if mouse_double_click_event_handler:
+            new_port.mouseDoubleClickEvent = mouse_double_click_event_handler
+
+        return new_port
+
+    def create_image_viewport(self, parent, mouse_double_click_event_handler):
+        return self.create_viewport(parent, ImageViewport, mouse_double_click_event_handler)
+
+    def create_FT_viewport(self, parent):
+        return self.create_viewport(parent, FTViewPort)
+
+    def create_output_viewport(self, parent):
+        return self.create_viewport(parent, OutViewPort)
+    
 
     def add_items_to_combo_boxes(self, combo_boxes, items):
         """
@@ -271,28 +297,6 @@ class MainWindow(QtWidgets.QMainWindow):
         for combo_box in combo_boxes:
             combo_box.addItems(items)
 
-    def create_FT_viewport(self, parent):
-        """
-        Creates an FT viewport and adds it to the specified parent widget.
-
-        Args:
-            parent: The parent widget to which the image viewport will be added.
-            mouse_double_click_event_handler: The event handler function to be called when a mouse double-click event occurs on the image viewport.
-
-        Returns:
-            The created FT viewport.
-
-        """
-        FT_port = FTViewPort(self)
-        FT_layout = QVBoxLayout(parent)
-        FT_layout.addWidget(FT_port)
-        return FT_port
-
-    def create_output_viewport(self, parent):
-        out_port = OutViewPort(self)
-        FT_layout = QVBoxLayout(parent)
-        FT_layout.addWidget(out_port)
-        return out_port
 
 
 def main():

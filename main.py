@@ -143,17 +143,6 @@ class MainWindow(QtWidgets.QMainWindow):
         Initializes and configures various UI components such as viewports, combo boxes, sliders, and connects them to appropriate event handlers.
 
         """
-        self.initialize_ui_lists()
-        self.create_image_viewports()
-        self.configure_combo_boxes()
-
-    def load_ui_elements(self):
-        """
-        Load UI elements.
-
-        Initializes and configures various UI components such as viewports, combo boxes, sliders, and connects them to appropriate event handlers.
-
-        """
         # Define lists of original UI view ports, output ports, component view ports, image combo boxes, mixing combo boxes, and vertical sliders
         ui_view_ports = [self.ui.original1, self.ui.original2, self.ui.original3, self.ui.original4]
         self.ui_out_ports = [self.ui.output1_port, self.ui.output2_port]

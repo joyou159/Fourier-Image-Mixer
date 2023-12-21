@@ -60,7 +60,7 @@ class ImageViewport(QWidget):
         """
         This function updates the display if the original image is available. 
 
-        Parameters:
+        Parameters:0000000000000000000000000
             self: The current instance of the class.
 
         Returns:

@@ -179,6 +179,7 @@ class ImageMixer(QWidget):
         # Get the indices and components of the first pair
         pair_1_indices = (mixing_order[0], mixing_order[1])
         pair_1_comp = (self.mixing_comp[0], self.mixing_comp[1])
+        print(mixing_order)
 
         # Get the indices and components of the second pair
         pair_2_indices = (mixing_order[2], mixing_order[3])
@@ -242,7 +243,7 @@ class ImageMixer(QWidget):
             phase_index = str(pair_indices[pair_comp.index("FT Phase")])
             complex_numbers = self.weight_value[int(mag_index)] * self.chunks[mag_index] * np.exp(
                 1j * self.chunks[phase_index] * self.weight_value[int(phase_index)])
-
+            print(self.chunks[phase_index])
         else:
             real_index = str(pair_indices[pair_comp.index("FT Real")])
             imaginary_index = str(
@@ -291,12 +292,15 @@ class ImageMixer(QWidget):
 
         # Find the index of the slider in the list of vertical sliders
         slider_ind = self.main_window.ui_vertical_sliders.index(slider)
+        curr_image_ind = self.main_window.ui_mixing_combo_boxes[slider_ind].currentIndex(
+        ) - 1
 
         # Calculate the new weight value based on the slider value and the previous weight reference
         new_weight_value = slider.value() / 100
 
         # Update the weight value with the calculated new value
-        self.weight_value[slider_ind] = new_weight_value
+        self.weight_value[curr_image_ind] = new_weight_value
+        print(new_weight_value, curr_image_ind)
 
     def reset_after_mixing_and_deselect(self):
         """

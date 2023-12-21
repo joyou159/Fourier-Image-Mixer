@@ -1151,6 +1151,36 @@ background: rgba(74, 74, 74, 0);
             </layout>
            </item>
            <item>
+            <widget class="Line" name="line">
+             <property name="styleSheet">
+              <string notr="true">/* Line style */
+
+  /* Set the width of the line */
+  width: 20px;
+
+  /* Set the height of the line */
+  height: 5px;
+
+  /* Set the background color of the line */
+  background-color:rgb(77, 86, 105);
+
+  /* Set the border of the line */
+  border: 10px;
+
+  /* Set the border radius of the line */
+  border-radius:5px;
+
+
+
+
+</string>
+             </property>
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
             <layout class="QVBoxLayout" name="verticalLayout_weight3">
              <item>
               <widget class="QComboBox" name="combo13">

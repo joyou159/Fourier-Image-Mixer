@@ -39,7 +39,7 @@ class WorkerThread(threading.Thread, ):
         if self.progress_value == 0:
             self.main_window.mixer.collect_chunks()
             self.main_window.deselect()
-        self.progress_value += 10
+        self.progress_value += 20
         self.main_window.ui.progressBar.setValue(self.progress_value)
 
         if self.progress_value == 100:

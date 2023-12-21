@@ -112,24 +112,20 @@ class MainWindow(QtWidgets.QMainWindow):
         """
         # Check if the pair of images is valid
         if self.mixer.check_pair_validity():
-            print(self.open_order, "entry point", len(self.open_order) % 2)
             if not any(np.any(port.press_pos for port in self.components_ports)):
                 logging.error("the user didn't select area from the images ")
                 return
 
             if len(self.open_order) % 2 == 0:
-                print(self.open_order, "thread point",
-                      len(self.open_order) % 2)
                 if self.worker_thread and self.worker_thread.is_alive():
                     logging.info('Terminating the running thread...')
                     self.worker_thread.cancel()
                     logging.info('Thread terminated.')
 
-                print("create new Thread")
                 logging.info('Starting a new thread...')
                 self.worker_signals.canceled.clear()
                 self.worker_thread = WorkerThread(
-                    10, self.worker_signals, self)
+                    5, self.worker_signals, self)
                 self.worker_thread.start()
             else:
                 logging.error(msg=f"The user mix odd number of images {

@@ -733,6 +733,9 @@ font-weight:10000px;</string>
              <property name="text">
               <string>Output 1</string>
              </property>
+             <attribute name="buttonGroup">
+              <string notr="true">buttonGroup</string>
+             </attribute>
             </widget>
            </item>
            <item>
@@ -751,6 +754,9 @@ font-weight:10000px;</string>
              <property name="text">
               <string>Output 2</string>
              </property>
+             <attribute name="buttonGroup">
+              <string notr="true">buttonGroup</string>
+             </attribute>
             </widget>
            </item>
           </layout>
@@ -956,6 +962,9 @@ font-weight:10000px;
                  <property name="text">
                   <string>Inside Region</string>
                  </property>
+                 <attribute name="buttonGroup">
+                  <string notr="true">buttonGroup_2</string>
+                 </attribute>
                 </widget>
                </item>
                <item>
@@ -974,6 +983,9 @@ font-weight:10000px;</string>
                  <property name="text">
                   <string>Outside Region</string>
                  </property>
+                 <attribute name="buttonGroup">
+                  <string notr="true">buttonGroup_2</string>
+                 </attribute>
                 </widget>
                </item>
               </layout>
@@ -1205,11 +1217,15 @@ background: rgba(74, 74, 74, 0);
      <x>0</x>
      <y>0</y>
      <width>1012</width>
-     <height>22</height>
+     <height>26</height>
     </rect>
    </property>
   </widget>
  </widget>
  <resources/>
  <connections/>
+ <buttongroups>
+  <buttongroup name="buttonGroup"/>
+  <buttongroup name="buttonGroup_2"/>
+ </buttongroups>
 </ui>

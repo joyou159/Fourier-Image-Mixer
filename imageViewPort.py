@@ -4,6 +4,8 @@ from PyQt6.QtGui import QPixmap, QPainter
 from PyQt6.QtCore import Qt
 from PIL import Image, ImageQt, ImageEnhance
 import logging
+import copy
+
 
 # Configure logging to capture all log levels
 logging.basicConfig(filemode="a", filename="our_log.log",
@@ -16,6 +18,7 @@ class ImageViewport(QWidget):
         # keep track of mini figure size.
         self.original_img = None
         self.resized_img = None
+        self.image_area = None
         self.viewport_image_ind = None  # (brightness, contrast)
         self.brightness = 0
         self.contrast = 0
@@ -41,6 +44,12 @@ class ImageViewport(QWidget):
             # Set the original_img attribute to the grayscale image
             self.original_img = image
 
+            self.resized_img = copy.deepcopy(self.original_img)  # Deep copy
+
+            self.image_area = self.original_img.height * self.original_img.width
+
+            self.main_window.images_areas[self.viewport_image_ind] = self.image_area
+            self.unify_size()
             # Update the display to show the new image
             self.update_display()
 
@@ -67,20 +76,7 @@ class ImageViewport(QWidget):
         super().paintEvent(event)
 
         if self.original_img:
-            painter = QPainter(self)
-
-            # Calculate the new size while maintaining the aspect ratio
-            aspect_ratio = self.original_img.width / self.original_img.height
-            new_width = self.width()
-            new_height = int(new_width / aspect_ratio)
-
-            if new_height > self.height():
-                new_height = self.height()
-                new_width = int(new_height * aspect_ratio)
-
-            # Calculate the position (x, y) to center the image
-            x = (self.width() - new_width) // 2
-            y = (self.height() - new_height) // 2
+            painter_img = QPainter(self)
 
             # adjust brightness, contrast, and resize the image
             self.adjust_brightness_contrast()
@@ -89,25 +85,8 @@ class ImageViewport(QWidget):
 
             # Draw the image on the widget
             pixmap = QPixmap.fromImage(ImageQt.ImageQt(resized_img))
-            painter.drawPixmap(0, 0, pixmap)
-            painter.end()
-
-    # def resize_image(self, min_width, min_height):
-    #     if self.resized_img:
-    #         painter = QPainter(self)
-
-    #         # Calculate the position (x, y) to center the image
-    #         x = (self.width() - min_width) // 2
-    #         y = (self.height() - min_height) // 2
-
-    #         # Resize the image
-    #         self.adjust_brightness_contrast()
-    #         resized_img = self.resized_img.copy().resize((min_width, min_height))
-    #         # Draw the image centered on the widget
-    #         pixmap = QPixmap.fromImage(ImageQt.ImageQt(resized_img ))
-    #         painter.drawPixmap(x, y, pixmap)
-
-    #         painter.end()
+            painter_img.drawPixmap(0, 0, pixmap)
+            painter_img.end()
 
     def mouseMoveEvent(self, event):
         """
@@ -158,13 +137,25 @@ class ImageViewport(QWidget):
         self.last_x = event.x()
         self.last_y = event.y()
 
+    def unify_size(self):
+        min_area = min(self.main_window.images_areas)
+        if min_area < self.image_area:
+            index_of_interest = np.where(self.main_window.image_area == min_area)[
+                0][0]  # the first occurrence
+            template_image = self.main_window.image_ports[index_of_interest].original_img
+            self.resized_img = self.resized_img.resize(
+                (template_image.width, template_image.height))
+        elif min_area == self.image_area:
+            self.main_window.generalize_image_size(self.viewport_image_ind)
+
     def adjust_brightness_contrast(self):
         """
         Adjusts the brightness and contrast of the image.
         """
         # Adjust brightness
         brightness_factor = (self.brightness + 255) / 255.0
-        brightness_enhancer = ImageEnhance.Brightness(self.original_img)
+        brightness_enhancer = ImageEnhance.Brightness(
+            self.original_img.resize(self.resized_img.size))
         img_with_brightness_adjusted = brightness_enhancer.enhance(
             brightness_factor)
 

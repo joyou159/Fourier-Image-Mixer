@@ -50,6 +50,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.setWindowIcon(QIcon("icons/mixer.png"))
         self.image_ports = []
         self.components_ports = []
+        self.images_areas = np.repeat(np.inf, 4)  # initialized
         self.out_ports = []
         self.open_order = []
         self.min_width = None
@@ -93,11 +94,11 @@ class MainWindow(QtWidgets.QMainWindow):
 
         This function does not take any parameters and does not return anything.
         """
-        self.mixer.reset_after_mixing_and_deselect()
         for comp in self.components_ports:
+            self.holdRect = False
+            self.drawRect = True
             comp.press_pos = None
             comp.release_pos = None
-            self.holdRect = False
             self.move_active = False
             comp.current_rect = QRect()
             comp.reactivate_drawing_events()
@@ -111,25 +112,77 @@ class MainWindow(QtWidgets.QMainWindow):
         """
         # Check if the pair of images is valid
         if self.mixer.check_pair_validity():
-
-            if self.components_ports[len(self.image_ports)-1].press_pos is None:
+            print(self.open_order, "entry point", len(self.open_order) % 2)
+            if not any(np.any(port.press_pos for port in self.components_ports)):
                 logging.error("the user didn't select area from the images ")
                 return
 
-            if len(self.open_order) == 4:
+            if len(self.open_order) % 2 == 0:
+                print(self.open_order, "thread point",
+                      len(self.open_order) % 2)
                 if self.worker_thread and self.worker_thread.is_alive():
                     logging.info('Terminating the running thread...')
                     self.worker_thread.cancel()
                     logging.info('Thread terminated.')
 
+                print("create new Thread")
                 logging.info('Starting a new thread...')
                 self.worker_signals.canceled.clear()
-                self.worker_thread = WorkerThread(5, self.worker_signals, self)
+                self.worker_thread = WorkerThread(
+                    10, self.worker_signals, self)
                 self.worker_thread.start()
             else:
-                logging.error(msg=f"The user don't mix 4 images but {
+                logging.error(msg=f"The user mix odd number of images {
                     len(self.open_order)}")
                 return
+
+    def map_value(self, value, lower_range, upper_range, lower_range_new, upper_range_new):
+        """
+        Maps a given value from one range to another linearly.
+
+        Parameters:
+        - value (float): The input value to be mapped.
+        - lower_range (float): The lower bound of the input range.
+        - upper_range (float): The upper bound of the input range.
+        - lower_range_new (float): The lower bound of the target range.
+        - upper_range_new (float): The upper bound of the target range.
+
+        Returns:
+        float: The mapped value in the target range.
+        """
+
+        mapped_value = ((value - lower_range) * (upper_range_new - lower_range_new) /
+                        (upper_range - lower_range)) + lower_range_new
+        return mapped_value
+
+    def generalize_image_size(self, template_image_ind):
+        """
+        Generalizes the size of all images in the collection based on a template image.
+
+        Parameters:
+        - template_image_ind (int): The index of the template image in the collection.
+
+        Description:
+        Resizes all images in the collection to match the dimensions of the template image.
+        If an image at the given index is the template itself or if it is None, it is skipped.
+
+        This method assumes that the images are represented by objects with 'resized_img'
+        attribute that can be resized using the 'resize' method, and updates the display
+        and Fourier Transform (FT) components accordingly.
+
+        Note: Make sure that the 'resized_img' attribute is not None for images that need
+        to be resized.
+
+        Returns:
+        None
+        """
+        for i, image in enumerate(self.image_ports):
+            if i != template_image_ind and image.original_img is not None:
+                template_image = self.image_ports[template_image_ind].resized_img
+                image.resized_img = image.resized_img.resize(
+                    (template_image.width, template_image.height))
+                image.update_display()
+                self.components_ports[i].update_FT_components()
 
     def keyPressEvent(self, event):
         """
@@ -250,6 +303,10 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Update the image parameters
         image_port.update_image_parameters(image_path)
+
+        # store the loading initial size of the component viewport
+        self.components_ports[index].pre_widget_dim = (
+            self.components_ports[index].width(), self.components_ports[index].height())
 
         # Update the FT components of the component port
         self.components_ports[index].update_FT_components()

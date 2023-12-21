@@ -14,7 +14,7 @@ import threading
 import logging
 # Placeholder for FT-related functionalities
 import numpy as np
-from scipy.fft import ifft2, fftshift
+from scipy.fft import ifft2, fftshift, ifftshift
 from PyQt6.QtWidgets import QWidget
 
 # Configure logging to capture all log levels
@@ -32,8 +32,7 @@ class ImageMixer(QWidget):
         self.main_window = main_window
         self.fft2_output = []
         self.mixing_comp = []
-        self.weight_reference = np.repeat(100, 4)
-        self.weight_value = np.repeat(1, 4)
+        self.weight_value = np.repeat(1.0, 4)
         self.selection_mode = 1
         self.output = 1        # the index of the FTviewport at which the mixing begins
         self.higher_precedence_ft_component = None
@@ -93,112 +92,61 @@ class ImageMixer(QWidget):
         pair1 = (self.mixing_comp[0], self.mixing_comp[1])
         pair2 = (self.mixing_comp[2], self.mixing_comp[3])
 
-        if pair1 not in valid_pairs or pair2 not in valid_pairs:
+        if pair1 not in valid_pairs and pair2 not in valid_pairs:
             self.main_window.show_error_message('Please choose valid pairs')
             logging.error("the user didn't choose valid pairs ")
             return 0
+        return 1
 
     def collect_chunks(self):
         """
         Collects chunks of data and stores them in the `self.chunks` dictionary.
         """
         for ind in range(len(self.chunks)):
-            if self.main_window.image_ports[ind].original_img is not None:
-                curr_chunk = self.get_chunk(ind)
+            if self.main_window.image_ports[ind].original_img != None:
+                selection_matrix = self.get_selection_matrix(ind)
+                curr_chunk = selection_matrix * \
+                    self.main_window.components_ports[ind].component_data
                 self.chunks[str(ind)] = curr_chunk
 
-    def get_chunk(self, ind):
-        """Get the selected region of an image based on the given index.
-
-        Args:
-            ind (int): The index of the component port.
-
-        Returns:
-            numpy.ndarray: The selected region of the image.
+    def get_selection_matrix(self, ind):
         """
-        # Get the component port
-        port = self.main_window.components_ports[ind]
-
-        # Get the start and end positions of the port
-        start_pos = port.press_pos  # (x1,y1)
-        end_pos = port.release_pos  # (x2,y2)
-
-        if self.selection_mode:
-            # Extract the selected region within the port
-            selected_region = self.inner_region_extraction(
-                port, start_pos, end_pos)
-        else:
-            # Extract the selected region outside the port
-            selected_region = self.outer_region_extraction(
-                port, start_pos, end_pos)
-
-        # Print the size of the selected region
-        logging.info(f"The size of the selected region{
-                     selected_region.shape}")
-
-        return selected_region
-
-    def inner_region_extraction(self, port, start_pos, end_pos) -> np.ndarray:
-        """
-        Extracts a region from the component_data matrix based on the given start and end positions.
-
-        Args:
-            port (Port): The port containing the component_data matrix.
-            start_pos (Vector2D): The starting position of the region.
-            end_pos (Vector2D): The ending position of the region.
-
-        Returns:
-            np.ndarray: The extracted region as a numpy array.
-        """
-        selected_region = np.zeros((round(end_pos.y() - start_pos.y()) + 1,
-                                    round(end_pos.x() - start_pos.x()) + 1))
-
-        for ii, i in enumerate(range(round(start_pos.y()), round(end_pos.y()) + 1)):
-            for jj, j in enumerate(range(round(start_pos.x()), round(end_pos.x()) + 1)):
-                if self.selection_mode:
-                    selected_region[ii, jj] = port.component_data[i, j]
-
-        return selected_region
-
-    def outer_region_extraction(self, port, start_pos, end_pos):
-        """
-        Extracts the outer region of a component's data matrix.
+        Generates a binary selection matrix based on user-defined selection area.
 
         Parameters:
-            - port: The component's port.
-            - start_pos: The starting position of the region.
-            - end_pos: The ending position of the region.
+        - ind (int): Index of the component.
 
         Returns:
-            - selected_region: The extracted outer region of the component's data matrix.
+        numpy.ndarray: Binary matrix (1 for selected, 0 for unselected).
+
+        Retrieves user-defined selection area from the specified component in the
+        collection, creating a binary matrix based on the current selection mode.
+
+        Assumes the component has attributes: 'press_pos', 'release_pos',
+        'original_img', 'resized_img', 'component_data', and 'map_rectangle'.
         """
+        port = self.main_window.components_ports[ind]
+        start_pos = port.press_pos  # (x1,y1)
+        end_pos = port.release_pos  # (x2,y2)
+        map_up_size = port.original_img.size
+        port_dim = port.resized_img.size
+        position_list = [(port.press_pos.x(), port.press_pos.y()),
+                         (port.release_pos.x(), port.release_pos.y())]
+        mapped_up_position_list = port.map_rectangle(
+            position_list, port_dim, map_up_size)
 
-        # Calculate the shape of the inner region
-        inner_region_shape = (
-            round(end_pos.y() - start_pos.y()) + 1, round(end_pos.x() - start_pos.x()) + 1)
+        if self.selection_mode:
+            selection_matrix = np.zeros_like(port.component_data)
+        else:
+            selection_matrix = np.ones_like(port.component_data)
 
-        # Get the shape of the full matrix
-        full_matrix_shape = port.component_data.shape
-
-        # Create an array to store the selected region
-        selected_region = np.zeros(
-            (full_matrix_shape[0], full_matrix_shape[1] - inner_region_shape[1]))
-
-        # Iterate over each row in the full matrix
-        for i in range(full_matrix_shape[0]):
-            curr_column = 0  # reset the columns
-
-            # Iterate over each column in the full matrix
-            for j in range(full_matrix_shape[1]):
-
-                # Check if the current cell is not within the inner region
-                if j not in range(round(start_pos.x()), round(end_pos.x()) + 1) and i not in (range(round(start_pos.y()), round(end_pos.y()) + 1)):
-
-                    # Copy the value from the component's data matrix to the selected region
-                    selected_region[i, curr_column] = port.component_data[i, j]
-                    curr_column += 1
-
-        return selected_region
+        for i in range(mapped_up_position_list[0][1], round(mapped_up_position_list[1][1] + 1)):
+            for j in range(mapped_up_position_list[0][0], mapped_up_position_list[1][0] + 1):
+                if self.selection_mode:
+                    selection_matrix[i, j] = 1
+                else:
+                    selection_matrix[i, j] = 0
+        return selection_matrix
 
     def generalize_rectangle(self, ind):
         """
@@ -225,10 +173,7 @@ class ImageMixer(QWidget):
 
     def mix_images(self):
 
-        # Collect image chunks
-        self.collect_chunks()
-
-        # Decode the pairs to determine the mixing order
+      # Decode the pairs to determine the mixing order
         mixing_order = self.decode_pairs()
 
         # Get the indices and components of the first pair
@@ -238,9 +183,6 @@ class ImageMixer(QWidget):
         # Get the indices and components of the second pair
         pair_2_indices = (mixing_order[2], mixing_order[3])
         pair_2_comp = (self.mixing_comp[2], self.mixing_comp[3])
-
-        # Print the indices of the pairs
-        print(pair_1_indices, pair_2_indices)
 
         # Compose the complex output for the first pair
         self.fft2_output = self.compose_complex(pair_1_indices, pair_1_comp)
@@ -252,10 +194,7 @@ class ImageMixer(QWidget):
         logging.info(f"the shape of fft_output{self.fft2_output.shape}")
 
         # Calculate the mixed image using inverse Fourier transform
-        self.mixed_image = abs(ifft2(fftshift(self.fft2_output)))
-
-        # Print the first 10 elements of the mixed image
-        print(self.mixed_image[0, 0:10])
+        self.mixed_image = abs(ifft2(self.fft2_output)).astype(np.uint8)
 
         # Create an image object from the mixed image array
         self.mixed_image = Image.fromarray(self.mixed_image, mode="L")
@@ -264,7 +203,7 @@ class ImageMixer(QWidget):
         self.main_window.out_ports[self.output].set_image(self.mixed_image)
 
         # Deselect any selected items in the main window
-        self.main_window.deselect()
+        self.reset_after_mixing_and_deselect()
 
     def decode_pairs(self):
         """
@@ -301,24 +240,17 @@ class ImageMixer(QWidget):
         if "FT Magnitude" in pair_comp:
             mag_index = str(pair_indices[pair_comp.index("FT Magnitude")])
             phase_index = str(pair_indices[pair_comp.index("FT Phase")])
-            print(
-                f"the resulting complex number is of indices {mag_index, phase_index} in order")
-            print(self.chunks[mag_index].shape,
-                  self.chunks[phase_index].shape)
             complex_numbers = self.weight_value[int(mag_index)] * self.chunks[mag_index] * np.exp(
                 1j * self.chunks[phase_index] * self.weight_value[int(phase_index)])
+
         else:
             real_index = str(pair_indices[pair_comp.index("FT Real")])
             imaginary_index = str(
                 pair_indices[pair_comp.index("FT Imaginary")])
-            print(
-                f"the resulting complex number is of indices {real_index, imaginary_index} in order")
-            print(self.chunks[real_index].shape,
-                  self.chunks[imaginary_index].shape)
             complex_numbers = self.chunks[real_index] * self.weight_value[int(real_index)] + \
                 1j * self.chunks[imaginary_index] * \
                 self.weight_value[int(imaginary_index)]
-        return complex_numbers
+        return ifftshift(complex_numbers)
 
     def handle_radio_button_toggled(self):
         """
@@ -361,13 +293,10 @@ class ImageMixer(QWidget):
         slider_ind = self.main_window.ui_vertical_sliders.index(slider)
 
         # Calculate the new weight value based on the slider value and the previous weight reference
-        new_weight_value = slider.value() / self.weight_reference[slider_ind]
+        new_weight_value = slider.value() / 100
 
         # Update the weight value with the calculated new value
         self.weight_value[slider_ind] = new_weight_value
-
-        # Update the weight reference with the new slider value
-        self.weight_reference[slider_ind] = slider.value()
 
     def reset_after_mixing_and_deselect(self):
         """

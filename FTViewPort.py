@@ -11,25 +11,40 @@ class FTViewPort(QWidget):
     def __init__(self, main_window, parent=None):
         super().__init__(parent)
         self.viewport_FT_ind = None  # the index of the components view port
-        self.combo_box = None  # as widget object, Used for selecting different FT components and handling combo box events.
-        self.main_window = main_window # Used to access and interact with other components of the main application.
-        self.curr_component_name = None # Used to track the current FT component selected in the combo box.
-        self.image_data = None # Used for computing FT components
-        self.component_data = None # Used to access the pixel data of the currently selected FT component.
+        # as widget object, Used for selecting different FT components and handling combo box events.
+        self.combo_box = None
+        # Used to access and interact with other components of the main application.
+        self.main_window = main_window
+        # Used to track the current FT component selected in the combo box.
+        self.curr_component_name = None
+        self.pre_widget_dim = None  # keep track the previous dimension of the viewport
+        self.image_data = None  # Used for computing FT components
+        # Used to access the pixel data of the currently selected FT component.
+        self.component_data = None
 
-        self.ft_components_images = {} # Used to cache FT component images for efficient display
-        self.ft_components = {} # Used to cache FT component data for further processing.
-        self.weight_slider = None # Used for adjusting weights during the mixing process.
-        self.original_img = None # Used for displaying the original image and updating the display.
-        self.resized_img = None # Used for displaying the image with adjusted dimensions.
-        self.press_pos = None #  Used for drawing rectangles and determining their dimensions.
-        self.release_pos = None 
-        self.drawRect = False # Used to control the drawing state.
-        self.holdRect = False # Used to control the state of holding a drawn rectangle.
-        self.move_active = False # Used to control the state of moving a drawn rectangle.
-        self.current_rect = QRect() # Stores the coordinates and dimensions of the rectangle.
+        # Used to cache FT component images for efficient display
+        self.ft_components_images = {}
+        # Used to cache FT component data for further processing.
+        self.ft_components = {}
+        # Used for adjusting weights during the mixing process.
+        self.weight_slider = None
+        # Used for displaying the original image and updating the display.
+        self.original_img = None
+        # Used for displaying the image with adjusted dimensions.
+        self.resized_img = None
+        self.press_pos = None  # The left-upper point of the rectangle
+        self.release_pos = None  # the bottom-right corner of the rectangle
+        # the press point at which rectangle dragging started.
+        self.drag_point = None
 
-        
+        self.drawRect = False  # Used to control the drawing state.
+        # Used to control the state of holding a drawn rectangle.
+        self.holdRect = False
+        # Used to control the state of moving a drawn rectangle.
+        self.move_active = False
+        # Stores the coordinates and dimensions of the rectangle.
+        self.current_rect = QRect()
+
     def set_image(self):
         """
         Set the image for the current component.
@@ -41,9 +56,6 @@ class FTViewPort(QWidget):
             # Get the image for the current component
             image = self.ft_components_images[self.curr_component_name]
 
-            # Get the data for the current component
-            self.component_data = self.ft_components[self.curr_component_name]
-
             # Set the original image
             self.original_img = image
 
@@ -53,7 +65,6 @@ class FTViewPort(QWidget):
         except Exception as opening_Error:
             print(f"Error opening image: {opening_Error}")
 
-
     def update_display(self):
         """
         This method is responsible for updating the display based on the current state of the object. 
@@ -62,7 +73,6 @@ class FTViewPort(QWidget):
         """
         if self.original_img:
             self.repaint()
-
 
     def paintEvent(self, event):
         """
@@ -78,36 +88,42 @@ class FTViewPort(QWidget):
 
         # Check if there is an original image
         if self.original_img:
-            painter = QPainter(self)
-
-            # Calculate the new size while maintaining the aspect ratio
-            aspect_ratio = self.original_img.width / self.original_img.height
-            new_width = self.width()
-            new_height = int(new_width / aspect_ratio)
-
-            # Adjust the new size if it exceeds the height of the widget
-            if new_height > self.height():
-                new_height = self.height()
-                new_width = int(new_height * aspect_ratio)
-
-            # Calculate the position (x, y) to center the image
-            x = (self.width() - new_width) // 2
-            y = (self.height() - new_height) // 2
+            painter_comp = QPainter(self)
 
             # Resize the original image to match the size of the widget
-            self.resized_img = self.original_img.resize((self.width(), self.height()))
+            self.resized_img = self.original_img.resize(
+                (self.width(), self.height()))
 
             # Convert the resized image to QPixmap
             pixmap = QPixmap.fromImage(ImageQt.ImageQt(self.resized_img))
 
             # Draw the pixmap on the widget
-            painter.drawPixmap(0, 0, pixmap)
-            painter.end()
+            painter_comp.drawPixmap(0, 0, pixmap)
+            painter_comp.end()
 
         # Check if either holdRect or drawRect is True
         if self.holdRect or self.drawRect:
             self.draw_rectangle()
 
+    def resizeEvent(self, event):
+        if self.original_img != None:
+            super().resizeEvent(event)
+            if self.holdRect and self.press_pos:  # check of existence of a rectangle
+                position_list = [(self.press_pos.x(), self.press_pos.y()),
+                                 (self.release_pos.x(), self.release_pos.y())]
+                map_to = (self.width(), self.height())
+                mapped_position_list = self.map_rectangle(
+                    # get the mapped points of the rectangle.
+                    position_list, self.pre_widget_dim, map_to)
+                start_point, end_point = mapped_position_list
+                # recreate the rectangle
+                self.current_rect = QRect(
+                    start_point[0], start_point[1], end_point[0] - start_point[0], end_point[1] - start_point[1])
+                self.press_pos, self.release_pos = self.current_rect.topLeft(
+                ), self.current_rect.bottomRight()
+            # update the previous size of widget
+            self.pre_widget_dim = (self.width(), self.height())
+            self.update_display()
 
     def update_FT_components(self):
         """
@@ -115,11 +131,11 @@ class FTViewPort(QWidget):
         Updates the image data by converting it to a numpy array. Then, calculates the FT components
         based on the updated image data. Finally, handles the selection of image combo boxes.
         """
-        self.image_data = np.array(self.main_window.image_ports[self.viewport_FT_ind].resized_img)
+        self.image_data = np.array(
+            self.main_window.image_ports[self.viewport_FT_ind].resized_img)
 
         self.calculate_ft_components()
         self.handle_image_combo_boxes_selection()
-
 
     def handle_image_combo_boxes_selection(self):
         """
@@ -131,10 +147,11 @@ class FTViewPort(QWidget):
 
         """
         if self.ft_components_images:
-            self.curr_component_name = self.combo_box.currentText() # note a None object why?
-            self.main_window.components[str(self.viewport_FT_ind + 1)] = self.curr_component_name
+            self.curr_component_name = self.combo_box.currentText()  # note a None object why?
+            self.component_data = self.ft_components[self.curr_component_name]
+            self.main_window.components[str(
+                self.viewport_FT_ind + 1)] = self.curr_component_name
             self.set_image()
-
 
     def mousePressEvent(self, event):
         """
@@ -149,9 +166,6 @@ class FTViewPort(QWidget):
         if event.button() == Qt.MouseButton.LeftButton:
             # Set the press position
             self.press_pos = event.position()
-
-            # Print the press position
-            print("Mouse Pressed at:", self.press_pos)
 
             # Set the top left and bottom right points of the current rectangle
             self.current_rect.setTopLeft(self.press_pos.toPoint())
@@ -188,9 +202,10 @@ class FTViewPort(QWidget):
             None
         """
         if event.button() == Qt.MouseButton.LeftButton:
-            self.release_pos = event.position()  # Store the position where the mouse was released
-            print("Mouse Released at:", self.release_pos)  # Print the position to the console
-            self.main_window.mixer.generalize_rectangle(self.viewport_FT_ind)  # Generalize the rectangle in the mixer
+            # Store the position where the mouse was released
+            self.release_pos = event.position()
+            self.main_window.mixer.generalize_rectangle(
+                self.viewport_FT_ind)  # Generalize the rectangle in the mixer
             self.drawRect = False  # Set the `drawRect` flag to False
             self.update_display()  # Update the display
 
@@ -206,12 +221,11 @@ class FTViewPort(QWidget):
         Returns:
             None
         """
-        painter = QPainter(self)
-        painter.setPen(QPen(Qt.red, 2, Qt.SolidLine))
-        painter.setBrush(QBrush(Qt.red, Qt.DiagCrossPattern))
-        painter.drawRect(self.current_rect)
-        painter.end()
-
+        painter_rect = QPainter(self)
+        painter_rect.setPen(QPen(Qt.red, 2, Qt.SolidLine))
+        painter_rect.setBrush(QBrush(Qt.red, Qt.DiagCrossPattern))
+        painter_rect.drawRect(self.current_rect)
+        painter_rect.end()
 
     def draw_mousePressEvent(self, event):
         """
@@ -225,7 +239,6 @@ class FTViewPort(QWidget):
         """
         if event.button() == Qt.MouseButton.LeftButton:
             self.press_pos = event.position()
-            print("Mouse Pressed at:", self.press_pos)
             self.current_rect.setTopLeft(self.press_pos.toPoint())
             self.current_rect.setBottomRight(self.press_pos.toPoint())
             self.drawRect = True
@@ -257,7 +270,6 @@ class FTViewPort(QWidget):
         """
         if event.button() == Qt.MouseButton.LeftButton:
             self.release_pos = event.position()
-            print("Mouse Released at:", self.release_pos)
             self.main_window.mixer.generalize_rectangle(
                 self.viewport_FT_ind)
             self.drawRect = False
@@ -274,10 +286,9 @@ class FTViewPort(QWidget):
             None
         """
         if event.button() == Qt.MouseButton.LeftButton:
-            self.press_pos = event.position()
-            print("Mouse Pressed at:", self.press_pos)
+            self.drag_point = event.position()
             # Check if the press position is inside the current rectangle
-            if self.current_rect.contains(self.press_pos.toPoint()):
+            if self.current_rect.contains(self.drag_point.toPoint()):
                 self.move_active = True
 
     def move_mouseReleaseEvent(self, event):
@@ -291,8 +302,8 @@ class FTViewPort(QWidget):
             None
         """
         if event.button() == Qt.MouseButton.LeftButton:
-            self.release_pos = event.position()
-            print("Mouse Released at:", self.release_pos)
+            self.release_pos = self.current_rect.bottomRight()
+            self.press_pos = self.current_rect.topLeft()
             self.move_active = False
 
     def move_mouseMoveEvent(self, event):
@@ -307,7 +318,7 @@ class FTViewPort(QWidget):
         """
         if self.move_active:
             # Calculate the offset to move the rectangle
-            offset = event.position() - self.press_pos
+            offset = event.position() - self.drag_point
 
             # Calculate the new position of the top-left corner
             new_top_left = self.current_rect.topLeft() + offset.toPoint()
@@ -315,9 +326,18 @@ class FTViewPort(QWidget):
             # Ensure the new position stays within the original image boundaries
             if self.rect_within_widget(new_top_left):
                 self.current_rect.translate(offset.toPoint())
-                self.press_pos = event.position()
+                self.drag_point = event.position()
                 self.update_display()
 
+    def map_rectangle(self, position_list, map_from, map_to):
+        mapped_up_position_list = []
+        for position in position_list:
+            actual_x_value = round(self.main_window.map_value(
+                position[0], 0, map_from[0], 0, map_to[0]))
+            actual_y_value = round(self.main_window.map_value(
+                position[1], 0, map_from[1], 0, map_to[1]))
+            mapped_up_position_list.append((actual_x_value, actual_y_value))
+        return mapped_up_position_list
 
     def rect_within_widget(self, top_left):
         """
@@ -331,7 +351,6 @@ class FTViewPort(QWidget):
         """
         # Check if the rectangle defined by top_left stays within the widget boundaries
         return self.rect().contains(QRect(top_left, self.current_rect.size()))
-
 
     def deactivate_drawing_events(self):
         """
@@ -354,11 +373,10 @@ class FTViewPort(QWidget):
         self.mouseMoveEvent = self.draw_mouseMoveEvent
         self.mouseReleaseEvent = self.draw_mouseReleaseEvent
 
-
     def calculate_ft_components(self):
         """
         Calculate the components of the Fourier Transform for the image data.
-    
+
         """
         # Compute the 2D Fourier Transform
         fft = fft2(self.image_data)
@@ -368,24 +386,27 @@ class FTViewPort(QWidget):
 
         # Compute the magnitude of the spectrum
         mag = np.abs(fft_shifted)
-        mag_log = 10 * np.log(mag + 1e-10).astype(np.uint8)
+        mag_log = 15 * np.log(mag + 1e-10).astype(np.uint8)
 
         # Compute the phase of the spectrum
         phase = np.angle(fft_shifted).astype(np.uint8)
 
         # Compute the real and imaginary components
-        real = 10 * np.log(np.abs(np.real(fft_shifted)) + 1e-10).astype(np.uint8)
+        real = 15 * np.log(np.abs(np.real(fft_shifted)) +
+                           1e-10).astype(np.uint8)
         imaginary = fft_shifted.imag.astype(np.uint8)
 
         # Store the results as images
-        self.ft_components_images['FT Magnitude'] = Image.fromarray(mag_log, mode="L")
-        self.ft_components_images['FT Phase'] = Image.fromarray(phase, mode='L')
+        self.ft_components_images['FT Magnitude'] = Image.fromarray(
+            mag_log, mode="L")
+        self.ft_components_images['FT Phase'] = Image.fromarray(
+            phase, mode='L')
         self.ft_components_images["FT Real"] = Image.fromarray(real, mode='L')
-        self.ft_components_images["FT Imaginary"] = Image.fromarray(imaginary, mode='L')
+        self.ft_components_images["FT Imaginary"] = Image.fromarray(
+            imaginary, mode='L')
 
         # Store the numerical components
-        self.ft_components['FT Magnitude'] = mag
+        self.ft_components['FT Magnitude'] = np.abs(fft_shifted)
         self.ft_components['FT Phase'] = np.angle(fft_shifted)
         self.ft_components['FT Real'] = fft_shifted.real
         self.ft_components['FT Imaginary'] = fft_shifted.imag
-

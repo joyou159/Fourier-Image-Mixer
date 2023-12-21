@@ -36,7 +36,11 @@ class WorkerThread(threading.Thread, ):
 
     def update_progress(self):
         # This function can be called to update the progress bar manually
-        self.progress_value += 20
+        if self.progress_value == 0:
+            self.main_window.mixer.collect_chunks()
+            self.main_window.deselect()
+        self.progress_value += 10
         self.main_window.ui.progressBar.setValue(self.progress_value)
+
         if self.progress_value == 100:
             self.main_window.mixer.mix_images()

@@ -160,16 +160,16 @@ class ImageMixer(QWidget):
             # the object of position is the same as object of data
 
         for i, port in enumerate(self.main_window.components_ports):
-            if self.main_window.image_ports[i].original_img is not None:
+            image = self.main_window.image_ports[i]
+            if image.original_img is not None and port.currently_painting == False:
                 port.current_rect = QRect(
                     self.main_window.components_ports[self.higher_precedence_ft_component].current_rect)
 
                 port.press_pos, port.release_pos = port.current_rect.topLeft(
                 ), port.current_rect.bottomRight()
 
-                port.holdRect = True
-                port.set_image()
                 port.deactivate_drawing_events()
+                port.set_image()
 
     def mix_images(self):
 
@@ -179,7 +179,6 @@ class ImageMixer(QWidget):
         # Get the indices and components of the first pair
         pair_1_indices = (mixing_order[0], mixing_order[1])
         pair_1_comp = (self.mixing_comp[0], self.mixing_comp[1])
-        print(mixing_order)
 
         # Get the indices and components of the second pair
         pair_2_indices = (mixing_order[2], mixing_order[3])
@@ -243,7 +242,6 @@ class ImageMixer(QWidget):
             phase_index = str(pair_indices[pair_comp.index("FT Phase")])
             complex_numbers = self.weight_value[int(mag_index)] * self.chunks[mag_index] * np.exp(
                 1j * self.chunks[phase_index] * self.weight_value[int(phase_index)])
-            print(self.chunks[phase_index])
         else:
             real_index = str(pair_indices[pair_comp.index("FT Real")])
             imaginary_index = str(
@@ -300,7 +298,6 @@ class ImageMixer(QWidget):
 
         # Update the weight value with the calculated new value
         self.weight_value[curr_image_ind] = new_weight_value
-        print(new_weight_value, curr_image_ind)
 
     def reset_after_mixing_and_deselect(self):
         """

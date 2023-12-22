@@ -5,6 +5,7 @@ from PyQt6.QtCore import Qt
 from PIL import Image, ImageQt, ImageEnhance
 import logging
 import copy
+import numpy as np
 
 
 # Configure logging to capture all log levels
@@ -24,7 +25,7 @@ class ImageViewport(QWidget):
         self.contrast = 0
         self.last_x = 0
         self.last_y = 0
-
+        self.currently_painting = False
         self.main_window = main_window
 
     def set_image(self, image_path):
@@ -70,23 +71,29 @@ class ImageViewport(QWidget):
             self.repaint()
 
     def paintEvent(self, event):
-        """
-        Override the paintEvent method to draw the resized image on the widget.
-        """
-        super().paintEvent(event)
+        if not event.rect().intersects(self.rect()):
+            return
 
-        if self.original_img:
-            painter_img = QPainter(self)
+        # super().paintEvent(event)
+        if self.currently_painting == False:
+            self.currently_painting = True
+            """
+            Override the paintEvent method to draw the resized image on the widget.
+            """
 
-            # adjust brightness, contrast, and resize the image
-            self.adjust_brightness_contrast()
-            resized_img = self.resized_img.resize(
-                (self.width(), self.height()))
+            if self.original_img:
+                with QPainter(self) as painter_img:
 
-            # Draw the image on the widget
-            pixmap = QPixmap.fromImage(ImageQt.ImageQt(resized_img))
-            painter_img.drawPixmap(0, 0, pixmap)
-            painter_img.end()
+                    # adjust brightness, contrast, and resize the image
+                    self.adjust_brightness_contrast()
+                    resized_img = self.resized_img.resize(
+                        (self.width(), self.height()))
+
+                    # Draw the image on the widget
+                    pixmap = QPixmap.fromImage(ImageQt.ImageQt(resized_img))
+                    painter_img.drawPixmap(0, 0, pixmap)
+
+            self.currently_painting = False
 
     def mouseMoveEvent(self, event):
         """
@@ -98,6 +105,7 @@ class ImageViewport(QWidget):
         Returns:
             None
         """
+
         if self.resized_img and event.buttons() == Qt.RightButton:
             # Calculate the displacement from the last mouse position
             dx = event.x() - self.last_x
@@ -116,12 +124,15 @@ class ImageViewport(QWidget):
             self.adjust_brightness_contrast()
             self.main_window.components_ports[self.viewport_image_ind].update_FT_components(
             )
-            # Update the display
+            # Update the display\
             self.update_display()
-
         # Save the current mouse position for the next event
-        self.last_x = event.x()
-        self.last_y = event.y()
+            self.last_x = event.x()
+            self.last_y = event.y()
+        else:
+            event.accept()
+            return
+        print("image move")
 
     def mousePressEvent(self, event):
         """

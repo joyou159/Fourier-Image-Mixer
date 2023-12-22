@@ -43,6 +43,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         Returns:
             None
+
         """
         # Load the UI Page
         self.ui = uic.loadUi('Mainwindow.ui', self)
@@ -95,14 +96,13 @@ class MainWindow(QtWidgets.QMainWindow):
         This function does not take any parameters and does not return anything.
         """
         for comp in self.components_ports:
-            self.holdRect = False
-            self.drawRect = True
-            comp.press_pos = None
-            comp.release_pos = None
-            self.move_active = False
-            comp.current_rect = QRect()
-            comp.reactivate_drawing_events()
-            comp.update_display()
+            self.mixer.higher_precedence_ft_component = None
+            if comp.original_img != None:
+                comp.press_pos = None
+                comp.release_pos = None
+                comp.current_rect = QRect()
+                comp.reactivate_drawing_events()
+                comp.update_display()
 
     def start_thread(self):
         """
@@ -125,7 +125,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 logging.info('Starting a new thread...')
                 self.worker_signals.canceled.clear()
                 self.worker_thread = WorkerThread(
-                    5, self.worker_signals, self)
+                    10, self.worker_signals, self)
                 self.worker_thread.start()
             else:
                 logging.error(msg=f"The user mix odd number of images {
@@ -204,8 +204,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
         """
         # Define lists of original UI view ports, output ports, component view ports, image combo boxes, mixing combo boxes, and vertical sliders
-        ui_view_ports = [self.ui.original1, self.ui.original2,
-                         self.ui.original3, self.ui.original4]
+        self.ui_view_ports = [self.ui.original1, self.ui.original2,
+                              self.ui.original3, self.ui.original4]
         self.ui_out_ports = [self.ui.output1_port, self.ui.output2_port]
         self.ui_view_ports_comp = [
             self.ui.component_image1, self.ui.component_image2, self.ui.component_image3, self.ui.component_image4]
@@ -215,10 +215,17 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.combo11, self.ui.combo12, self.ui.combo13, self.ui.combo14]
         self.ui_vertical_sliders = [
             self.ui.Slider_weight1, self.ui.Slider_weight2, self.ui.Slider_weight3, self.ui.Slider_weight4]
+        self.ui.vertical_layouts = [
+            (self.ui.verticalLayout, self.verticalLayout_2), (self.ui.verticalLayout_10,
+                                                              self.ui.verticalLayout_11), (self.ui.verticalLayout_5, self.ui.verticalLayout_6),
+            (self.ui.verticalLayout_13, self.ui.verticalLayout_14)
+        ]
 
+        self.out_vertical_layout = [
+            self.ui.verticalLayout_OP1, self.ui.verticalLayout_OP2]
         # Create image viewports and bind browse_image function to the event
         self.image_ports.extend([
-            self.create_image_viewport(ui_view_ports[i], lambda event, index=i: self.browse_image(event, index)) for i in range(4)])
+            self.create_image_viewport(self.ui_view_ports[i], lambda event, index=i: self.browse_image(event, index)) for i in range(4)])
 
         # Create FT viewports
         self.components_ports.extend([self.create_FT_viewport(
@@ -227,7 +234,6 @@ class MainWindow(QtWidgets.QMainWindow):
         # Create output viewports
         self.out_ports.extend([self.create_output_viewport(
             self.ui_out_ports[i]) for i in range(2)])
-
         # Add items to combo boxes for mixing UI
         for combo_box in self.ui_mixing_combo_boxes:
             combo_box.addItems(['None'] + [f'image{i+1}' for i in range(4)])

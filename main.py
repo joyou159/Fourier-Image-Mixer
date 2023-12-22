@@ -20,10 +20,6 @@ from ThreadingClass import WorkerSignals, WorkerThread
 logging.basicConfig(filemode="a", filename="our_log.log",
                     format="(%(asctime)s) | %(name)s| %(levelname)s | => %(message)s", level=logging.INFO)
 
-# logging.info("This is an info message.")
-# logging.warning("This is a warning message.")
-# logging.error("This is an error message.")
-# logging.critical("This is a critical message.")
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -125,7 +121,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 logging.info('Starting a new thread...')
                 self.worker_signals.canceled.clear()
                 self.worker_thread = WorkerThread(
-                    10, self.worker_signals, self)
+                    4, self.worker_signals, self)
                 self.worker_thread.start()
             else:
                 logging.error(msg=f"The user mix odd number of images {

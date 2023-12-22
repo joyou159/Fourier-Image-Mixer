@@ -25,7 +25,6 @@ class ImageViewport(QWidget):
         self.contrast = 0
         self.last_x = 0
         self.last_y = 0
-        self.currently_painting = False
         self.main_window = main_window
 
     def set_image(self, image_path):
@@ -74,26 +73,24 @@ class ImageViewport(QWidget):
         if not event.rect().intersects(self.rect()):
             return
 
-        # super().paintEvent(event)
-        if self.currently_painting == False:
-            self.currently_painting = True
-            """
-            Override the paintEvent method to draw the resized image on the widget.
-            """
+        super().paintEvent(event)
 
-            if self.original_img:
-                with QPainter(self) as painter_img:
+        """
+        Override the paintEvent method to draw the resized image on the widget.
+        """
 
-                    # adjust brightness, contrast, and resize the image
-                    self.adjust_brightness_contrast()
-                    resized_img = self.resized_img.resize(
-                        (self.width(), self.height()))
+        if self.original_img:
+            with QPainter(self) as painter_img:
 
-                    # Draw the image on the widget
-                    pixmap = QPixmap.fromImage(ImageQt.ImageQt(resized_img))
-                    painter_img.drawPixmap(0, 0, pixmap)
+                # adjust brightness, contrast, and resize the image
+                self.adjust_brightness_contrast()
+                resized_img = self.resized_img.resize(
+                    (self.width(), self.height()))
 
-            self.currently_painting = False
+                # Draw the image on the widget
+                pixmap = QPixmap.fromImage(ImageQt.ImageQt(resized_img))
+                painter_img.drawPixmap(0, 0, pixmap)
+
 
     def mouseMoveEvent(self, event):
         """

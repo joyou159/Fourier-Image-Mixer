@@ -14,7 +14,6 @@ class OutViewPort(QWidget):
         # keep track of mini figure size.
         self.original_img = None
         self.resized_img = None
-        self.currently_painting = False
 
     def set_image(self, output_image):
         try:
@@ -31,19 +30,17 @@ class OutViewPort(QWidget):
             self.repaint()
 
     def paintEvent(self, event):
-        if self.currently_painting == False:
-            self.currently_painting = True
-            super().paintEvent(event)
-            if self.original_img:
-                painter_out = QPainter(self)
+        super().paintEvent(event)
+        if self.original_img:
+            painter_out = QPainter(self)
 
-                # Resize the image
-                self.resized_img = self.original_img.resize(
-                    (self.width(), self.height()))
+            # Resize the image
+            self.resized_img = self.original_img.resize(
+                (self.width(), self.height()))
 
-                # Draw the image centered on the widget
-                pixmap = QPixmap.fromImage(ImageQt.ImageQt(self.resized_img))
-                painter_out.drawPixmap(0, 0, pixmap)
+            # Draw the image centered on the widget
+            pixmap = QPixmap.fromImage(ImageQt.ImageQt(self.resized_img))
+            painter_out.drawPixmap(0, 0, pixmap)
 
-                painter_out.end()
-            self.currently_painting = False
+            painter_out.end()
+            

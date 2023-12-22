@@ -161,7 +161,7 @@ class ImageMixer(QWidget):
 
         for i, port in enumerate(self.main_window.components_ports):
             image = self.main_window.image_ports[i]
-            if image.original_img is not None and port.currently_painting == False:
+            if image.original_img is not None:
                 port.current_rect = QRect(
                     self.main_window.components_ports[self.higher_precedence_ft_component].current_rect)
 

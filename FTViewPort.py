@@ -22,6 +22,8 @@ class FTViewPort(QWidget):
         # Used to access the pixel data of the currently selected FT component.
         self.component_data = None
 
+        self.reactivate_drawing_events()
+
         # Used to cache FT component images for efficient display
         self.ft_components_images = {}
         # Used to cache FT component data for further processing.
@@ -44,7 +46,6 @@ class FTViewPort(QWidget):
         self.move_active = False
         # Stores the coordinates and dimensions of the rectangle.
         self.current_rect = QRect()
-        self.currently_painting = False
 
     def set_image(self):
         """
@@ -72,7 +73,7 @@ class FTViewPort(QWidget):
         It checks if the original image is set and if so, it repaints the display.
 
         """
-        if self.original_img and self.currently_painting == False:
+        if self.original_img:
             self.repaint()
 
     def paintEvent(self, event):
@@ -87,34 +88,29 @@ class FTViewPort(QWidget):
         """
         if not event.rect().intersects(self.rect()):
             return
-        # super().paintEvent(event)
+        super().paintEvent(event)
 
-        if self.currently_painting == False:
+        # Check if there is an original image
+        if self.original_img:
+            with QPainter(self) as painter_comp:
+                # Resize the original image to match the size of the widget
+                self.resized_img = self.original_img.resize(
+                    (self.width(), self.height()))
+                # Convert the resized image to QPixmap
+                pixmap = QPixmap.fromImage(
+                    ImageQt.ImageQt(self.resized_img))
 
-            self.currently_painting = True
+                # Draw the pixmap on the widget
+                painter_comp.drawPixmap(0, 0, pixmap)
 
-            # Check if there is an original image
-            if self.original_img:
-                with QPainter(self) as painter_comp:
-                 # Resize the original image to match the size of the widget
-                    self.resized_img = self.original_img.resize(
-                        (self.width(), self.height()))
-                    print("Painting event for widget:", self.viewport_FT_ind)
-                    # Convert the resized image to QPixmap
-                    pixmap = QPixmap.fromImage(
-                        ImageQt.ImageQt(self.resized_img))
+        # Check if either holdRect or drawRect is True
+        if self.holdRect or self.drawRect:
+            self.draw_rectangle()
 
-                    # Draw the pixmap on the widget
-                    painter_comp.drawPixmap(0, 0, pixmap)
-
-            # Check if either holdRect or drawRect is True
-            if self.holdRect or self.drawRect:
-                self.draw_rectangle()
-
-            self.currently_painting = False
+        self.currently_painting = False
 
     def resizeEvent(self, event):
-        # super().resizeEvent(event)
+        super().resizeEvent(event)
         map_to = (self.width(), self.height())
         if self.original_img != None:
             if self.holdRect and self.press_pos:  # check of existence of a rectangle
@@ -161,67 +157,6 @@ class FTViewPort(QWidget):
                 self.viewport_FT_ind + 1)] = self.curr_component_name
             self.set_image()
 
-    def mousePressEvent(self, event):
-        """
-        Handle the mouse press event.
-
-        Args:
-            event (QMouseEvent): The mouse press event object.
-
-        Returns:
-            None
-        """
-
-        if event.button() == Qt.MouseButton.LeftButton:
-            # Set the press position
-            self.press_pos = event.position()
-
-            # Set the top left and bottom right points of the current rectangle
-            self.current_rect.setTopLeft(self.press_pos.toPoint())
-            self.current_rect.setBottomRight(self.press_pos.toPoint())
-
-            # Set the flag to draw the rectangle
-            self.drawRect = True
-
-            # Update the display
-            # self.update_display()
-
-    def mouseMoveEvent(self, event):
-        """
-        Handle the mouse move event.
-
-        Args:
-            event (QMouseEvent): The mouse move event.
-
-        Returns:
-            None
-        """
-
-        if self.drawRect:
-            self.current_rect.setBottomRight(event.position().toPoint())
-            self.update_display()
-        else:
-            event.accept()
-            return
-
-    def mouseReleaseEvent(self, event):
-        """
-        Handle the mouse release event.
-
-        Args:
-            event: The mouse release event object.
-
-        Returns:
-            None
-        """
-        if event.button() == Qt.MouseButton.LeftButton:
-            # Store the position where the mouse was released
-            self.release_pos = event.position()
-            self.main_window.mixer.generalize_rectangle(
-                self.viewport_FT_ind)  # Generalize the rectangle in the mixer
-            self.drawRect = False  # Set the `drawRect` flag to False
-            # self.update_display()
-
     def draw_rectangle(self):
         """
         Draws a rectangle on the widget.
@@ -255,7 +190,6 @@ class FTViewPort(QWidget):
             self.current_rect.setTopLeft(self.press_pos.toPoint())
             self.current_rect.setBottomRight(self.press_pos.toPoint())
             self.drawRect = True
-            # self.update_display()
 
     def draw_mouseMoveEvent(self, event):
         """

@@ -36,12 +36,7 @@ class ImageMixer(QWidget):
         self.selection_mode = 1
         self.output = 1        # the index of the FTviewport at which the mixing begins
         self.higher_precedence_ft_component = None
-        self.chunks = {
-            "0": np.array([]),
-            "1": np.array([]),
-            "2": np.array([]),
-            "3": np.array([])
-        }
+        self.reset_after_mixing_and_deselect()
 
         # Connect radio button toggled signals to corresponding handlers
         self.main_window.ui.radioButton_In.toggled.connect(
@@ -92,8 +87,7 @@ class ImageMixer(QWidget):
         pair1 = (self.mixing_comp[0], self.mixing_comp[1])
         pair2 = (self.mixing_comp[2], self.mixing_comp[3])
 
-        if pair1 not in valid_pairs and pair2 not in valid_pairs:
-            self.main_window.show_error_message('Please choose valid pairs')
+        if pair1 not in valid_pairs or pair2 not in valid_pairs:
             logging.error("the user didn't choose valid pairs ")
             return 0
         return 1
@@ -134,17 +128,19 @@ class ImageMixer(QWidget):
                          (port.release_pos.x(), port.release_pos.y())]
         mapped_up_position_list = port.map_rectangle(
             position_list, port_dim, map_up_size)
-
+        # [(x_start,y_start),(x_end,y_end)]
         if self.selection_mode:
             selection_matrix = np.zeros_like(port.component_data)
         else:
             selection_matrix = np.ones_like(port.component_data)
 
+        # y_iteration
         for i in range(mapped_up_position_list[0][1], round(mapped_up_position_list[1][1] + 1)):
+            # X_iteration
             for j in range(mapped_up_position_list[0][0], mapped_up_position_list[1][0] + 1):
-                if self.selection_mode:
+                if self.selection_mode:  # 1 --> inner
                     selection_matrix[i, j] = 1
-                else:
+                else:  # outer
                     selection_matrix[i, j] = 0
         return selection_matrix
 
@@ -163,6 +159,7 @@ class ImageMixer(QWidget):
             image = self.main_window.image_ports[i]
             if image.original_img is not None:
                 port.current_rect = QRect(
+                    # deep copy
                     self.main_window.components_ports[self.higher_precedence_ft_component].current_rect)
 
                 port.press_pos, port.release_pos = port.current_rect.topLeft(
@@ -178,6 +175,7 @@ class ImageMixer(QWidget):
 
         # Get the indices and components of the first pair
         pair_1_indices = (mixing_order[0], mixing_order[1])
+        # mag , phase ....
         pair_1_comp = (self.mixing_comp[0], self.mixing_comp[1])
 
         # Get the indices and components of the second pair
@@ -185,6 +183,7 @@ class ImageMixer(QWidget):
         pair_2_comp = (self.mixing_comp[2], self.mixing_comp[3])
 
         # Compose the complex output for the first pair
+        self.fft2_output = []
         self.fft2_output = self.compose_complex(pair_1_indices, pair_1_comp)
 
         # Add the complex output for the second pair to the first pair
@@ -194,7 +193,7 @@ class ImageMixer(QWidget):
         logging.info(f"the shape of fft_output{self.fft2_output.shape}")
 
         # Calculate the mixed image using inverse Fourier transform
-        self.mixed_image = abs(ifft2(self.fft2_output)).astype(np.uint8)
+        self.mixed_image = np.real(ifft2(self.fft2_output)).astype(np.uint8)
 
         # Create an image object from the mixed image array
         self.mixed_image = Image.fromarray(self.mixed_image, mode="L")
@@ -221,7 +220,7 @@ class ImageMixer(QWidget):
             mixing_order.append(image_num)
         return mixing_order
 
-    def compose_complex(self, pair_indices, pair_comp):
+    def compose_complex(self, pair_indices, pair_comp):  # [0,1] [Mag,phase]
         """
         Composes a complex number based on the given pair indices and pair components.
 
@@ -304,8 +303,6 @@ class ImageMixer(QWidget):
         Resets the state of the object after mixing and deselecting.
         """
         # Reset the higher_precedence_ft_component attribute to None
-        self.higher_precedence_ft_component = None
-
         # Reset the chunks dictionary with empty arrays
         self.chunks = {
             "0": np.array([]),

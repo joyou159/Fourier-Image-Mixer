@@ -126,6 +126,8 @@ class MainWindow(QtWidgets.QMainWindow):
                 logging.error(msg=f"The user mix odd number of images {
                     len(self.open_order)}")
                 return
+        else:
+            self.show_error_message('Please choose valid pairs')
 
     def map_value(self, value, lower_range, upper_range, lower_range_new, upper_range_new):
         """

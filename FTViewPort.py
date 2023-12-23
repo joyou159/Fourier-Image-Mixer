@@ -86,8 +86,7 @@ class FTViewPort(QWidget):
         Returns:
             None
         """
-        if not event.rect().intersects(self.rect()):
-            return
+
         super().paintEvent(event)
 
         # Check if there is an original image
@@ -169,11 +168,10 @@ class FTViewPort(QWidget):
         Returns:
             None
         """
-        painter_rect = QPainter(self)
-        painter_rect.setPen(QPen(Qt.red, 2, Qt.SolidLine))
-        painter_rect.setBrush(QBrush(Qt.red, Qt.DiagCrossPattern))
-        painter_rect.drawRect(self.current_rect)
-        painter_rect.end()
+        with QPainter(self) as painter_rect:
+            painter_rect.setPen(QPen(Qt.red, 2, Qt.SolidLine))
+            painter_rect.setBrush(QBrush(Qt.red, Qt.DiagCrossPattern))
+            painter_rect.drawRect(self.current_rect)
 
     def draw_mousePressEvent(self, event):
         """
@@ -277,6 +275,7 @@ class FTViewPort(QWidget):
             if self.rect_within_widget(new_top_left):
                 self.current_rect.translate(offset.toPoint())
                 self.drag_point = event.position()
+                self.update_display()
         else:
             event.accept()
             return

@@ -21,7 +21,6 @@ logging.basicConfig(filemode="a", filename="our_log.log",
                     format="(%(asctime)s) | %(name)s| %(levelname)s | => %(message)s", level=logging.INFO)
 
 
-
 class MainWindow(QtWidgets.QMainWindow):
 
     def __init__(self, *args, **kwargs):
@@ -121,7 +120,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 logging.info('Starting a new thread...')
                 self.worker_signals.canceled.clear()
                 self.worker_thread = WorkerThread(
-                    4, self.worker_signals, self)
+                    5, self.worker_signals, self)
                 self.worker_thread.start()
             else:
                 logging.error(msg=f"The user mix odd number of images {
@@ -161,6 +160,7 @@ class MainWindow(QtWidgets.QMainWindow):
         This method assumes that the images are represented by objects with 'resized_img'
         attribute that can be resized using the 'resize' method, and updates the display
         and Fourier Transform (FT) components accordingly.
+
 
         Note: Make sure that the 'resized_img' attribute is not None for images that need
         to be resized.

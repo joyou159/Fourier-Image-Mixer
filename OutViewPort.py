@@ -32,15 +32,12 @@ class OutViewPort(QWidget):
     def paintEvent(self, event):
         super().paintEvent(event)
         if self.original_img:
-            painter_out = QPainter(self)
+            with QPainter(self) as painter_out:
 
-            # Resize the image
-            self.resized_img = self.original_img.resize(
-                (self.width(), self.height()))
+                # Resize the image
+                self.resized_img = self.original_img.resize(
+                    (self.width(), self.height()))
 
-            # Draw the image centered on the widget
-            pixmap = QPixmap.fromImage(ImageQt.ImageQt(self.resized_img))
-            painter_out.drawPixmap(0, 0, pixmap)
-
-            painter_out.end()
-            
+                # Draw the image centered on the widget
+                pixmap = QPixmap.fromImage(ImageQt.ImageQt(self.resized_img))
+                painter_out.drawPixmap(0, 0, pixmap)

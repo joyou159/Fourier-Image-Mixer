@@ -46,7 +46,8 @@ class ImageViewport(QWidget):
 
             self.resized_img = copy.deepcopy(self.original_img)  # Deep copy
 
-            self.image_area = self.original_img.height * self.original_img.width
+            self.image_area = float(
+                self.original_img.height * self.original_img.width)
 
             self.main_window.images_areas[self.viewport_image_ind] = self.image_area
             self.unify_size()
@@ -70,8 +71,6 @@ class ImageViewport(QWidget):
             self.repaint()
 
     def paintEvent(self, event):
-        if not event.rect().intersects(self.rect()):
-            return
 
         super().paintEvent(event)
 
@@ -90,7 +89,6 @@ class ImageViewport(QWidget):
                 # Draw the image on the widget
                 pixmap = QPixmap.fromImage(ImageQt.ImageQt(resized_img))
                 painter_img.drawPixmap(0, 0, pixmap)
-
 
     def mouseMoveEvent(self, event):
         """
@@ -146,9 +144,9 @@ class ImageViewport(QWidget):
         self.last_y = event.y()
 
     def unify_size(self):
-        min_area = min(self.main_window.images_areas)
+        min_area = float(min(self.main_window.images_areas))
         if min_area < self.image_area:
-            index_of_interest = np.where(self.main_window.image_area == min_area)[
+            index_of_interest = np.where(self.main_window.images_areas == min_area)[
                 0][0]  # the first occurrence
             template_image = self.main_window.image_ports[index_of_interest].original_img
             self.resized_img = self.resized_img.resize(

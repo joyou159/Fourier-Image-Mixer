@@ -4580,3 +4580,6 @@
 (2023-12-24 20:57:58,524) | root| INFO | => ----------------------the user open the app-------------------------------------
 (2023-12-24 20:57:58,651) | qdarkstyle| INFO | => QSS file successfully loaded.
 (2023-12-24 20:57:58,687) | qdarkstyle| INFO | => Found application patches to be applied.
+(2023-12-24 21:00:07,478) | root| INFO | => ----------------------the user open the app-------------------------------------
+(2023-12-24 21:00:07,604) | qdarkstyle| INFO | => QSS file successfully loaded.
+(2023-12-24 21:00:07,641) | qdarkstyle| INFO | => Found application patches to be applied.

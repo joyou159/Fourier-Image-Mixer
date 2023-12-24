@@ -41,7 +41,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         """
         # Load the UI Page
-        self.ui = uic.loadUi('Mainwindow.ui', self)
+        self.ui = uic.loadUi('Mainwindow2.ui', self)
         self.setWindowTitle("Image Mixer")
         self.setWindowIcon(QIcon("icons/mixer.png"))
         self.image_ports = []
@@ -123,8 +123,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     5, self.worker_signals, self)
                 self.worker_thread.start()
             else:
-                logging.error(msg=f"The user mix odd number of images {
-                    len(self.open_order)}")
+                logging.error(msg=f"The user mix odd number of images {len(self.open_order)}")
                 return
         else:
             self.show_error_message('Please choose valid pairs')
@@ -209,8 +208,8 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.component_image1, self.ui.component_image2, self.ui.component_image3, self.ui.component_image4]
         self.ui_image_combo_boxes = [
             self.ui.combo1, self.ui.combo2, self.ui.combo3, self.ui.combo4]
-        self.ui_mixing_combo_boxes = [
-            self.ui.combo11, self.ui.combo12, self.ui.combo13, self.ui.combo14]
+        # self.ui_mixing_combo_boxes = [
+        #     self.ui.combo11, self.ui.combo12, self.ui.combo13, self.ui.combo14]
         self.ui_vertical_sliders = [
             self.ui.Slider_weight1, self.ui.Slider_weight2, self.ui.Slider_weight3, self.ui.Slider_weight4]
         self.ui.vertical_layouts = [
@@ -233,8 +232,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.out_ports.extend([self.create_output_viewport(
             self.ui_out_ports[i]) for i in range(2)])
         # Add items to combo boxes for mixing UI
-        for combo_box in self.ui_mixing_combo_boxes:
-            combo_box.addItems(['None'] + [f'image{i+1}' for i in range(4)])
+        # for combo_box in self.ui_mixing_combo_boxes:
+        #     combo_box.addItems(['None'] + [f'image{i+1}' for i in range(4)])
 
         # Loop through each combo box and associated components_ports
         for i, combo_box in enumerate(self.ui_image_combo_boxes):
@@ -312,12 +311,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.components_ports[index].update_FT_components()
 
         # Print the size of the image before resizing
-        logging.info(f"The size of the image before resizing: {
-            np.array(image_port.original_img).shape}")
+        logging.info(f"The size of the image before resizing: {np.array(image_port.original_img).shape}")
 
         # Print the size of the image after resizing
-        logging.info(f"The size of the image after resizing: {
-            np.array(image_port.resized_img).shape}")
+        logging.info(f"The size of the image after resizing: {np.array(image_port.resized_img).shape}")
 
     def create_viewport(self, parent, viewport_class, mouse_double_click_event_handler=None):
         """

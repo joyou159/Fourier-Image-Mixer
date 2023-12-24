@@ -4568,3 +4568,15 @@
 (2023-12-23 17:28:08,760) | root| INFO | => Starting a new thread...
 (2023-12-23 17:28:13,966) | root| INFO | => the shape of fft_output(1535, 1000)
 (2023-12-23 17:28:14,028) | root| INFO | => Thread completed
+(2023-12-24 20:45:03,700) | root| INFO | => ----------------------the user open the app-------------------------------------
+(2023-12-24 20:45:04,051) | qdarkstyle| INFO | => QSS file successfully loaded.
+(2023-12-24 20:45:04,090) | qdarkstyle| INFO | => Found application patches to be applied.
+(2023-12-24 20:57:16,645) | root| INFO | => ----------------------the user open the app-------------------------------------
+(2023-12-24 20:57:16,771) | qdarkstyle| INFO | => QSS file successfully loaded.
+(2023-12-24 20:57:16,806) | qdarkstyle| INFO | => Found application patches to be applied.
+(2023-12-24 20:57:35,800) | root| INFO | => ----------------------the user open the app-------------------------------------
+(2023-12-24 20:57:35,933) | qdarkstyle| INFO | => QSS file successfully loaded.
+(2023-12-24 20:57:35,969) | qdarkstyle| INFO | => Found application patches to be applied.
+(2023-12-24 20:57:58,524) | root| INFO | => ----------------------the user open the app-------------------------------------
+(2023-12-24 20:57:58,651) | qdarkstyle| INFO | => QSS file successfully loaded.
+(2023-12-24 20:57:58,687) | qdarkstyle| INFO | => Found application patches to be applied.

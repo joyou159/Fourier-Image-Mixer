@@ -48,7 +48,8 @@ class OutViewPort(QWidget):
                     new_width = int(widget_height * aspect_ratio)
 
                 # Resize the image
-                self.resized_img = self.original_img.resize((new_width, new_height))
+                self.resized_img = self.original_img.resize(
+                    (new_width, new_height))
 
                 # Calculate the position to center the image
                 x_pos = (widget_width - new_width) // 2

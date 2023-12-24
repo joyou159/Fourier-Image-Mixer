@@ -41,7 +41,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         """
         # Load the UI Page
-        self.ui = uic.loadUi('Mainwindow2.ui', self)
+        self.ui = uic.loadUi('Mainwindow.ui', self)
         self.setWindowTitle("Image Mixer")
         self.setWindowIcon(QIcon("icons/mixer.png"))
         self.image_ports = []
@@ -51,6 +51,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.open_order = []
         self.min_width = None
         self.min_height = None
+        self.curr_mode = None
         self.components = {"1": '', "2": '', '3': '', '4': ''}
         self.ui.output1_port.resize(
             self.ui.original1.width(), self.ui.original1.height())
@@ -106,27 +107,26 @@ class MainWindow(QtWidgets.QMainWindow):
         If there is a running thread, terminate it before starting a new one.
         """
         # Check if the pair of images is valid
-        if self.mixer.check_pair_validity():
-            if not any(np.any(port.press_pos for port in self.components_ports)):
-                logging.error("the user didn't select area from the images ")
-                return
 
-            if len(self.open_order) % 2 == 0:
-                if self.worker_thread and self.worker_thread.is_alive():
-                    logging.info('Terminating the running thread...')
-                    self.worker_thread.cancel()
-                    logging.info('Thread terminated.')
+        if not any(np.any(port.press_pos for port in self.components_ports)):
+            logging.error("the user didn't select area from the images ")
+            return
 
-                logging.info('Starting a new thread...')
-                self.worker_signals.canceled.clear()
-                self.worker_thread = WorkerThread(
-                    5, self.worker_signals, self)
-                self.worker_thread.start()
-            else:
-                logging.error(msg=f"The user mix odd number of images {len(self.open_order)}")
-                return
+        if len(self.open_order) != 1:
+            if self.worker_thread and self.worker_thread.is_alive():
+                logging.info('Terminating the running thread...')
+                self.worker_thread.cancel()
+                logging.info('Thread terminated.')
+
+            logging.info('Starting a new thread...')
+            self.worker_signals.canceled.clear()
+            self.worker_thread = WorkerThread(
+                5, self.worker_signals, self)
+            self.worker_thread.start()
         else:
-            self.show_error_message('Please choose valid pairs')
+            logging.error(
+                msg=f"The user mix one image len(self.open_order)")
+            return
 
     def map_value(self, value, lower_range, upper_range, lower_range_new, upper_range_new):
         """
@@ -208,8 +208,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.component_image1, self.ui.component_image2, self.ui.component_image3, self.ui.component_image4]
         self.ui_image_combo_boxes = [
             self.ui.combo1, self.ui.combo2, self.ui.combo3, self.ui.combo4]
-        # self.ui_mixing_combo_boxes = [
-        #     self.ui.combo11, self.ui.combo12, self.ui.combo13, self.ui.combo14]
+
         self.ui_vertical_sliders = [
             self.ui.Slider_weight1, self.ui.Slider_weight2, self.ui.Slider_weight3, self.ui.Slider_weight4]
         self.ui.vertical_layouts = [
@@ -217,6 +216,13 @@ class MainWindow(QtWidgets.QMainWindow):
                                                               self.ui.verticalLayout_11), (self.ui.verticalLayout_5, self.ui.verticalLayout_6),
             (self.ui.verticalLayout_13, self.ui.verticalLayout_14)
         ]
+
+        self.ui_modes = [self.ui.mode1, self.ui.mode2]
+
+        for mode in self.ui_modes:
+            mode.clicked.connect(self.radio_button_mode_clicked)
+
+        self.ui_modes[0].click()
 
         self.out_vertical_layout = [
             self.ui.verticalLayout_OP1, self.ui.verticalLayout_OP2]
@@ -231,9 +237,6 @@ class MainWindow(QtWidgets.QMainWindow):
         # Create output viewports
         self.out_ports.extend([self.create_output_viewport(
             self.ui_out_ports[i]) for i in range(2)])
-        # Add items to combo boxes for mixing UI
-        # for combo_box in self.ui_mixing_combo_boxes:
-        #     combo_box.addItems(['None'] + [f'image{i+1}' for i in range(4)])
 
         # Loop through each combo box and associated components_ports
         for i, combo_box in enumerate(self.ui_image_combo_boxes):
@@ -249,14 +252,23 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui_vertical_sliders[i].valueChanged.connect(
                 self.mixer.handle_weight_sliders)
 
-            # Add items to the combo box and set the current index to 0
-            combo_box.addItems(
-                ["FT Magnitude", "FT Phase", "FT Real", "FT Imaginary"])
-            combo_box.setCurrentIndex(0)
-
             # Connect the currentIndexChanged signal of the combo box to the handle_image_combo_boxes_selection method of the components_port
             combo_box.currentIndexChanged.connect(
                 self.components_ports[i].handle_image_combo_boxes_selection)
+
+    def radio_button_mode_clicked(self):
+        sender = self.sender()  # Get the radio button that triggered the signal
+        self.curr_mode = sender.text()
+        # Add items to the combo box and set the current index to 0
+        for i, combo_box in enumerate(self.ui_image_combo_boxes):
+            combo_box.clear()
+            if self.curr_mode == "Mag and Phase":
+                combo_box.addItems(
+                    ["FT Magnitude", "FT Phase"])
+            else:
+                combo_box.addItems(
+                    ["FT Real", "FT Imaginary"])
+            combo_box.setCurrentIndex(0)
 
     def browse_image(self, event, index: int):
         """
@@ -311,10 +323,12 @@ class MainWindow(QtWidgets.QMainWindow):
         self.components_ports[index].update_FT_components()
 
         # Print the size of the image before resizing
-        logging.info(f"The size of the image before resizing: {np.array(image_port.original_img).shape}")
+        logging.info(f"The size of the image before resizing: {
+                     np.array(image_port.original_img).shape}")
 
         # Print the size of the image after resizing
-        logging.info(f"The size of the image after resizing: {np.array(image_port.resized_img).shape}")
+        logging.info(f"The size of the image after resizing: {
+                     np.array(image_port.resized_img).shape}")
 
     def create_viewport(self, parent, viewport_class, mouse_double_click_event_handler=None):
         """
@@ -346,20 +360,6 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def create_output_viewport(self, parent):
         return self.create_viewport(parent, OutViewPort)
-
-    def add_items_to_combo_boxes(self, combo_boxes, items):
-        """
-        Adds the specified items to the given combo boxes.
-
-        Args:
-            combo_boxes (list): A list of combo boxes to which the items will be added.
-            items (list): A list of items to be added to the combo boxes.
-
-        Returns:
-            None
-        """
-        for combo_box in combo_boxes:
-            combo_box.addItems(items)
 
 
 def main():

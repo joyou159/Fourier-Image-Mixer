@@ -186,22 +186,12 @@ class ImageViewport(QWidget):
         # latest opened image index
         current = order[-1]
 
-        # used for orderly set the ft components for each opened image
-        selection = len(order)-1
-
         self.main_window.image_ports[current].set_image(path)
-
-        # pick FT type for each image by default
-        self.main_window.ui_image_combo_boxes[current].setCurrentIndex(
-            selection)
 
         # set some attributes of the Image
         component = self.main_window.ui_image_combo_boxes[current].currentText(
         )
+
         self.main_window.components[str(current+1)] = component
 
-        # update the mixing boxes and sliders
-        self.main_window.ui_mixing_combo_boxes[selection].setCurrentIndex(
-            current+1)
-
-        self.main_window.ui_vertical_sliders[selection].setValue(100)
+        self.main_window.ui_vertical_sliders[current].setValue(100)

@@ -50,15 +50,21 @@ border: none;
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout">
              <item>
-              <widget class="QSlider" name="Slider_weight1">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
+              <widget class="QLabel" name="label">
+               <property name="font">
+                <font>
+                 <family>Overpass Black</family>
+                 <pointsize>-1</pointsize>
+                 <bold>true</bold>
+                </font>
                </property>
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
+               <property name="styleSheet">
+                <string notr="true">color:white;
+font-size:20px;
+margin: 0 0 ;</string>
+               </property>
+               <property name="text">
+                <string>Image 1</string>
                </property>
               </widget>
              </item>
@@ -204,15 +210,21 @@ border: none;</string>
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_3">
              <item>
-              <widget class="QSlider" name="Slider_weight2">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
+              <widget class="QLabel" name="label_4">
+               <property name="font">
+                <font>
+                 <family>Overpass Black</family>
+                 <pointsize>-1</pointsize>
+                 <bold>true</bold>
+                </font>
                </property>
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
+               <property name="styleSheet">
+                <string notr="true">color:white;
+font-size:20px;
+margin: 0 0 ;</string>
+               </property>
+               <property name="text">
+                <string>Image 2</string>
                </property>
               </widget>
              </item>
@@ -352,22 +364,22 @@ border: none;</string>
           <layout class="QVBoxLayout" name="verticalLayout_9">
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_5">
-             <property name="spacing">
-              <number>6</number>
-             </property>
-             <property name="sizeConstraint">
-              <enum>QLayout::SetMaximumSize</enum>
-             </property>
              <item>
-              <widget class="QSlider" name="Slider_weight3">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
+              <widget class="QLabel" name="label_7">
+               <property name="font">
+                <font>
+                 <family>Overpass Black</family>
+                 <pointsize>-1</pointsize>
+                 <bold>true</bold>
+                </font>
                </property>
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
+               <property name="styleSheet">
+                <string notr="true">color:white;
+font-size:20px;
+margin: 0 0 ;</string>
+               </property>
+               <property name="text">
+                <string>Image 3</string>
                </property>
               </widget>
              </item>
@@ -504,15 +516,21 @@ border: none;</string>
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_7">
              <item>
-              <widget class="QSlider" name="Slider_weight4">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
+              <widget class="QLabel" name="label_10">
+               <property name="font">
+                <font>
+                 <family>Overpass Black</family>
+                 <pointsize>-1</pointsize>
+                 <bold>true</bold>
+                </font>
                </property>
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
+               <property name="styleSheet">
+                <string notr="true">color:white;
+font-size:20px;
+margin: 0 0 ;</string>
+               </property>
+               <property name="text">
+                <string>Image 4</string>
                </property>
               </widget>
              </item>
@@ -645,7 +663,7 @@ border: none;</string>
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout_18" stretch="0,0,2,0,0,0,0,0,0">
+      <layout class="QVBoxLayout" name="verticalLayout_18" stretch="0,0,2,0,0,0,1">
        <item>
         <widget class="QLabel" name="mixerOutputTo">
          <property name="font">
@@ -771,7 +789,7 @@ font-weight:10000px;</string>
              <item>
               <widget class="QWidget" name="output1_port" native="true">
                <property name="styleSheet">
-                <string notr="true">border: 3px solid rgb(17,17,17);</string>
+                <string notr="true">background-color: rgb(0, 0, 0);</string>
                </property>
               </widget>
              </item>
@@ -800,86 +818,13 @@ font-weight:10000px;</string>
              <item>
               <widget class="QWidget" name="output2_port" native="true">
                <property name="styleSheet">
-                <string notr="true">border: 3px solid rgb(17,17,17);</string>
+                <string notr="true">background-color: rgb(0, 0, 0);</string>
                </property>
               </widget>
              </item>
             </layout>
            </item>
           </layout>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_10">
-         <property name="bottomMargin">
-          <number>10</number>
-         </property>
-         <item>
-          <widget class="QPushButton" name="mixxer">
-           <property name="font">
-            <font>
-             <family>-apple-system</family>
-             <pointsize>12</pointsize>
-             <bold>true</bold>
-            </font>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">QPushButton{
-  appearance: button;
-  background-color: #405cf5;
-  border-radius: 6px;
-  border-width: 0;
-  box-shadow: rgba(50, 50, 93, .1) 0 0 0 1px inset,rgba(50, 50, 93, .1) 0 2px 5px 0,rgba(0, 0, 0, .07) 0 1px 1px 0;
-  color: #fff;
-  cursor: pointer;
-  font-family: -apple-system,system-ui,&quot;Segoe UI&quot;,Roboto,&quot;Helvetica Neue&quot;,Ubuntu,sans-serif;
-  height: 30px;
-  margin: 0 20px 0 20px;
-  position: center;
-  width:70px;
-}
-QPushButton:hover{
-background-color: #283999;
-}
-QPushButton:pressed{
-background-color: #1c2973;
-}
-</string>
-           </property>
-           <property name="text">
-            <string>Mix</string>
-           </property>
-           <property name="icon">
-            <iconset>
-             <normaloff>icons/combine-svgrepo-com.png</normaloff>icons/combine-svgrepo-com.png</iconset>
-           </property>
-           <property name="iconSize">
-            <size>
-             <width>25</width>
-             <height>25</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QProgressBar" name="progressBar">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="styleSheet">
-            <string notr="true"/>
-           </property>
-           <property name="value">
-            <number>0</number>
-           </property>
-           <property name="textVisible">
-            <bool>true</bool>
-           </property>
-          </widget>
          </item>
         </layout>
        </item>
@@ -915,9 +860,76 @@ background-color: #1c2973;
        </item>
        <item>
         <layout class="QVBoxLayout" name="verticalLayout_16">
-         <property name="topMargin">
-          <number>10</number>
-         </property>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_10">
+           <item>
+            <widget class="QPushButton" name="mixxer">
+             <property name="font">
+              <font>
+               <family>-apple-system</family>
+               <pointsize>12</pointsize>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">QPushButton{
+  appearance: button;
+  background-color: #405cf5;
+  border-radius: 6px;
+  border-width: 0;
+  box-shadow: rgba(50, 50, 93, .1) 0 0 0 1px inset,rgba(50, 50, 93, .1) 0 2px 5px 0,rgba(0, 0, 0, .07) 0 1px 1px 0;
+  color: #fff;
+  cursor: pointer;
+  font-family: -apple-system,system-ui,&quot;Segoe UI&quot;,Roboto,&quot;Helvetica Neue&quot;,Ubuntu,sans-serif;
+  height: 30px;
+  margin: 0 20px 0 20px;
+  position: center;
+  width:70px;
+}
+QPushButton:hover{
+background-color: #283999;
+}
+QPushButton:pressed{
+background-color: #1c2973;
+}
+</string>
+             </property>
+             <property name="text">
+              <string>Mix</string>
+             </property>
+             <property name="icon">
+              <iconset>
+               <normaloff>icons/combine-svgrepo-com.png</normaloff>icons/combine-svgrepo-com.png</iconset>
+             </property>
+             <property name="iconSize">
+              <size>
+               <width>25</width>
+               <height>25</height>
+              </size>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QProgressBar" name="progressBar">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="styleSheet">
+              <string notr="true"/>
+             </property>
+             <property name="value">
+              <number>0</number>
+             </property>
+             <property name="textVisible">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
          <item>
           <layout class="QVBoxLayout" name="verticalLayout_15">
            <item>
@@ -1041,14 +1053,9 @@ background-color: #1c2973;
         </layout>
        </item>
        <item>
-        <layout class="QVBoxLayout" name="verticalLayout_19">
-         <property name="topMargin">
-          <number>10</number>
-         </property>
-         <item>
-          <widget class="Line" name="line_18">
-           <property name="styleSheet">
-            <string notr="true">/* Line style */
+        <widget class="Line" name="line_18">
+         <property name="styleSheet">
+          <string notr="true">/* Line style */
 
   /* Set the width of the line */
   width: 20px;
@@ -1069,100 +1076,175 @@ background-color: #1c2973;
 
 
 </string>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_8">
+         <item>
+          <widget class="QLabel" name="WeightOfImages">
+           <property name="font">
+            <font>
+             <family>Overpass Black</family>
+             <pointsize>-1</pointsize>
+             <bold>true</bold>
+            </font>
            </property>
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
+           <property name="styleSheet">
+            <string notr="true">color:white;
+font-size:20px;
+margin: 0 0 ;</string>
+           </property>
+           <property name="text">
+            <string>Weights of images</string>
            </property>
           </widget>
          </item>
          <item>
-          <layout class="QVBoxLayout" name="verticalLayout_20">
+          <layout class="QHBoxLayout" name="horizontalLayout_Wsliders">
            <item>
-            <widget class="QLabel" name="selectedArea_2">
-             <property name="font">
-              <font>
-               <family>Overpass Black</family>
-               <pointsize>-1</pointsize>
-               <bold>true</bold>
-              </font>
-             </property>
+            <layout class="QVBoxLayout" name="verticalLayout_weight1">
+             <item>
+              <widget class="QComboBox" name="combo11">
+               <property name="styleSheet">
+                <string notr="true">QComboBox {
+    font-family: &quot;Overpass&quot;;
+    font-weight: 600; /* Semibold */
+    font-size: 10pt; /* Adjust the font size as needed */
+    color: white; /* Set the text color to white */
+    border: 1px solid white; /* Set the border to 1px solid white */
+background: rgba(74, 74, 74, 0);
+	border-radius: 10px;
+}</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QSlider" name="Slider_weight1">
+               <property name="layoutDirection">
+                <enum>Qt::LeftToRight</enum>
+               </property>
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QVBoxLayout" name="verticalLayout_weight2">
+             <item>
+              <widget class="QComboBox" name="combo12">
+               <property name="styleSheet">
+                <string notr="true">QComboBox {
+    font-family: &quot;Overpass&quot;;
+    font-weight: 600; /* Semibold */
+    font-size: 10pt; /* Adjust the font size as needed */
+    color: white; /* Set the text color to white */
+    border: 1px solid white; /* Set the border to 1px solid white */
+background: rgba(74, 74, 74, 0);
+	border-radius: 10px;
+}</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QSlider" name="Slider_weight2">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <widget class="Line" name="line">
              <property name="styleSheet">
-              <string notr="true">color:white;
-font-size:20px;
-margin: 0 0 ;</string>
+              <string notr="true">/* Line style */
+
+  /* Set the width of the line */
+  width: 20px;
+
+  /* Set the height of the line */
+  height: 5px;
+
+  /* Set the background color of the line */
+  background-color:rgb(77, 86, 105);
+
+  /* Set the border of the line */
+  border: 10px;
+
+  /* Set the border radius of the line */
+  border-radius:5px;
+
+
+
+
+</string>
              </property>
-             <property name="text">
-              <string>Select Mode</string>
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
              </property>
             </widget>
            </item>
            <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_14">
+            <layout class="QVBoxLayout" name="verticalLayout_weight3">
              <item>
-              <layout class="QVBoxLayout" name="verticalLayout_21">
-               <item>
-                <widget class="QRadioButton" name="mode1">
-                 <property name="font">
-                  <font>
-                   <family>Oswald SemiBold</family>
-                   <pointsize>14</pointsize>
-                   <bold>true</bold>
-                  </font>
-                 </property>
-                 <property name="styleSheet">
-                  <string notr="true">color:white;
-font-weight:10000px;
-</string>
-                 </property>
-                 <property name="text">
-                  <string>Mag and Phase</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QRadioButton" name="mode2">
-                 <property name="font">
-                  <font>
-                   <family>Oswald SemiBold</family>
-                   <pointsize>14</pointsize>
-                   <bold>true</bold>
-                  </font>
-                 </property>
-                 <property name="styleSheet">
-                  <string notr="true">color:white;
-font-weight:10000px;</string>
-                 </property>
-                 <property name="text">
-                  <string>Real and Imaginary</string>
-                 </property>
-                </widget>
-               </item>
-              </layout>
+              <widget class="QComboBox" name="combo13">
+               <property name="styleSheet">
+                <string notr="true">QComboBox {
+    font-family: &quot;Overpass&quot;;
+    font-weight: 600; /* Semibold */
+    font-size: 10pt; /* Adjust the font size as needed */
+    color: white; /* Set the text color to white */
+    border: 1px solid white; /* Set the border to 1px solid white */
+background: rgba(74, 74, 74, 0);
+	border-radius: 10px;
+}</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QSlider" name="Slider_weight3">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QVBoxLayout" name="verticalLayout_weight4">
+             <item>
+              <widget class="QComboBox" name="combo14">
+               <property name="styleSheet">
+                <string notr="true">QComboBox {
+    font-family: &quot;Overpass&quot;;
+    font-weight: 600; /* Semibold */
+    font-size: 10pt; /* Adjust the font size as needed */
+    color: white; /* Set the text color to white */
+    border: 1px solid white; /* Set the border to 1px solid white */
+background: rgba(74, 74, 74, 0);
+	border-radius: 10px;
+}</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QSlider" name="Slider_weight4">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+              </widget>
              </item>
             </layout>
            </item>
           </layout>
          </item>
         </layout>
-       </item>
-       <item>
-        <spacer name="verticalSpacer">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeType">
-          <enum>QSizePolicy::Maximum</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>70</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item>
-        <layout class="QVBoxLayout" name="verticalLayout_8"/>
        </item>
       </layout>
      </widget>

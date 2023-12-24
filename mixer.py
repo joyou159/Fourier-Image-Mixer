@@ -54,44 +54,6 @@ class ImageMixer(QWidget):
         self.main_window.ui.radioButton_In.setChecked(True)
         self.main_window.ui.radioButton1.setChecked(True)
 
-    def check_pair_validity(self):
-        """
-        Check the validity of the pairs selected for mixing.
-
-        Raises:
-            ValueError: If the selected pairs are not valid.
-        """
-        valid_pairs = [
-            ("FT Magnitude", "FT Phase"),
-            ("FT Phase", "FT Magnitude"),
-            ("FT Real", "FT Imaginary"),
-            ("FT Imaginary", "FT Real"),
-            ("", "")
-        ]
-
-        components = self.main_window.components
-
-        self.mixing_comp = []
-
-        for combo in self.main_window.ui_mixing_combo_boxes:
-
-            image_selection = combo.currentIndex()
-
-            if image_selection == 0:
-                component = ""
-            else:
-                component = components[str(image_selection)]
-
-            self.mixing_comp.append(component)
-
-        pair1 = (self.mixing_comp[0], self.mixing_comp[1])
-        pair2 = (self.mixing_comp[2], self.mixing_comp[3])
-
-        if pair1 not in valid_pairs or pair2 not in valid_pairs:
-            logging.error("the user didn't choose valid pairs ")
-            return 0
-        return 1
-
     def collect_chunks(self):
         """
         Collects chunks of data and stores them in the `self.chunks` dictionary.
@@ -173,21 +135,22 @@ class ImageMixer(QWidget):
       # Decode the pairs to determine the mixing order
         mixing_order = self.decode_pairs()
 
-        # Get the indices and components of the first pair
-        pair_1_indices = (mixing_order[0], mixing_order[1])
+        # Extract keys and values
         # mag , phase ....
-        pair_1_comp = (self.mixing_comp[0], self.mixing_comp[1])
+        pair_1_comp = tuple(list(d.keys())[0] for d in mixing_order)
+        # Get the indices and components of the first pair
+        pair_1_indices = tuple(list(d.values())[0] for d in mixing_order)
 
-        # Get the indices and components of the second pair
-        pair_2_indices = (mixing_order[2], mixing_order[3])
-        pair_2_comp = (self.mixing_comp[2], self.mixing_comp[3])
+        # Extract keys and values
+        # mag , phase ....
+        pair_2_comp = tuple(list(d.keys())[1] for d in mixing_order)
+        # Get the indices and components of the first pair
+        pair_2_indices = tuple(list(d.values())[1] for d in mixing_order)
 
         # Compose the complex output for the first pair
         self.fft2_output = []
         self.fft2_output = self.compose_complex(pair_1_indices, pair_1_comp)
 
-        # Add the complex output for the second pair to the first pair
-        self.fft2_output += self.compose_complex(pair_2_indices, pair_2_comp)
 
         # Print the shape of the fft2_output
         logging.info(f"the shape of fft_output{self.fft2_output.shape}")
@@ -211,13 +174,16 @@ class ImageMixer(QWidget):
         Returns:
             list: The decoded image number pairs.
         """
-        mixing_order = []
+        if self.main_window.curr_mode == "Mag and Phase":
+            mixing_order = [{"FT Magnitude": []}, {"FT Phase": []}]
+        else:
+            mixing_order = [{"FT Real": []}, {"FT Imaginary": []}]
         # Iterate over the UI mixing combo boxes
-        for combo in self.main_window.ui_mixing_combo_boxes:
+        for combo in self.main_window.ui_image_combo_boxes:
             # Get the selected image number from the combo box
             image_num = combo.currentIndex() - 1  # Subtract 1 to get the index of the image
             # Add the image number to the mixing order list
-            mixing_order.append(image_num)
+            mixing_order[combo.currentText()].append(image_num)
         return mixing_order
 
     def compose_complex(self, pair_indices, pair_comp):  # [0,1] [Mag,phase]
@@ -289,14 +255,12 @@ class ImageMixer(QWidget):
 
         # Find the index of the slider in the list of vertical sliders
         slider_ind = self.main_window.ui_vertical_sliders.index(slider)
-        curr_image_ind = self.main_window.ui_mixing_combo_boxes[slider_ind].currentIndex(
-        ) - 1
 
         # Calculate the new weight value based on the slider value and the previous weight reference
         new_weight_value = slider.value() / 100
 
         # Update the weight value with the calculated new value
-        self.weight_value[curr_image_ind] = new_weight_value
+        self.weight_value[slider_ind] = new_weight_value
 
     def reset_after_mixing_and_deselect(self):
         """

@@ -59,10 +59,16 @@ class ImageMixer(QWidget):
         Collects chunks of data and stores them in the `self.chunks` dictionary.
         """
         for ind in range(len(self.chunks)):
+            # meaning that there is a region selected.
             if self.main_window.image_ports[ind].original_img != None:
-                selection_matrix = self.get_selection_matrix(ind)
-                curr_chunk = selection_matrix * \
-                    self.main_window.components_ports[ind].component_data
+                port = self.main_window.components_ports[ind]
+                if port.holdRect:
+                    selection_matrix = self.get_selection_matrix(ind)
+                    curr_chunk = selection_matrix * \
+                        port.component_data
+                else:
+                    curr_chunk = port.component_data
+
                 self.chunks[str(ind)] = curr_chunk
 
     def get_selection_matrix(self, ind):
@@ -133,24 +139,11 @@ class ImageMixer(QWidget):
     def mix_images(self):
 
       # Decode the pairs to determine the mixing order
-        mixing_order = self.decode_pairs()
-
-        # Extract keys and values
-        # mag , phase ....
-        pair_1_comp = tuple(list(d.keys())[0] for d in mixing_order)
-        # Get the indices and components of the first pair
-        pair_1_indices = tuple(list(d.values())[0] for d in mixing_order)
-
-        # Extract keys and values
-        # mag , phase ....
-        pair_2_comp = tuple(list(d.keys())[1] for d in mixing_order)
-        # Get the indices and components of the first pair
-        pair_2_indices = tuple(list(d.values())[1] for d in mixing_order)
+        mixing_choices = self.collect_mixing_choices()
 
         # Compose the complex output for the first pair
         self.fft2_output = []
-        self.fft2_output = self.compose_complex(pair_1_indices, pair_1_comp)
-
+        self.fft2_output = self.compose_complex(mixing_choices)
 
         # Print the shape of the fft2_output
         logging.info(f"the shape of fft_output{self.fft2_output.shape}")
@@ -167,7 +160,7 @@ class ImageMixer(QWidget):
         # Deselect any selected items in the main window
         self.reset_after_mixing_and_deselect()
 
-    def decode_pairs(self):
+    def collect_mixing_choices(self):
         """
         Decode the image number pairs from the UI mixing combo boxes.
 
@@ -175,18 +168,19 @@ class ImageMixer(QWidget):
             list: The decoded image number pairs.
         """
         if self.main_window.curr_mode == "Mag and Phase":
-            mixing_order = [{"FT Magnitude": []}, {"FT Phase": []}]
+            mixing_choices = {"FT Magnitude": [], "FT Phase": []}
         else:
-            mixing_order = [{"FT Real": []}, {"FT Imaginary": []}]
-        # Iterate over the UI mixing combo boxes
-        for combo in self.main_window.ui_image_combo_boxes:
-            # Get the selected image number from the combo box
-            image_num = combo.currentIndex() - 1  # Subtract 1 to get the index of the image
-            # Add the image number to the mixing order list
-            mixing_order[combo.currentText()].append(image_num)
-        return mixing_order
+            mixing_choices = {"FT Real": [], "FT Imaginary": []}
 
-    def compose_complex(self, pair_indices, pair_comp):  # [0,1] [Mag,phase]
+        # Iterate over the UI mixing combo boxes
+        for i, combo in enumerate(self.main_window.ui_image_combo_boxes):
+            # Get the selected image number from the combo box
+            # Add the image number to the mixing order list
+            if np.any(self.chunks[str(i)]):
+                mixing_choices[combo.currentText()].append(i)
+        return mixing_choices
+
+    def compose_complex(self, mixing_choices):  # [0,1] [Mag,phase]
         """
         Composes a complex number based on the given pair indices and pair components.
 
@@ -200,21 +194,30 @@ class ImageMixer(QWidget):
         Raises:
             None
         """
-        if -1 in pair_indices:
-            return np.zeros_like(self.fft2_output)
-        if "FT Magnitude" in pair_comp:
-            mag_index = str(pair_indices[pair_comp.index("FT Magnitude")])
-            phase_index = str(pair_indices[pair_comp.index("FT Phase")])
-            complex_numbers = self.weight_value[int(mag_index)] * self.chunks[mag_index] * np.exp(
-                1j * self.chunks[phase_index] * self.weight_value[int(phase_index)])
+        if "FT Magnitude" in mixing_choices:
+            mag_indices = mixing_choices["FT Magnitude"]
+            phase_indices = mixing_choices["FT Phase"]
+            total_mag = self.accumulate(mag_indices)
+            total_phase = self.accumulate(phase_indices)
+            complex_numbers = total_mag * np.exp(
+                1j * total_phase)
         else:
-            real_index = str(pair_indices[pair_comp.index("FT Real")])
-            imaginary_index = str(
-                pair_indices[pair_comp.index("FT Imaginary")])
-            complex_numbers = self.chunks[real_index] * self.weight_value[int(real_index)] + \
-                1j * self.chunks[imaginary_index] * \
-                self.weight_value[int(imaginary_index)]
+            real_indices = mixing_choices["FT Real"]
+            img_indices = mixing_choices["FT Imaginary"]
+            total_real = self.accumulate(real_indices)
+            total_imaginary = self.accumulate(img_indices)
+            complex_numbers = total_real + \
+                1j * total_imaginary
+
         return ifftshift(complex_numbers)
+
+    def accumulate(self, indices):
+        output_size = max(self.chunks.values(), key=len).shape
+        product_output = np.zeros(output_size, dtype=float)
+        for index in indices:
+            product_output += (self.chunks[str(index)] *
+                               self.weight_value[index])
+        return product_output
 
     def handle_radio_button_toggled(self):
         """

@@ -1117,6 +1117,9 @@ font-weight:10000px;
                  <property name="text">
                   <string>Mag and Phase</string>
                  </property>
+                 <attribute name="buttonGroup">
+                  <string notr="true">buttonGroup_3</string>
+                 </attribute>
                 </widget>
                </item>
                <item>
@@ -1135,6 +1138,9 @@ font-weight:10000px;</string>
                  <property name="text">
                   <string>Real and Imaginary</string>
                  </property>
+                 <attribute name="buttonGroup">
+                  <string notr="true">buttonGroup_3</string>
+                 </attribute>
                 </widget>
                </item>
               </layout>
@@ -1175,7 +1181,7 @@ font-weight:10000px;</string>
      <x>0</x>
      <y>0</y>
      <width>1293</width>
-     <height>22</height>
+     <height>26</height>
     </rect>
    </property>
   </widget>
@@ -1183,7 +1189,8 @@ font-weight:10000px;</string>
  <resources/>
  <connections/>
  <buttongroups>
-  <buttongroup name="buttonGroup"/>
   <buttongroup name="buttonGroup_2"/>
+  <buttongroup name="buttonGroup"/>
+  <buttongroup name="buttonGroup_3"/>
  </buttongroups>
 </ui>

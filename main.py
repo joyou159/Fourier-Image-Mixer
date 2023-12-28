@@ -52,6 +52,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.min_width = None
         self.min_height = None
         self.curr_mode = None
+        self.worker_thread = None
         self.components = {"1": '', "2": '', '3': '', '4': ''}
         self.ui.output1_port.resize(
             self.ui.original1.width(), self.ui.original1.height())
@@ -67,7 +68,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.keyPressEvent = self.keyPressEvent
 
         self.worker_signals = WorkerSignals()
-        self.worker_thread = None
 
     def show_error_message(self, message):
         """
@@ -108,8 +108,8 @@ class MainWindow(QtWidgets.QMainWindow):
         """
         # Check if the pair of images is valid
 
-        if not any(np.any(port.press_pos for port in self.components_ports)):
-            logging.error("the user didn't select area from the images ")
+        if not np.all(port.component_data for port in self.components_ports):
+            logging.error("Nothing to Be Mixed")
             return
 
         if len(self.open_order) != 1:
@@ -268,6 +268,17 @@ class MainWindow(QtWidgets.QMainWindow):
             else:
                 combo_box.addItems(
                     ["FT Real", "FT Imaginary"])
+
+            if self.components_ports != []:
+                print("update ft components")
+                curr_port = self.components_ports[i]
+                if self.worker_thread:
+                    self.worker_thread.cancel()
+                    self.worker_signals.canceled.clear()
+                    self.deselect()
+                if curr_port.original_img != None:
+                    curr_port.update_FT_components()
+
             combo_box.setCurrentIndex(0)
 
     def browse_image(self, event, index: int):

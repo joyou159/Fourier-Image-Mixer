@@ -149,8 +149,8 @@ class FTViewPort(QWidget):
         - Calls the set_image() function to update the image.
 
         """
-        if self.ft_components_images:
-            self.curr_component_name = self.combo_box.currentText()  # note a None object why?
+        self.curr_component_name = self.combo_box.currentText()  # note a None object why?
+        if self.ft_components_images and self.curr_component_name not in [None, ""]:
             self.component_data = self.ft_components[self.curr_component_name]
             self.main_window.components[str(
                 self.viewport_FT_ind + 1)] = self.curr_component_name

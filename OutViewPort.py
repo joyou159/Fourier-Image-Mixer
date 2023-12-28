@@ -33,28 +33,10 @@ class OutViewPort(QWidget):
         super().paintEvent(event)
         if self.original_img:
             with QPainter(self) as painter_out:
-                # Calculate the new size while preserving the aspect ratio
-                img_width = self.original_img.width
-                img_height = self.original_img.height
-                widget_width = self.width()
-                widget_height = self.height()
-
-                aspect_ratio = img_width / img_height
-                new_width = widget_width
-                new_height = int(widget_width / aspect_ratio)
-
-                if new_height > widget_height:
-                    new_height = widget_height
-                    new_width = int(widget_height * aspect_ratio)
-
                 # Resize the image
                 self.resized_img = self.original_img.resize(
-                    (new_width, new_height))
-
-                # Calculate the position to center the image
-                x_pos = (widget_width - new_width) // 2
-                y_pos = (widget_height - new_height) // 2
+                    (self.width(), self.height()))
 
                 # Draw the image centered on the widget
                 pixmap = QPixmap.fromImage(ImageQt.ImageQt(self.resized_img))
-                painter_out.drawPixmap(x_pos, y_pos, pixmap)
+                painter_out.drawPixmap(0, 0, pixmap)

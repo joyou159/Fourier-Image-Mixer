@@ -334,12 +334,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.components_ports[index].update_FT_components()
 
         # Print the size of the image before resizing
-        logging.info(f"The size of the image before resizing: {
-                     np.array(image_port.original_img).shape}")
+        logging.info(f"The size of the image before resizing: {np.array(image_port.original_img).shape}")
 
         # Print the size of the image after resizing
-        logging.info(f"The size of the image after resizing: {
-                     np.array(image_port.resized_img).shape}")
+        logging.info(f"The size of the image after resizing: {np.array(image_port.resized_img).shape}")
 
     def create_viewport(self, parent, viewport_class, mouse_double_click_event_handler=None):
         """

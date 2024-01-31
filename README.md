@@ -91,6 +91,12 @@ For additional details on the code structure and implementation, refer to the so
 
 Feel free to explore and experiment with the Image Mixer project!
 
+## Demo
+
+
+https://github.com/MohamedMandour10/Fourier-Image-Mixer/assets/115044826/8c4150bb-c027-46da-8f69-8a2edba914d1
+
+
 ## How to Run
 
 1. Install the required dependencies using 
@@ -101,3 +107,32 @@ pip install -r requirements.txt
 ```bash
 python main.py
 ```
+
+## Contributors <a name = "Contributors"></a>
+<table>
+  <tr>
+    <td align="center">
+    <a href="https://github.com/MohamedMandour10" target="_black">
+    <img src="https://avatars.githubusercontent.com/u/115044826?v=4" width="150px;" alt="Mohamed Elsayed Eid"/>
+    <br />
+    <sub><b>Mohamed Elsayed Eid</b></sub></a>
+    </td>
+    <td align="center">
+    <a href="https://github.com/mohamedmosilhy" target="_black">
+    <img src="https://avatars.githubusercontent.com/u/93820559?v=4" width="150px;" alt="mohamed mosilhy"/>
+    <br />
+    <sub><b>Mohamed Mosilhy</b></sub></a>
+    </td>
+    <td align="center">
+    <a href="https://github.com/MahmoudMagdy404" target="_black">
+    <img src="https://avatars.githubusercontent.com/u/83336074?v=4" width="150px;" alt="Mahmoud Magdy"/>
+    <br />
+    <sub><b>Mahmoud Magdy</b></sub></a>
+    </td>
+    <td align="center">
+    <a href="https://github.com/joyou159" target="_black">
+    <img src="https://avatars.githubusercontent.com/u/85418161?v=4" width="150px;" alt="Youssef Ahmed"/>
+    <br />
+    <sub><b>Youssef Ahmed</b></sub></a>
+    </td>
+      </tr>

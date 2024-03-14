@@ -1,4 +1,5 @@
 # Image Mixer Project
+![Demo of UI](https://github.com/MohamedMandour10/Fourier-Image-Mixer/assets/115044826/6a6c859e-4838-45cb-bd8e-0db4bcea9e5f)
 
 The Image Mixer project is a graphical application designed for mixing and processing images using Fourier Transform (FT) components. It provides a user-friendly interface to load images, perform Fourier Transform operations, and create composite images by combining selected FT components.
 

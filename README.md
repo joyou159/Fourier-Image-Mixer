@@ -2,6 +2,8 @@
 ![Demo of UI](https://github.com/MohamedMandour10/Fourier-Image-Mixer/assets/115044826/6a6c859e-4838-45cb-bd8e-0db4bcea9e5f)
 
 A desktop application designed for composing images by combining Fourier Transform components, `Mag and Phase` or `Real and Imaginary` depending on the mode, from other images. It provides a user-friendly interface to load images, select rectangular regions from them, and adjust the weight of each region using sliders, ultimately mixing these components in threads and applying inverse Fourier Transform to get the output image.
+## Key Features
+
 ### 1. Graphical User Interface (GUI)
 
 The application boasts an intuitive GUI with the following components:
